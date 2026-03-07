@@ -1,6 +1,6 @@
 # @stefgo/react-ui-components
 
-A premium, modern React UI component library designed for the Proxmox Backup Client Manager. Built with React 19, TypeScript, and Tailwind CSS.
+A premium, modern React UI component library designed for the my projects. Built with React 19, TypeScript, and Tailwind CSS.
 
 ## Features
 
