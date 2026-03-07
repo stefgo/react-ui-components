@@ -1,6 +1,7 @@
 {
   "name": "@stefgo/react-ui-components",
   "version": "1.0.0",
+  "license": "MIT",
   "private": false,
   "repository": {
     "type": "git",
