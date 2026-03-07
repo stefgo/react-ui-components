@@ -6,6 +6,7 @@ A premium, modern React UI component library designed for the Proxmox Backup Cli
 
 - 🎨 **Modern Aesthetics**: Vibrant colors, dark mode support, and sleek glassmorphism.
 - 🧩 **Modular & Reusable**: Atomic components built for high-performance dashboards.
+- 🚀 **Automated Releases**: Versioning and publishing via `semantic-release` and Conventional Commits.
 - ⚡ **Type-Safe**: Developed entirely in TypeScript with full prop definitions.
 - 📱 **Responsive**: Mobile-first design with complex data views that adapt to any screen size.
 

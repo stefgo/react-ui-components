@@ -11,7 +11,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +28,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Publish
-        run: npm publish --registry=https://npm.pkg.github.com
+      - name: Release
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
