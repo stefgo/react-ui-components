@@ -1,6 +1,12 @@
 import { ChevronRight, Folder, File } from 'lucide-react';
 import { useEffect } from 'react';
-import { FsFile } from '@pbcm/shared';
+
+export interface FsFile {
+    name: string;
+    isDirectory: boolean;
+    path: string;
+    size: number;
+}
 
 interface FileBrowserProps {
     currentPath: string;
