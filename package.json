@@ -13,28 +13,33 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "files": [
     "dist"
   ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.mjs",
+      "require": "./dist/*.js"
     }
   },
   "scripts": {
-    "dev": "tsup src/index.ts --format cjs,esm --watch --dts --minify",
-    "build": "tsup src/index.ts --format cjs,esm --dts --minify --clean",
+    "dev": "tsup src/*.ts src/*.tsx --format cjs,esm --watch --dts --minify --splitting --treeshake",
+    "build": "tsup src/*.ts src/*.tsx --format cjs,esm --dts --minify --clean --splitting --treeshake",
     "lint": "tsc",
     "prepublishOnly": "npm run build"
   },
-  "dependencies": {
-    "lucide-react": "^0.477.0"
-  },
+  "dependencies": {},
   "peerDependencies": {
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "lucide-react": "^0.477.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
