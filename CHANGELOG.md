@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/stefgo/react-ui-components/compare/v1.0.0...v1.0.1) (2026-03-07)
+
+
+### Bug Fixes
+
+* trigger automated release to bypass 1.0.0 conflict ([f34af63](https://github.com/stefgo/react-ui-components/commit/f34af631567c8eaf76aca59b2c7158948dfe17cc))
+
 # 1.0.0 (2026-03-07)
 
 
