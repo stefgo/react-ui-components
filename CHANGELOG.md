@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/stefgo/react-ui-components/compare/v1.0.1...v1.1.0) (2026-03-08)
+
+
+### Features
+
+* Add Badge, BottomNav, Collapsible, Sidebar, ThemeToggle, and AppHeader UI components. ([de1a688](https://github.com/stefgo/react-ui-components/commit/de1a6885261d09b9a172c4135d0674ca000f58b4))
+
 ## [1.0.1](https://github.com/stefgo/react-ui-components/compare/v1.0.0...v1.0.1) (2026-03-07)
 
 
