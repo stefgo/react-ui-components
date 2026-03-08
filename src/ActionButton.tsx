@@ -1,11 +1,10 @@
-import { LucideIcon } from 'lucide-react';
 import React from 'react';
 
 export type ActionButtonColor = 'green' | 'blue' | 'red' | 'orange' | 'gray' | 'indigo';
 export type ActionButtonVariant = 'solid' | 'ghost';
 
 interface ActionButtonProps {
-    icon: LucideIcon;
+    icon: React.ComponentType<{ size?: number; className?: string }>;
     onClick: (e: React.MouseEvent) => void;
     disabled?: boolean | (() => boolean);
     tooltip?: string | { enabled: string; disabled: string };

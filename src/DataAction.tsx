@@ -1,12 +1,11 @@
-import React from 'react';
+import * as React from 'react';
 import { MoreVertical } from 'lucide-react';
 import { ActionButton, ActionButtonColor } from './ActionButton';
 import { ActionMenu } from './ActionMenu';
 import { useActionMenu } from './hooks/useActionMenu';
-import { LucideIcon } from 'lucide-react';
 
 export interface DataTableActionItem {
-    icon: LucideIcon;
+    icon: React.ComponentType<{ size?: number; className?: string }>;
     onClick: (e: React.MouseEvent) => void;
     color?: ActionButtonColor;
     tooltip?: string | { enabled: string; disabled: string };
@@ -16,7 +15,7 @@ export interface DataTableActionItem {
 
 export interface DataTableActionMenuEntry {
     label: string;
-    icon: LucideIcon;
+    icon: React.ComponentType<{ size?: number; className?: string }>;
     onClick: () => void;
     disabled?: boolean;
     disabledTitle?: string;

@@ -17,8 +17,10 @@ export * from "./StatCard";
 export * from "./Badge";
 export * from "./ThemeToggle";
 export * from "./Sidebar";
-export * from "./AppHeader";
+export * from "./DashboardHeader";
 export * from "./BottomNav";
 export * from "./Collapsible";
 export * from "./hooks/useActionMenu";
+export * from "./DashboardLayout";
+export * from "./Dashboard";
 // Trigger release
