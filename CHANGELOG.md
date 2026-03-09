@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/stefgo/react-ui-components/compare/v1.3.1...v1.4.0) (2026-03-09)
+
+
+### Features
+
+* Expose Tailwind CSS preset and add it as a peer dependency. ([221445a](https://github.com/stefgo/react-ui-components/commit/221445a90b8364b17488898c2ff2a07e01adcb6a))
+
 ## [1.3.1](https://github.com/stefgo/react-ui-components/compare/v1.3.0...v1.3.1) (2026-03-09)
 
 
