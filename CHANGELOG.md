@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/stefgo/react-ui-components/compare/v1.4.0...v1.4.1) (2026-03-09)
+
+
+### Bug Fixes
+
+* re-publish package with correct tailwind-preset exports ([5680c28](https://github.com/stefgo/react-ui-components/commit/5680c28c093f3b005278b64c2187471bd6efa89f))
+
 # [1.4.0](https://github.com/stefgo/react-ui-components/compare/v1.3.1...v1.4.0) (2026-03-09)
 
 
