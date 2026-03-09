@@ -16,7 +16,7 @@
   "sideEffects": false,
   "files": [
     "dist",
-    "tailwind-plugin.js"
+    "tailwind-preset.js"
   ],
   "exports": {
     ".": {
@@ -29,7 +29,7 @@
       "import": "./dist/*.mjs",
       "require": "./dist/*.js"
     },
-    "./tailwind-plugin": "./tailwind-plugin.js"
+    "./tailwind-preset": "./tailwind-preset.js"
   },
   "scripts": {
     "dev": "tsup src/*.ts src/*.tsx --format cjs,esm --watch --dts --minify --splitting --treeshake",
