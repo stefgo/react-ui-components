@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/stefgo/react-ui-components/compare/v1.3.0...v1.3.1) (2026-03-09)
+
+
+### Bug Fixes
+
+* export missing tailwind-preset.js file ([7e330f8](https://github.com/stefgo/react-ui-components/commit/7e330f8b835380d260dbe6b1319cdbec24ce4a8f))
+
 # [1.3.0](https://github.com/stefgo/react-ui-components/compare/v1.2.0...v1.3.0) (2026-03-09)
 
 
