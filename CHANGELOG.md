@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/stefgo/react-ui-components/compare/v1.2.0...v1.3.0) (2026-03-09)
+
+
+### Features
+
+* provide Tailwind CSS plugin to automatically include library's dist files in content configuration. ([8f0e2c8](https://github.com/stefgo/react-ui-components/commit/8f0e2c82717d744d14ab7f27ddd618bfc7833463))
+
 # [1.2.0](https://github.com/stefgo/react-ui-components/compare/v1.1.0...v1.2.0) (2026-03-08)
 
 
