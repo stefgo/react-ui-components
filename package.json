@@ -13,7 +13,9 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/styles.css"
+  ],
   "files": [
     "dist",
     "tailwind-preset.js"
@@ -24,6 +26,7 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
+    "./styles.css": "./dist/styles.css",
     "./tailwind-preset": "./tailwind-preset.js",
     "./*": {
       "types": "./dist/*.d.ts",
@@ -33,7 +36,8 @@
   },
   "scripts": {
     "dev": "tsup src/*.ts src/*.tsx --format cjs,esm --watch --dts --minify --splitting --treeshake",
-    "build": "tsup src/*.ts src/*.tsx --format cjs,esm --dts --minify --clean --splitting --treeshake",
+    "build": "tsup src/*.ts src/*.tsx --format cjs,esm --dts --minify --clean --splitting --treeshake && npm run build:css",
+    "build:css": "postcss src/styles.css -o dist/styles.css --no-map",
     "lint": "tsc",
     "prepublishOnly": "npm run build"
   },
@@ -41,10 +45,12 @@
   "peerDependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "lucide-react": "^0.562.0",
-    "tailwindcss": "^3.4.0"
+    "lucide-react": "^0.562.0"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
     "tailwindcss": "^3.4.19",
     "@types/react": "^19.2.5",
     "react": "^19.2.0",
