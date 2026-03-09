@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/stefgo/react-ui-components/compare/v1.4.1...v1.5.0) (2026-03-09)
+
+
+### Features
+
+* Pre-build Tailwind CSS into a distributable `styles.css` file and update build process to include PostCSS. ([5d9339a](https://github.com/stefgo/react-ui-components/commit/5d9339adef0eba788bb4225185b867f2367912d8))
+
 ## [1.4.1](https://github.com/stefgo/react-ui-components/compare/v1.4.0...v1.4.1) (2026-03-09)
 
 
