@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/stefgo/react-ui-components/compare/v1.3.0...v1.4.0) (2026-03-09)
+
+
+### Features
+
+* include tailwind-plugin.js in published package files ([0404325](https://github.com/stefgo/react-ui-components/commit/0404325a929eededc3eaf4c4f66ba01efed13848))
+
 # [1.3.0](https://github.com/stefgo/react-ui-components/compare/v1.2.0...v1.3.0) (2026-03-09)
 
 
