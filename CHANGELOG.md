@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/stefgo/react-ui-components/compare/v1.5.0...v1.5.1) (2026-03-10)
+
+
+### Bug Fixes
+
+* Wrap Tailwind utilities in CSS layer to prevent cascade conflicts ([8a7da83](https://github.com/stefgo/react-ui-components/commit/8a7da8386a1a28f266ec64ff623882c2a83e6ef1))
+
 # [1.5.0](https://github.com/stefgo/react-ui-components/compare/v1.4.1...v1.5.0) (2026-03-09)
 
 
