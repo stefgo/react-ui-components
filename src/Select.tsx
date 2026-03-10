@@ -30,7 +30,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
                         ${error ? 'border-red-500' : 'border-gray-200 dark:border-[#333]'} 
                         px-3 py-2.5 
                         rounded-lg text-gray-900 dark:text-white 
-                        focus:outline-none focus:ring-2 focus:ring-[#E54D0D]/50 focus:border-[#E54D0D] 
+                        focus:outline-none focus:ring-2 focus:ring-app-accent/30 focus:border-app-accent focus:shadow-glow-accent
                         transition-all sm:text-sm appearance-none
                     `}
                     {...props}

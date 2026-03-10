@@ -52,7 +52,7 @@ export const Sidebar = ({
     className = "",
 }: SidebarProps) => {
     return (
-        <aside className={`${isCollapsed ? "w-16" : "w-64"} bg-gray-50 dark:bg-[#161616] border-r border-gray-200 dark:border-[#222] hidden md:flex flex-col transition-all duration-300 relative ${className}`}>
+        <aside className={`${isCollapsed ? "w-16" : "w-64"} bg-app-card/60 backdrop-blur-lg border-r border-white/5 hidden md:flex flex-col transition-all duration-300 relative ${className}`}>
             <div className={`p-4 ${isCollapsed ? "pt-8 items-center" : "pt-8"} flex flex-1 flex-col gap-8 overflow-y-auto`}>
                 {groups.map((group, groupIdx) => (
                     <div key={groupIdx} className="space-y-1 w-full">
