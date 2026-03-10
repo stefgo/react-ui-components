@@ -1,2 +1,3 @@
-@tailwind components;
-@tailwind utilities;
+@layer ui-library {
+  @tailwind utilities;
+}
