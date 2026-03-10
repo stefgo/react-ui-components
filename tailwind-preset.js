@@ -8,9 +8,18 @@ const path = require("path");
  */
 module.exports = {
   content: [path.join(__dirname, "dist/**/*.{js,mjs}")],
-  plugins: [
-    plugin(function ({ addComponents, theme }) {
-      // Optional: Add custom components or theme extensions here if needed
-    }),
-  ],
+  theme: {
+    extend: {
+      colors: {
+        app: {
+          accent: "#E54D0D",
+          card: "#1e1e1e",
+        },
+      },
+      boxShadow: {
+        "glow-accent": "0 0 15px rgba(229, 77, 13, 0.3)",
+      },
+    },
+  },
+  plugins: [],
 };
