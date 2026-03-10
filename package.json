@@ -1,6 +1,6 @@
 {
   "name": "@stefgo/react-ui-components",
-  "version": "1.2.0",
+  "version": "1.5.2",
   "license": "MIT",
   "private": false,
   "repository": {
@@ -15,7 +15,8 @@
   "types": "./dist/index.d.ts",
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "tailwind-preset.js"
   ],
   "exports": {
     ".": {
@@ -23,12 +24,12 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
+    "./tailwind-preset": "./tailwind-preset.js",
     "./*": {
       "types": "./dist/*.d.ts",
       "import": "./dist/*.mjs",
       "require": "./dist/*.js"
-    },
-    "./tailwind-plugin": "./tailwind-plugin.js"
+    }
   },
   "scripts": {
     "dev": "tsup src/*.ts src/*.tsx --format cjs,esm --watch --dts --minify --splitting --treeshake",
@@ -40,9 +41,11 @@
   "peerDependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "lucide-react": "^0.562.0"
+    "lucide-react": "^0.562.0",
+    "tailwindcss": "^3.4.0"
   },
   "devDependencies": {
+    "tailwindcss": "^3.4.19",
     "@types/react": "^19.2.5",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

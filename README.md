@@ -18,6 +18,30 @@ npm install @stefgo/react-ui-components
 
 Note: This package requires `react`, `react-dom` (v19+), and `lucide-react` as peer dependencies.
 
+## Tailwind CSS Integration
+
+To ensure the library's styles are correctly generated in your project, add the library's files to your `tailwind.config.js` content array. The recommended way is using `require.resolve` to handle different environments (Docker/CI):
+
+```javascript
+const path = require("path");
+
+// Resolve the UI library's dist path
+const uiLibDist = path.join(
+  path.dirname(require.resolve("@stefgo/react-ui-components/tailwind-preset")),
+  "dist/**/*.{js,mjs}",
+);
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    uiLibDist, // Add library dist files to scanning
+  ],
+  // ... rest of your config
+};
+```
+
 ## Components
 
 ### 🟢 Basic Components

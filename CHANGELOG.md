@@ -1,3 +1,67 @@
+## [1.5.2](https://github.com/stefgo/react-ui-components/compare/v1.5.1...v1.5.2) (2026-03-10)
+
+
+### Bug Fixes
+
+* revert pre-built CSS, use content scanning for Tailwind classes ([c5c7355](https://github.com/stefgo/react-ui-components/commit/c5c7355f3172036b01d35763dfef335ecac32f3f))
+
+## [1.5.1](https://github.com/stefgo/react-ui-components/compare/v1.5.0...v1.5.1) (2026-03-10)
+
+
+### Bug Fixes
+
+* Wrap Tailwind utilities in CSS layer to prevent cascade conflicts ([8a7da83](https://github.com/stefgo/react-ui-components/commit/8a7da8386a1a28f266ec64ff623882c2a83e6ef1))
+
+# [1.5.0](https://github.com/stefgo/react-ui-components/compare/v1.4.1...v1.5.0) (2026-03-09)
+
+
+### Features
+
+* Pre-build Tailwind CSS into a distributable `styles.css` file and update build process to include PostCSS. ([5d9339a](https://github.com/stefgo/react-ui-components/commit/5d9339adef0eba788bb4225185b867f2367912d8))
+
+## [1.4.1](https://github.com/stefgo/react-ui-components/compare/v1.4.0...v1.4.1) (2026-03-09)
+
+
+### Bug Fixes
+
+* re-publish package with correct tailwind-preset exports ([5680c28](https://github.com/stefgo/react-ui-components/commit/5680c28c093f3b005278b64c2187471bd6efa89f))
+
+# [1.4.0](https://github.com/stefgo/react-ui-components/compare/v1.3.1...v1.4.0) (2026-03-09)
+
+
+### Features
+
+* Expose Tailwind CSS preset and add it as a peer dependency. ([221445a](https://github.com/stefgo/react-ui-components/commit/221445a90b8364b17488898c2ff2a07e01adcb6a))
+
+## [1.3.1](https://github.com/stefgo/react-ui-components/compare/v1.3.0...v1.3.1) (2026-03-09)
+
+
+### Bug Fixes
+
+* export missing tailwind-preset.js file ([7e330f8](https://github.com/stefgo/react-ui-components/commit/7e330f8b835380d260dbe6b1319cdbec24ce4a8f))
+
+# [1.3.0](https://github.com/stefgo/react-ui-components/compare/v1.2.0...v1.3.0) (2026-03-09)
+
+
+### Features
+
+* include tailwind-plugin.js in published package files ([0404325](https://github.com/stefgo/react-ui-components/commit/0404325a929eededc3eaf4c4f66ba01efed13848))
+* provide Tailwind CSS plugin to automatically include library's dist files in content configuration. ([8f0e2c8](https://github.com/stefgo/react-ui-components/commit/8f0e2c82717d744d14ab7f27ddd618bfc7833463))
+
+# [1.4.0](https://github.com/stefgo/react-ui-components/compare/v1.3.0...v1.4.0) (2026-03-09)
+
+
+### Features
+
+* include tailwind-plugin.js in published package files ([0404325](https://github.com/stefgo/react-ui-components/commit/0404325a929eededc3eaf4c4f66ba01efed13848))
+
+# [1.3.0](https://github.com/stefgo/react-ui-components/compare/v1.2.0...v1.3.0) (2026-03-09)
+
+
+### Features
+
+* provide Tailwind CSS plugin to automatically include library's dist files in content configuration. ([8f0e2c8](https://github.com/stefgo/react-ui-components/commit/8f0e2c82717d744d14ab7f27ddd618bfc7833463))
+
 # [1.2.0](https://github.com/stefgo/react-ui-components/compare/v1.1.0...v1.2.0) (2026-03-08)
 
 
