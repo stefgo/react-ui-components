@@ -1,5 +1,13 @@
 import { Component, ReactNode } from 'react';
-import { PaginationControls } from './PaginationControls';
+import { PaginationControls, PaginationControlsClassNames } from './PaginationControls';
+import { cn } from './utils';
+
+export interface DataViewClassNames {
+    root?: string;
+    contentWrapper?: string;
+    paginationWrapper?: string;
+    pagination?: PaginationControlsClassNames;
+}
 
 export interface BaseDataViewProps<T> {
     data: T[];
@@ -18,6 +26,7 @@ export interface BaseDataViewProps<T> {
         onPageChange: (page: number) => void;
         onItemsPerPageChange: (limit: number) => void;
     };
+    classNames?: DataViewClassNames;
 }
 
 export abstract class AbstractDataView<T, P extends BaseDataViewProps<T>> extends Component<P> {
@@ -36,16 +45,16 @@ export abstract class AbstractDataView<T, P extends BaseDataViewProps<T>> extend
 
     protected getInteractionClasses(): string {
         return this.props.onRowClick
-            ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-[#252525]'
+            ? 'cursor-pointer hover:bg-table-hover dark:hover:bg-table-hover-dark'
             : '';
     }
 
     protected renderPagination(): ReactNode {
-        const { pagination } = this.props;
+        const { pagination, classNames } = this.props;
         if (!pagination) return null;
 
         return (
-            <div className="shrink-0 border-t border-gray-200 dark:border-[#333] bg-white dark:bg-[#1e1e1e]">
+            <div className={cn("shrink-0 border-t border-card dark:border-card-dark bg-card dark:bg-card-dark", classNames?.paginationWrapper)}>
                 <PaginationControls
                     currentPage={pagination.currentPage}
                     totalPages={pagination.totalPages}
@@ -53,6 +62,7 @@ export abstract class AbstractDataView<T, P extends BaseDataViewProps<T>> extend
                     totalItems={pagination.totalItems}
                     onPageChange={pagination.onPageChange}
                     onItemsPerPageChange={pagination.onItemsPerPageChange}
+                    classNames={classNames?.pagination}
                 />
             </div>
         );
@@ -72,13 +82,16 @@ export abstract class AbstractDataView<T, P extends BaseDataViewProps<T>> extend
     protected abstract renderContent(): ReactNode;
 
     render() {
-        const { containerClassName = '' } = this.props;
-        const containerClass = `bg-white dark:bg-[#1e1e1e] border border-gray-200
-            dark:border-[#333] overflow-hidden shadow-lg flex flex-col h-full ${containerClassName}`;
+        const { containerClassName = '', classNames } = this.props;
+        const containerClass = cn(
+            "bg-table-row dark:bg-table-row-dark border border-card dark:border-card-dark overflow-hidden shadow-lg flex flex-col h-full",
+            containerClassName,
+            classNames?.root
+        );
 
         return (
             <div className={containerClass}>
-                <div className="flex-1 overflow-y-auto min-h-0">
+                <div className={cn("flex-1 overflow-y-auto min-h-0", classNames?.contentWrapper)}>
                     {this.renderContent()}
                 </div>
                 {this.renderPagination()}

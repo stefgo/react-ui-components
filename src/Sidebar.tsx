@@ -1,4 +1,6 @@
 import { ReactNode } from 'react';
+import { cn } from './utils';
+
 
 export interface SidebarItem {
     id: string;
@@ -14,31 +16,65 @@ export interface SidebarGroup {
     items: SidebarItem[];
 }
 
+export interface SidebarClassNames {
+    root?: string;
+    content?: string;
+    group?: string;
+    groupTitle?: string;
+    item?: string;
+    itemActive?: string;
+    itemInactive?: string;
+    itemContent?: string;
+    itemIcon?: string;
+    itemLabel?: string;
+    itemBadge?: string;
+    itemBadgeActive?: string;
+    itemBadgeInactive?: string;
+}
+
 interface SidebarProps {
     groups: SidebarGroup[];
     isCollapsed?: boolean;
     className?: string;
+    classNames?: SidebarClassNames;
 }
 
-const NavItem = ({ icon, label, active, onClick, badge, isCollapsed }: SidebarItem & { isCollapsed?: boolean }) => (
+const NavItem = ({
+    icon,
+    label,
+    active,
+    onClick,
+    badge,
+    isCollapsed,
+    classNames
+}: SidebarItem & { isCollapsed?: boolean; classNames?: SidebarClassNames }) => (
     <button
         onClick={onClick}
         title={isCollapsed ? label : ""}
-        className={`w-full flex items-center ${isCollapsed ? "justify-center" : "justify-between"} px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${active
-            ? "bg-white dark:bg-[#252525] text-gray-900 dark:text-white shadow-sm ring-1 ring-gray-200 dark:ring-[#333]"
-            : "text-gray-500 dark:text-[#888] hover:bg-gray-100 dark:hover:bg-[#222] hover:text-gray-900 dark:hover:text-white"
-            }`}
+        className={cn(
+            "w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
+            isCollapsed ? "justify-center" : "justify-between",
+            active
+                ? "bg-sidebar-item-active dark:bg-sidebar-item-active-dark text-text-primary dark:text-text-primary-dark shadow-sm ring-1 ring-gray-200 dark:ring-dark"
+                : "text-text-muted dark:text-text-muted-dark hover:bg-sidebar-item-active dark:hover:bg-sidebar-item-active-dark hover:text-text-primary dark:hover:text-text-primary-dark",
+            classNames?.item,
+            active ? classNames?.itemActive : classNames?.itemInactive
+        )}
     >
-        <div className="flex items-center gap-3">
-            {icon}
-            {!isCollapsed && <span className="truncate">{label}</span>}
+        <div className={cn("flex items-center gap-3", classNames?.itemContent)}>
+            <div className={cn("flex-shrink-0", classNames?.itemIcon)}>{icon}</div>
+            {!isCollapsed && <span className={cn("truncate", classNames?.itemLabel)}>{label}</span>}
         </div>
         {!isCollapsed && badge && (
             <span
-                className={`text-xs px-2 py-0.5 rounded-full ${active
-                    ? "bg-gray-100 dark:bg-[#333] text-gray-900 dark:text-white"
-                    : "bg-gray-200 dark:bg-[#333] text-gray-600 dark:text-[#aaa]"
-                    }`}
+                className={cn(
+                    "text-xs px-2 py-0.5 rounded-full",
+                    active
+                        ? "bg-sidebar-badge-active dark:bg-sidebar-badge-active-dark"
+                        : "bg-sidebar-badge-active dark:bg-sidebar-badge-active-dark",
+                    classNames?.itemBadge,
+                    active ? classNames?.itemBadgeActive : classNames?.itemBadgeInactive
+                )}
             >
                 {badge}
             </span>
@@ -50,14 +86,27 @@ export const Sidebar = ({
     groups,
     isCollapsed = false,
     className = "",
+    classNames,
 }: SidebarProps) => {
     return (
-        <aside className={`${isCollapsed ? "w-16" : "w-64"} bg-app-card/60 backdrop-blur-lg border-r border-white/5 hidden md:flex flex-col transition-all duration-300 relative ${className}`}>
-            <div className={`p-4 ${isCollapsed ? "pt-8 items-center" : "pt-8"} flex flex-1 flex-col gap-8 overflow-y-auto`}>
+        <aside className={cn(
+            isCollapsed ? "w-16" : "w-64",
+            "bg-sidebar-bg dark:bg-sidebar-bg-dark border-r dark:border-dark hidden md:flex flex-col transition-all duration-300 relative",
+            className,
+            classNames?.root
+        )}>
+            <div className={cn(
+                "p-4 flex flex-1 flex-col gap-8 overflow-y-auto",
+                isCollapsed ? "pt-8 items-center" : "pt-8",
+                classNames?.content
+            )}>
                 {groups.map((group, groupIdx) => (
-                    <div key={groupIdx} className="space-y-1 w-full">
+                    <div key={groupIdx} className={cn("space-y-1 w-full", classNames?.group)}>
                         {!isCollapsed && group.title && (
-                            <div className="text-gray-500 dark:text-[#666] text-xs font-bold uppercase tracking-wider px-3 mb-2">
+                            <div className={cn(
+                                "text-text-muted dark:text-text-muted-dark text-xs font-bold uppercase tracking-wider px-3 mb-2",
+                                classNames?.groupTitle
+                            )}>
                                 {group.title}
                             </div>
                         )}
@@ -66,6 +115,7 @@ export const Sidebar = ({
                                 key={item.id}
                                 {...item}
                                 isCollapsed={isCollapsed}
+                                classNames={classNames}
                             />
                         ))}
                     </div>

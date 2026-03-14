@@ -1,7 +1,13 @@
 import React from 'react';
+import { cn } from './utils';
 
 export type ActionButtonColor = 'green' | 'blue' | 'red' | 'orange' | 'gray' | 'indigo';
 export type ActionButtonVariant = 'solid' | 'ghost';
+
+export interface ActionButtonClassNames {
+    root?: string;
+    icon?: string;
+}
 
 interface ActionButtonProps {
     icon: React.ComponentType<{ size?: number; className?: string }>;
@@ -11,6 +17,7 @@ interface ActionButtonProps {
     color?: ActionButtonColor;
     variant?: ActionButtonVariant;
     className?: string;
+    classNames?: ActionButtonClassNames;
     size?: number;
 }
 
@@ -22,6 +29,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
     color = 'gray',
     variant = 'ghost',
     className = '',
+    classNames,
     size = 16,
 }) => {
     const isDisabled = typeof disabled === 'function' ? disabled() : disabled;
@@ -29,22 +37,22 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
     const colorClasses: Record<ActionButtonColor, string> = {
         green: isDisabled
             ? "text-inherit cursor-not-allowed"
-            : "text-gray-500 hover:text-green-600 dark:text-[#888] dark:hover:text-green-400 hover:bg-gray-100 dark:hover:bg-[#333]",
+            : "text-text-muted dark:text-text-muted-dark hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-100 dark:hover:bg-dark",
         blue: isDisabled
             ? "text-inherit cursor-not-allowed"
-            : "text-gray-400 hover:text-blue-600 dark:text-[#666] dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-[#333]",
+            : "text-text-muted dark:text-text-muted-dark hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-dark",
         red: isDisabled
             ? "text-inherit cursor-not-allowed"
             : "text-red-400 hover:text-red-600 dark:text-red-500/50 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10",
         orange: isDisabled
             ? "text-inherit cursor-not-allowed"
-            : "text-gray-400 hover:text-[#E54D0D] dark:text-[#666] dark:hover:text-[#ff5f1f] hover:bg-orange-50 dark:hover:bg-orange-900/10",
+            : "text-text-muted dark:text-text-muted-dark hover:text-primary dark:hover:text-primary-hover hover:bg-orange-50 dark:hover:bg-orange-900/10",
         gray: isDisabled
             ? "text-inherit cursor-not-allowed"
-            : "text-gray-400 hover:text-gray-600 dark:text-[#666] dark:hover:text-[#ccc] hover:bg-gray-100 dark:hover:bg-[#333]",
+            : "text-text-muted dark:text-text-muted-dark hover:text-text-secondary dark:hover:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-dark",
         indigo: isDisabled
             ? "text-inherit cursor-not-allowed"
-            : "text-gray-400 hover:text-indigo-600 dark:text-[#666] dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/10",
+            : "text-text-muted dark:text-text-muted-dark hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/10",
     };
 
     const variantClasses = variant === 'solid' && !isDisabled
@@ -66,10 +74,16 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
                 }
             }}
             disabled={isDisabled}
-            className={`p-1.5 transition-all rounded-full flex items-center justify-center ${colorClasses[color]} ${variantClasses} ${className}`}
+            className={cn(
+                "p-1.5 transition-all rounded-full flex items-center justify-center",
+                colorClasses[color],
+                variantClasses,
+                className,
+                classNames?.root
+            )}
             title={getTooltip()}
         >
-            <Icon size={size} />
+            <Icon size={size} className={cn(classNames?.icon)} />
         </button>
     );
 };

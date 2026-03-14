@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
-import { AbstractDataView, BaseDataViewProps } from './AbstractDataView';
+import { AbstractDataView, BaseDataViewProps, DataViewClassNames } from './AbstractDataView';
+import { cn } from './utils';
 
 export interface DataListDef<T> {
     accessorKey?: keyof T;
@@ -13,9 +14,22 @@ export interface DataListColumnDef<T> {
     columnClassName?: string;
 }
 
+export interface DataListClassNames extends DataViewClassNames {
+    listRoot?: string;
+    placeholder?: string;
+    row?: string;
+    colWrapper?: string;
+    column?: string;
+    itemWrapper?: string;
+    labelWrapper?: string;
+    label?: string;
+    value?: string;
+}
+
 export interface DataListProps<T> extends BaseDataViewProps<T> {
     itemDef?: DataListDef<T>[];
     columns?: DataListColumnDef<T>[];
+    classNames?: DataListClassNames;
 }
 
 export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
@@ -26,7 +40,7 @@ export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
     }
 
     protected renderContent(): ReactNode {
-        const { data, itemDef, columns: columnsProp, onRowClick } = this.props;
+        const { data, itemDef, columns: columnsProp, onRowClick, classNames } = this.props;
         const placeholder = this.getPlaceholder();
         const interactionClasses = this.getInteractionClasses();
 
@@ -36,9 +50,9 @@ export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
             : (itemDef ? [{ fields: itemDef }] : []);
 
         return (
-            <div className="divide-y divide-gray-200 dark:divide-[#333]">
+            <div className={cn("divide-y divide-gray-200 dark:divide-dark", classNames?.listRoot)}>
                 {placeholder ? (
-                    <div className="px-6 py-8 text-center text-gray-500 dark:text-[#666]">
+                    <div className={cn("px-6 py-8 text-center text-text-muted dark:text-text-muted-dark", classNames?.placeholder)}>
                         {placeholder}
                     </div>
                 ) : (
@@ -46,26 +60,35 @@ export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
                         <div
                             key={this.getKey(item)}
                             onClick={() => onRowClick?.(item)}
-                            className={`px-5 py-2 transition-colors group ${interactionClasses} ${this.getRowClass(item)}`}
+                            className={cn(
+                                "px-5 py-2 transition-colors group",
+                                interactionClasses,
+                                this.getRowClass(item),
+                                classNames?.row
+                            )}
                         >
-                            <div className={`flex flex-col ${isMultiColumn ? 'md:flex-row md:items-center' : ''}`}>
+                            <div className={cn("flex flex-col", isMultiColumn ? 'md:flex-row md:items-center' : '', classNames?.colWrapper)}>
                                 {columns.map((colGroup, colIdx) => (
-                                    <div key={colIdx} className={colGroup.columnClassName ?? ''}>
+                                    <div key={colIdx} className={cn(colGroup.columnClassName, classNames?.column)}>
                                         {colGroup.fields
                                             .filter(def => def.listItemRender !== undefined || def.accessorKey !== undefined)
                                             .map((col, idx) => (
-                                                <div key={idx} className="mb-1 last:mb-0">
+                                                <div key={idx} className={cn("mb-1 last:mb-0", classNames?.itemWrapper)}>
                                                     {col.listLabel != null ? (
-                                                        <div className="flex items-start gap-2 text-sm">
-                                                            <span className={`font-semibold text-gray-500 dark:text-[#888] min-w-[100px] shrink-0 ${col.listLabelClassName ?? ''}`}>
+                                                        <div className={cn("flex items-start gap-2 text-sm", classNames?.labelWrapper)}>
+                                                            <span className={cn(
+                                                                "font-semibold text-text-muted dark:text-text-muted-dark min-w-[100px] shrink-0",
+                                                                col.listLabelClassName,
+                                                                classNames?.label
+                                                            )}>
                                                                 {col.listLabel}:
                                                             </span>
-                                                            <div className="flex-1 overflow-hidden">
+                                                            <div className={cn("flex-1 overflow-hidden", classNames?.value)}>
                                                                 {this.resolveContent(col, item)}
                                                             </div>
                                                         </div>
                                                     ) : (
-                                                        <div>{this.resolveContent(col, item)}</div>
+                                                        <div className={cn(classNames?.value)}>{this.resolveContent(col, item)}</div>
                                                     )}
                                                 </div>
                                             ))}

@@ -1,3 +1,22 @@
+# [2.0.0](https://github.com/stefgo/react-ui-components/compare/v1.6.0...v2.0.0) (2026-03-14)
+
+
+### Features
+
+* trigger major ([833b35d](https://github.com/stefgo/react-ui-components/commit/833b35d8a32e2d5ee6e575094119f5bbc6da2e3d))
+
+
+### BREAKING CHANGES
+
+* force release
+
+# [1.6.0](https://github.com/stefgo/react-ui-components/compare/v1.5.2...v1.6.0) (2026-03-10)
+
+
+### Features
+
+* Add custom Tailwind theme colors and shadow, and update input, select, and sidebar components to utilize them. ([2fa59b1](https://github.com/stefgo/react-ui-components/commit/2fa59b18e49d778cc1781c59eecc0a3a70cfd27f))
+
 ## [1.5.2](https://github.com/stefgo/react-ui-components/compare/v1.5.1...v1.5.2) (2026-03-10)
 
 

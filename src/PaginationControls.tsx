@@ -1,4 +1,15 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from './utils';
+
+export interface PaginationControlsClassNames {
+    root?: string;
+    infoWrapper?: string;
+    select?: string;
+    pageInfo?: string;
+    controlsWrapper?: string;
+    button?: string;
+    pageText?: string;
+}
 
 interface PaginationControlsProps {
     currentPage: number;
@@ -8,6 +19,7 @@ interface PaginationControlsProps {
     onPageChange: (page: number) => void;
     onItemsPerPageChange: (size: number) => void;
     pageSizeOptions?: number[];
+    classNames?: PaginationControlsClassNames;
 }
 
 export const PaginationControls = ({
@@ -17,50 +29,61 @@ export const PaginationControls = ({
     totalItems,
     onPageChange,
     onItemsPerPageChange,
-    pageSizeOptions = [10, 20, 50]
+    pageSizeOptions = [10, 20, 50],
+    classNames
 }: PaginationControlsProps) => {
     // Only render if total items exceed the smallest page size option (or just 10 if not checking options)
-    // The requirement says "wenn die Anzahl der Einträge >10 ist", so we check totalItems > 10.
     if (totalItems <= pageSizeOptions[0]) {
         return null;
     }
 
     return (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-3 border-t border-gray-200 dark:border-[#333] bg-gray-50 dark:bg-[#252525]">
-            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+        <div className={cn(
+            "flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-3 border-t border-gray-200 dark:border-dark bg-table-header dark:bg-table-header-dark",
+            classNames?.root
+        )}>
+            <div className={cn("flex items-center gap-2 text-sm text-text-secondary dark:text-text-muted-dark", classNames?.infoWrapper)}>
                 <span>Rows per page:</span>
                 <select
                     value={itemsPerPage}
                     onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-                    className="bg-white dark:bg-[#1e1e1e] border border-gray-300 dark:border-[#444] text-gray-900 dark:text-white text-sm rounded focus:ring-blue-500 focus:border-blue-500 block p-1"
+                    className={cn(
+                        "bg-input-bg dark:bg-input-bg-dark border border-input-border dark:border-input-border-dark text-text-primary dark:text-text-primary-dark text-sm rounded focus:ring-app-accent focus:border-app-accent block p-1",
+                        classNames?.select
+                    )}
                 >
                     {pageSizeOptions.map(size => (
                         <option key={size} value={size}>{size}</option>
                     ))}
                 </select>
-                <span className="ml-2">
+                <span className={cn("ml-2", classNames?.pageInfo)}>
                     {Math.min((currentPage - 1) * itemsPerPage + 1, totalItems)} - {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems}
                 </span>
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className={cn("flex items-center gap-1", classNames?.controlsWrapper)}>
                 <button
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="p-1 rounded hover:bg-gray-200 dark:hover:bg-[#333] disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-gray-400 transition-colors"
+                    className={cn(
+                        "p-1 rounded hover:bg-gray-200 dark:hover:bg-dark disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary dark:text-text-muted-dark transition-colors",
+                        classNames?.button
+                    )}
                 >
                     <ChevronLeft size={20} />
                 </button>
                 <div className="flex items-center gap-1 px-2">
-                    {/* Simple page indication, can be expanded to page numbers if needed, but simple prev/next with "Page X of Y" is often enough for this scope */}
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className={cn("text-sm text-text-secondary dark:text-text-muted-dark", classNames?.pageText)}>
                         Page {currentPage} of {totalPages}
                     </span>
                 </div>
                 <button
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="p-1 rounded hover:bg-gray-200 dark:hover:bg-[#333] disabled:opacity-50 disabled:cursor-not-allowed text-gray-600 dark:text-gray-400 transition-colors"
+                    className={cn(
+                        "p-1 rounded hover:bg-gray-200 dark:hover:bg-dark disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary dark:text-text-muted-dark transition-colors",
+                        classNames?.button
+                    )}
                 >
                     <ChevronRight size={20} />
                 </button>

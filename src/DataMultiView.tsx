@@ -1,9 +1,22 @@
 import { ReactNode, useState, useEffect } from 'react';
 import { LayoutList, Table as TableIcon } from 'lucide-react';
-import { Card } from './Card';
-import { CardHeader } from './CardHeader';
-import { DataTable, DataTableDef } from './DataTable';
-import { DataList, DataListDef, DataListColumnDef } from './DataList';
+import { Card, CardClassNames } from './Card';
+import { CardHeader, CardHeaderClassNames } from './CardHeader';
+import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
+import { DataList, DataListDef, DataListColumnDef, DataListClassNames } from './DataList';
+import { cn } from './utils';
+
+export interface DataMultiViewClassNames {
+    root?: string;
+    card?: CardClassNames;
+    header?: CardHeaderClassNames;
+    toggleRoot?: string;
+    toggleButton?: string;
+    toggleButtonActive?: string;
+    table?: DataTableClassNames;
+    list?: DataListClassNames;
+    extraActionsWrapper?: string;
+}
 
 export interface DataMultiViewProps<T> {
     title?: ReactNode;
@@ -28,6 +41,7 @@ export interface DataMultiViewProps<T> {
         onPageChange: (page: number) => void;
         onItemsPerPageChange: (limit: number) => void;
     };
+    classNames?: DataMultiViewClassNames;
 }
 
 export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
@@ -39,11 +53,12 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         tableDef,
         listDef,
         listColumns,
+        classNames,
         ...sharedProps
     } = props;
 
     // Mobile detection
-    const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+    const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -52,6 +67,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     }, []);
 
     const [viewMode, setViewMode] = useState<'table' | 'list'>(() => {
+        if (typeof localStorage === 'undefined') return 'table';
         const savedMode = localStorage.getItem(viewModeStorageKey) as 'table' | 'list';
         return savedMode || 'table';
     });
@@ -65,23 +81,31 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     const effectiveViewMode = isMobile ? 'list' : viewMode;
 
     const viewToggle = !isMobile ? (
-        <div className="bg-gray-200 dark:bg-[#333] rounded-lg p-1 flex items-center gap-1">
+        <div className={cn("bg-gray-200 dark:bg-dark rounded-lg p-1 flex items-center gap-1", classNames?.toggleRoot)}>
             <button
                 onClick={() => changeViewMode('table')}
-                className={`p-1 rounded transition-all ${effectiveViewMode === 'table'
-                    ? 'bg-white dark:bg-[#444] shadow text-gray-900 dark:text-white'
-                    : 'text-gray-500 dark:text-[#888] hover:text-gray-900 dark:hover:text-white'
-                    }`}
+                className={cn(
+                    "p-1 rounded transition-all",
+                    effectiveViewMode === 'table'
+                        ? 'bg-white dark:bg-[#444] shadow text-text-primary dark:text-text-primary-dark'
+                        : 'text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark',
+                    classNames?.toggleButton,
+                    effectiveViewMode === 'table' ? classNames?.toggleButtonActive : ''
+                )}
                 title="Table View"
             >
                 <TableIcon size={14} />
             </button>
             <button
                 onClick={() => changeViewMode('list')}
-                className={`p-1 rounded transition-all ${effectiveViewMode === 'list'
-                    ? 'bg-white dark:bg-[#444] shadow text-gray-900 dark:text-white'
-                    : 'text-gray-500 dark:text-[#888] hover:text-gray-900 dark:hover:text-white'
-                    }`}
+                className={cn(
+                    "p-1 rounded transition-all",
+                    effectiveViewMode === 'list'
+                        ? 'bg-white dark:bg-[#444] shadow text-text-primary dark:text-text-primary-dark'
+                        : 'text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark',
+                    classNames?.toggleButton,
+                    effectiveViewMode === 'list' ? classNames?.toggleButtonActive : ''
+                )}
                 title="List View"
             >
                 <LayoutList size={14} />
@@ -90,7 +114,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     ) : null;
 
     const headerAction = (
-        <div className="flex items-center gap-3">
+        <div className={cn("flex items-center gap-3", classNames?.extraActionsWrapper)}>
             {viewToggle}
             {extraActions}
         </div>
@@ -102,18 +126,20 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     };
 
     return (
-        <Card className={`overflow-hidden flex flex-col h-full ${className}`}>
-            <CardHeader title={title} action={headerAction} />
+        <Card className={cn("overflow-hidden flex flex-col h-full", className, classNames?.root)} classNames={classNames?.card}>
+            <CardHeader title={title} action={headerAction} classNames={classNames?.header} />
             {effectiveViewMode === 'list' ? (
                 <DataList
                     {...containerProps}
                     itemDef={listDef}
                     columns={listColumns}
+                    classNames={classNames?.list}
                 />
             ) : (
                 <DataTable
                     {...containerProps}
                     itemDef={tableDef}
+                    classNames={classNames?.table}
                 />
             )}
         </Card>
