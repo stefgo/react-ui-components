@@ -1,13 +1,23 @@
 import { ReactNode } from 'react';
+import { cn } from './utils';
+
+export interface CardClassNames {
+    root?: string;
+}
 
 interface CardProps {
     children: ReactNode;
     className?: string;
+    classNames?: CardClassNames;
 }
 
-export const Card = ({ children, className = '' }: CardProps) => {
+export const Card = ({ children, className = '', classNames }: CardProps) => {
     return (
-        <div className={`bg-white dark:bg-[#1e1e1e] rounded-xl border border-gray-200 dark:border-[#333] shadow-lg ${className}`}>
+        <div className={cn(
+            "bg-card dark:bg-card-dark rounded-xl border dark:border-dark shadow-lg",
+            className,
+            classNames?.root
+        )}>
             {children}
         </div>
     );

@@ -1,13 +1,21 @@
 import { useEffect, useRef } from 'react';
+import { cn } from './utils';
+
+export interface ActionMenuClassNames {
+    overlay?: string;
+    root?: string;
+}
 
 interface ActionMenuProps {
     isOpen: boolean;
     onClose: () => void;
     position: { x: number; y: number };
     children: React.ReactNode;
+    className?: string; // Standard className for root
+    classNames?: ActionMenuClassNames;
 }
 
-export const ActionMenu = ({ isOpen, onClose, position, children }: ActionMenuProps) => {
+export const ActionMenu = ({ isOpen, onClose, position, children, className = '', classNames }: ActionMenuProps) => {
     const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -29,10 +37,14 @@ export const ActionMenu = ({ isOpen, onClose, position, children }: ActionMenuPr
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); onClose(); }}>
+        <div className={cn("fixed inset-0 z-40", classNames?.overlay)} onClick={(e) => { e.stopPropagation(); onClose(); }}>
             <div
                 ref={menuRef}
-                className="fixed mt-2 w-48 bg-white dark:bg-[#1e1e1e] rounded-md shadow-lg border border-gray-200 dark:border-[#333] z-50 py-1"
+                className={cn(
+                    "fixed mt-2 w-48 bg-card dark:bg-card-dark rounded-md shadow-lg border border-card dark:border-card-dark z-50 py-1",
+                    className,
+                    classNames?.root
+                )}
                 style={{
                     top: position.y,
                     left: position.x - 192 // Align right edge

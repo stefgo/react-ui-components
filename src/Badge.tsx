@@ -1,26 +1,33 @@
 import { ReactNode } from 'react';
+import { cn } from './utils';
+
+export interface BadgeClassNames {
+    root?: string;
+}
 
 interface BadgeProps {
     children: ReactNode;
     variant?: 'success' | 'warning' | 'error' | 'info' | 'gray';
     size?: 'sm' | 'md';
     className?: string;
+    classNames?: BadgeClassNames;
 }
 
 export const Badge = ({
     children,
     variant = 'info',
     size = 'md',
-    className = ''
+    className = '',
+    classNames
 }: BadgeProps) => {
     const baseStyles = "inline-flex items-center font-medium rounded-full transition-colors";
 
     const variants = {
-        success: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400",
-        warning: "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400",
-        error: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
-        info: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
-        gray: "bg-gray-100 dark:bg-[#333] text-gray-600 dark:text-[#aaa]"
+        success: "bg-badge-success-bg dark:bg-badge-success-bg-dark text-badge-success-text dark:text-badge-success-text-dark",
+        warning: "bg-badge-warning-bg dark:bg-badge-warning-bg-dark text-badge-warning-text dark:text-badge-warning-text-dark",
+        error: "bg-badge-error-bg dark:bg-badge-error-bg-dark text-badge-error-text dark:text-badge-error-text-dark",
+        info: "bg-badge-info-bg dark:bg-badge-info-bg-dark text-badge-info-text dark:text-badge-info-text-dark",
+        gray: "bg-gray-100 dark:bg-button-secondary-dark text-text-secondary dark:text-text-muted-dark"
     };
 
     const sizes = {
@@ -29,7 +36,7 @@ export const Badge = ({
     };
 
     return (
-        <span className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}>
+        <span className={cn(baseStyles, variants[variant], sizes[size], className, classNames?.root)}>
             {children}
         </span>
     );

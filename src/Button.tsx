@@ -1,11 +1,19 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 import { Loader2 } from 'lucide-react';
+import { cn } from './utils';
+
+export interface ButtonClassNames {
+    root?: string;
+    icon?: string;
+    spinner?: string;
+}
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
     size?: 'sm' | 'md' | 'lg';
     isLoading?: boolean;
     icon?: ReactNode;
+    classNames?: ButtonClassNames;
 }
 
 export const Button = ({
@@ -15,16 +23,17 @@ export const Button = ({
     isLoading = false,
     icon,
     className = '',
+    classNames,
     disabled,
     ...props
 }: ButtonProps) => {
     const baseStyles = "relative inline-flex items-center justify-center font-semibold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
 
     const variants = {
-        primary: "bg-[#E54D0D] hover:bg-[#ff5f1f] text-white focus:ring-[#E54D0D] shadow-lg hover:shadow-[#E54D0D]/20 active:scale-[0.98]",
-        secondary: "bg-gray-200 dark:bg-[#333] hover:bg-gray-300 dark:hover:bg-[#444] text-gray-800 dark:text-white focus:ring-gray-500",
-        danger: "bg-red-600 hover:bg-red-700 text-white focus:ring-red-500 shadow-sm",
-        ghost: "bg-transparent hover:bg-gray-100 dark:hover:bg-[#222] text-gray-700 dark:text-gray-300"
+        primary: "bg-button-primary hover:bg-button-primary-hover text-button-primary-text focus:ring-primary shadow-lg hover:shadow-primary/20 active:scale-[0.98]",
+        secondary: "bg-button-secondary dark:bg-button-secondary-dark hover:bg-button-secondary-hover dark:hover:bg-button-secondary-dark-hover text-text-primary dark:text-text-primary-dark focus:ring-gray-500",
+        danger: "bg-button-danger hover:bg-button-danger-hover text-white focus:ring-red-500 shadow-sm",
+        ghost: "bg-transparent hover:bg-gray-100 dark:hover:bg-hover-dark text-text-secondary dark:text-text-secondary-dark"
     };
 
     const sizes = {
@@ -35,12 +44,12 @@ export const Button = ({
 
     return (
         <button
-            className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+            className={cn(baseStyles, variants[variant], sizes[size], className, classNames?.root)}
             disabled={disabled || isLoading}
             {...props}
         >
-            {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            {!isLoading && icon && <span className="mr-2">{icon}</span>}
+            {isLoading && <Loader2 className={cn("w-4 h-4 mr-2 animate-spin", classNames?.spinner)} />}
+            {!isLoading && icon && <span className={cn("mr-2", classNames?.icon)}>{icon}</span>}
             {children}
         </button>
     );

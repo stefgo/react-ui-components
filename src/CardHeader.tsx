@@ -1,16 +1,29 @@
 import { ReactNode } from 'react';
+import { cn } from './utils';
+
+export interface CardHeaderClassNames {
+    root?: string;
+    title?: string;
+    action?: string;
+}
 
 interface CardHeaderProps {
     title?: ReactNode;
     action?: ReactNode;
+    className?: string; // Standard root className
+    classNames?: CardHeaderClassNames;
 }
 
-export const CardHeader = ({ title, action }: CardHeaderProps) => {
+export const CardHeader = ({ title, action, className = '', classNames }: CardHeaderProps) => {
     if (!title && !action) return null;
     return (
-        <div className="px-5 py-4 border-b border-gray-200 dark:border-[#333] flex justify-between items-center bg-gray-50/50 dark:bg-[#252525]/50 rounded-t-xl">
-            {title && <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">{title}</h3>}
-            {action && <div>{action}</div>}
+        <div className={cn(
+            "px-5 py-4 border-b dark:border-dark flex justify-between items-center bg-card dark:bg-card-dark rounded-t-xl",
+            className,
+            classNames?.root
+        )}>
+            {title && <h3 className={cn("font-semibold text-text-secondary dark:text-text-secondary-dark flex items-center gap-2", classNames?.title)}>{title}</h3>}
+            {action && <div className={cn(classNames?.action)}>{action}</div>}
         </div>
     );
 };
