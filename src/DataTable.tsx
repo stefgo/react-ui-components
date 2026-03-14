@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
-import { AbstractDataView, BaseDataViewProps } from './AbstractDataView';
+import { AbstractDataView, BaseDataViewProps, DataViewClassNames } from './AbstractDataView';
+import { cn } from './utils';
 
 export interface DataTableDef<T> {
     accessorKey?: keyof T;
@@ -9,35 +10,51 @@ export interface DataTableDef<T> {
     tableItemRender?: (item: T) => ReactNode;
 }
 
+export interface DataTableClassNames extends DataViewClassNames {
+    table?: string;
+    thead?: string;
+    headerRow?: string;
+    th?: string;
+    tbody?: string;
+    tr?: string;
+    td?: string;
+    placeholderTd?: string;
+}
+
 export interface DataTableProps<T> extends BaseDataViewProps<T> {
     itemDef: DataTableDef<T>[];
+    classNames?: DataTableClassNames;
 }
 
 export class DataTable<T> extends AbstractDataView<T, DataTableProps<T>> {
     protected renderContent(): ReactNode {
-        const { data, itemDef, onRowClick } = this.props;
+        const { data, itemDef, onRowClick, classNames } = this.props;
         const placeholder = this.getPlaceholder();
         const interactionClasses = this.getInteractionClasses();
 
         return (
             <div className="overflow-x-auto h-full w-full">
-                <table className="w-full text-left border-collapse">
-                    <thead className="sticky top-0 bg-gray-50 dark:bg-[#252525] z-10">
-                        <tr className="border-b border-gray-200 dark:border-[#333]">
+                <table className={cn("w-full text-left border-collapse", classNames?.table)}>
+                    <thead className={cn("sticky top-0 bg-table-header dark:bg-table-header-dark z-10", classNames?.thead)}>
+                        <tr className={cn("border-b border-gray-200 dark:border-dark", classNames?.headerRow)}>
                             {itemDef.map((col, idx) => (
                                 <th
                                     key={idx}
-                                    className={`px-6 py-2 text-xs font-medium text-gray-500 dark:text-[#888] uppercase tracking-wider ${col.tableHeaderClassName ?? ''}`}
+                                    className={cn(
+                                        "px-6 py-2 text-xs font-medium text-text-muted dark:text-text-muted-dark uppercase tracking-wider",
+                                        col.tableHeaderClassName,
+                                        classNames?.th
+                                    )}
                                 >
                                     {col.tableHeader}
                                 </th>
                             ))}
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-[#333]">
+                    <tbody className={cn("divide-y divide-gray-200 dark:divide-dark", classNames?.tbody)}>
                         {placeholder ? (
                             <tr>
-                                <td colSpan={itemDef.length} className="px-6 py-8 text-center text-gray-500 dark:text-[#666]">
+                                <td colSpan={itemDef.length} className={cn("px-6 py-8 text-center text-text-muted dark:text-text-muted-dark", classNames?.placeholderTd)}>
                                     {placeholder}
                                 </td>
                             </tr>
@@ -52,14 +69,19 @@ export class DataTable<T> extends AbstractDataView<T, DataTableProps<T>> {
                                     <tr
                                         key={this.getKey(item)}
                                         onClick={() => onRowClick?.(item)}
-                                        className={`transition-colors group ${interactionClasses} ${this.getRowClass(item)}`}
+                                        className={cn(
+                                            "transition-colors group",
+                                            interactionClasses,
+                                            this.getRowClass(item),
+                                            classNames?.tr
+                                        )}
                                     >
                                         {itemDef.map((col, idx) => {
                                             const cellClass = typeof col.tableCellClassName === 'function'
                                                 ? col.tableCellClassName(item)
                                                 : (col.tableCellClassName ?? '');
                                             return (
-                                                <td key={idx} className={`px-6 py-2 whitespace-nowrap ${cellClass}`}>
+                                                <td key={idx} className={cn("px-6 py-2 whitespace-nowrap text-text-primary dark:text-text-primary-dark", cellClass, classNames?.td)}>
                                                     {cellContent(col)}
                                                 </td>
                                             );

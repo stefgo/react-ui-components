@@ -1,8 +1,19 @@
 import * as React from 'react';
 import { MoreVertical } from 'lucide-react';
-import { ActionButton, ActionButtonColor } from './ActionButton';
-import { ActionMenu } from './ActionMenu';
+import { ActionButton, ActionButtonColor, ActionButtonClassNames } from './ActionButton';
+import { ActionMenu, ActionMenuClassNames } from './ActionMenu';
 import { useActionMenu } from './hooks/useActionMenu';
+import { cn } from './utils';
+
+export interface DataActionClassNames {
+    root?: string;
+    actionButton?: ActionButtonClassNames;
+    menuTrigger?: ActionButtonClassNames;
+    menu?: ActionMenuClassNames;
+    menuItem?: string;
+    menuItemActive?: string;
+    menuItemDisabled?: string;
+}
 
 export interface DataTableActionItem {
     icon: React.ComponentType<{ size?: number; className?: string }>;
@@ -29,19 +40,23 @@ interface DataTableActionProps<TId extends string | number> {
     actions?: DataTableActionItem[];
     /** Entries rendered inside the overflow dropdown menu */
     menuEntries?: DataTableActionMenuEntry[];
+    className?: string;
+    classNames?: DataActionClassNames;
 }
 
 export const DataAction = <TId extends string | number>({
     rowId,
     actions = [],
     menuEntries = [],
+    className = "",
+    classNames
 }: DataTableActionProps<TId>) => {
     const { menuState, openMenu, closeMenu } = useActionMenu<TId>();
 
     const isMenuOpen = menuState?.id === rowId;
 
     return (
-        <div className="flex justify-end gap-2 items-center">
+        <div className={cn("flex justify-end gap-2 items-center", className, classNames?.root)}>
             {actions.map((action, index) => (
                 <ActionButton
                     key={index}
@@ -51,6 +66,7 @@ export const DataAction = <TId extends string | number>({
                     tooltip={action.tooltip}
                     disabled={action.disabled}
                     className={action.className}
+                    classNames={classNames?.actionButton}
                 />
             ))}
 
@@ -60,13 +76,15 @@ export const DataAction = <TId extends string | number>({
                         icon={MoreVertical}
                         onClick={(e) => openMenu(e, rowId)}
                         color="gray"
-                        className={isMenuOpen ? 'opacity-100' : ''}
+                        className={cn(isMenuOpen ? 'opacity-100' : '')}
+                        classNames={classNames?.menuTrigger}
                     />
 
                     <ActionMenu
                         isOpen={isMenuOpen}
                         onClose={closeMenu}
                         position={menuState || { x: 0, y: 0 }}
+                        classNames={classNames?.menu}
                     >
                         {menuEntries.map((entry, index) => {
                             const isDanger = entry.variant === 'danger';
@@ -74,9 +92,9 @@ export const DataAction = <TId extends string | number>({
 
                             const enabledClass = isDanger
                                 ? 'text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10'
-                                : 'text-gray-700 dark:text-[#ccc] hover:bg-gray-100 dark:hover:bg-[#333]';
+                                : 'text-text-secondary dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-hover-dark';
 
-                            const disabledClass = 'text-gray-300 dark:text-[#333] cursor-not-allowed';
+                            const disabledClass = 'text-gray-300 dark:text-gray-700 cursor-not-allowed';
 
                             return (
                                 <button
@@ -88,7 +106,12 @@ export const DataAction = <TId extends string | number>({
                                         }
                                     }}
                                     disabled={isDisabled}
-                                    className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 ${isDisabled ? disabledClass : enabledClass}`}
+                                    className={cn(
+                                        "w-full text-left px-4 py-2 text-sm flex items-center gap-2",
+                                        isDisabled ? disabledClass : enabledClass,
+                                        classNames?.menuItem,
+                                        isDisabled ? classNames?.menuItemDisabled : classNames?.menuItemActive
+                                    )}
                                     title={isDisabled ? entry.disabledTitle : entry.label}
                                 >
                                     <entry.icon size={14} />

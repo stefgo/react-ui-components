@@ -1,5 +1,15 @@
 import { ReactNode } from 'react';
 import { Menu } from 'lucide-react';
+import { cn } from './utils';
+
+export interface DashboardHeaderClassNames {
+    root?: string;
+    leftSection?: string;
+    rightSection?: string;
+    branding?: string;
+    title?: string;
+    sidebarToggle?: string;
+}
 
 interface DashboardHeaderProps {
     branding?: ReactNode;
@@ -10,6 +20,7 @@ interface DashboardHeaderProps {
     onToggleSidebar?: () => void;
     showSidebarToggle?: boolean;
     className?: string;
+    classNames?: DashboardHeaderClassNames;
 }
 
 export const DashboardHeader = ({
@@ -20,18 +31,19 @@ export const DashboardHeader = ({
     rightActions,
     onToggleSidebar,
     showSidebarToggle = true,
-    className = ""
+    className = "",
+    classNames
 }: DashboardHeaderProps) => {
     const renderBranding = () => {
-        if (branding) return branding;
+        if (branding) return <div className={cn(classNames?.branding)}>{branding}</div>;
         if (logo || title) {
             return (
-                <div className="flex items-center gap-3">
+                <div className={cn("flex items-center gap-3", classNames?.branding)}>
                     {logo}
                     {title && (
                         <div className="flex flex-col">
                             {typeof title === 'string' ? (
-                                <h1 className="text-xl font-bold text-gray-900 dark:text-white leading-tight">{title}</h1>
+                                <h1 className={cn("text-xl font-bold text-text-primary dark:text-text-primary-dark leading-tight", classNames?.title)}>{title}</h1>
                             ) : title}
                         </div>
                     )}
@@ -42,12 +54,19 @@ export const DashboardHeader = ({
     };
 
     return (
-        <header className={`px-5 py-3 border-b border-gray-200 dark:border-[#333] bg-white dark:bg-[#1e1e1e] sticky top-0 z-40 shadow-sm flex items-center justify-between ${className}`}>
-            <div className="flex items-center gap-3 overflow-hidden">
+        <header className={cn(
+            "px-5 py-3 border-b border-gray-200 dark:border-dark bg-browser-header dark:bg-browser-header-dark sticky top-0 z-40 shadow-sm flex items-center justify-between",
+            className,
+            classNames?.root
+        )}>
+            <div className={cn("flex items-center gap-3 overflow-hidden", classNames?.leftSection)}>
                 {showSidebarToggle && onToggleSidebar && (
                     <button
                         onClick={onToggleSidebar}
-                        className="p-2 -ml-2 mr-2 text-gray-500 dark:text-[#888] hover:text-gray-900 dark:hover:text-white transition-colors md:flex hidden"
+                        className={cn(
+                            "p-2 -ml-2 mr-2 text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark transition-colors md:flex hidden",
+                            classNames?.sidebarToggle
+                        )}
                         title="Toggle Sidebar"
                     >
                         <Menu size={20} />
@@ -57,7 +76,7 @@ export const DashboardHeader = ({
                 {leftActions}
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className={cn("flex items-center gap-4", classNames?.rightSection)}>
                 {rightActions}
             </div>
         </header>

@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Brand Colors */
+  --ruic-primary: #e54d0d;
+  --ruic-primary-hover: #ff5f1f;
+
+  /* Backgrounds */
+  --ruic-bg-app: #f9fafb; /* gray-50 */
+  --ruic-bg-app-dark: #111111;
+
+  --ruic-bg-card: #ffffff;
+  --ruic-bg-card-dark: #1e1e1e;
+
+  --ruic-surface: #f8fafc; /* slate-50 */
+  --ruic-surface-dark: #1a1a1a;
+
+  /* Borders */
+  --ruic-border: #e2e8f0; /* gray-200 */
+  --ruic-border-dark: #2a2a2a;
+
+  /* States */
+  --ruic-hover: #f3f4f6; /* gray-100 */
+  --ruic-hover-dark: #252525;
+
+  /* Typography */
+  --ruic-text-primary: #111827; /* gray-900 */
+  --ruic-text-primary-dark: #f9fafb; /* gray-50 */
+
+  --ruic-text-secondary: #4b5563; /* gray-600 */
+  --ruic-text-secondary-dark: #d1d5db; /* gray-300 */
+
+  --ruic-text-muted: #9ca3af; /* gray-400 */
+  --ruic-text-muted-dark: #71717a; /* gray-500 */
+
+  /* Component Specific */
+  --ruic-button-primary-bg: var(--ruic-primary);
+  --ruic-button-primary-hover-bg: var(--ruic-primary-hover);
+  --ruic-button-secondary-bg: #e5e7eb;
+  --ruic-button-secondary-bg-dark: #333333;
+  --ruic-button-danger-bg: #dc2626;
+
+  --ruic-badge-success-bg: #dcfce7;
+  --ruic-badge-success-text: #15803d;
+  --ruic-badge-warning-bg: #ffedd5;
+  --ruic-badge-warning-text: #c2410c;
+
+  --ruic-input-bg: var(--ruic-bg-app);
+  --ruic-input-bg-dark: var(--ruic-bg-app-dark);
+
+  --ruic-sidebar-bg: var(--ruic-bg-app);
+  --ruic-sidebar-bg-dark: var(--ruic-surface-dark);
+
+  --ruic-table-header-bg: var(--ruic-surface);
+  --ruic-table-header-bg-dark: var(--ruic-hover-dark);
+
+  --ruic-statcard-bg: var(--ruic-bg-card);
+  --ruic-statcard-bg-dark: var(--ruic-bg-card-dark);
+  --ruic-statcard-icon-bg: var(--ruic-surface);
+  --ruic-statcard-icon-bg-dark: var(--ruic-hover-dark);
+
+  --ruic-browser-header-bg: var(--ruic-bg-card);
+  --ruic-browser-header-bg-dark: var(--ruic-bg-card-dark);
+}

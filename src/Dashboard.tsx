@@ -1,10 +1,11 @@
 import { ReactNode, useState, useRef, useEffect, useMemo } from "react";
 import { User, LogOut, ChevronDown, X, Shield } from "lucide-react";
-import { DashboardHeader } from "./DashboardHeader";
-import { Sidebar, SidebarGroup } from "./Sidebar";
-import { BottomNav, BottomNavItem } from "./BottomNav";
-import { DashboardLayout } from "./DashboardLayout";
-import { ThemeToggle } from "./ThemeToggle";
+import { DashboardHeader, DashboardHeaderClassNames } from "./DashboardHeader";
+import { Sidebar, SidebarGroup, SidebarClassNames } from "./Sidebar";
+import { BottomNav, BottomNavItem, BottomNavClassNames } from "./BottomNav";
+import { DashboardLayout, DashboardLayoutClassNames } from "./DashboardLayout";
+import { ThemeToggle, ThemeToggleClassNames } from "./ThemeToggle";
+import { cn } from './utils';
 
 export interface MobileMoreMenuConfig {
     icon?: ReactNode;
@@ -22,6 +23,29 @@ export interface DashboardPage {
     onClick: () => void;
     isMobileMoreMenu?: boolean; // If true, it goes into the mobile 'More' menu instead of bottom nav
     content?: ReactNode; // The content to render when this page is active
+}
+
+export interface DashboardClassNames {
+    root?: string;
+    layout?: DashboardLayoutClassNames;
+    header?: DashboardHeaderClassNames;
+    sidebar?: SidebarClassNames;
+    bottomNav?: BottomNavClassNames;
+    userActions?: string;
+    themeToggle?: ThemeToggleClassNames;
+    userMenuTrigger?: string;
+    userMenuIconWrapper?: string;
+    userMenuDropdown?: string;
+    userMenuInfo?: string;
+    userMenuLogout?: string;
+    mobileMoreOverlay?: string;
+    mobileMoreSheet?: string;
+    mobileMoreHeader?: string;
+    mobileMoreTitle?: string;
+    mobileMoreClose?: string;
+    mobileMoreGroupTitle?: string;
+    mobileMoreItem?: string;
+    mobileMoreItemActive?: string;
 }
 
 export interface DashboardProps {
@@ -46,9 +70,10 @@ export interface DashboardProps {
     onToggleSidebar: () => void;
 
     mobileMenuOverlay?: ReactNode; // Kept for backwards compatibility during transition
-    className?: string;
+    className?: string; // Root className
     mainClassName?: string;
     contentContainerClassName?: string;
+    classNames?: DashboardClassNames;
 }
 
 export const Dashboard = ({
@@ -74,7 +99,8 @@ export const Dashboard = ({
     mobileMenuOverlay,
     className = "",
     mainClassName = "",
-    contentContainerClassName = ""
+    contentContainerClassName = "",
+    classNames
 }: DashboardProps) => {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [isMobileMoreMenuOpen, setIsMobileMoreMenuOpen] = useState(false);
@@ -143,7 +169,7 @@ export const Dashboard = ({
             });
         });
         return generatedGroups;
-    }, [pages, legacySidebarGroups]);
+    }, [pages, legacySidebarGroups, effectiveActiveId]);
 
     const navItems = useMemo<BottomNavItem[]>(() => {
         if (!pages) return legacyNavItems;
@@ -159,7 +185,7 @@ export const Dashboard = ({
                     p.onClick();
                 }
             }));
-    }, [pages, legacyNavItems]);
+    }, [pages, legacyNavItems, effectiveActiveId]);
 
     const mobileMoreMenu = useMemo<MobileMoreMenuConfig | undefined>(() => {
         if (!pages) return legacyMobileMoreMenu;
@@ -199,7 +225,7 @@ export const Dashboard = ({
                 return generatedGroups;
             })()
         };
-    }, [pages, legacyMobileMoreMenu]);
+    }, [pages, legacyMobileMoreMenu, effectiveActiveId]);
 
     const children = useMemo<ReactNode>(() => {
         if (!pages) return legacyChildren;
@@ -214,31 +240,40 @@ export const Dashboard = ({
     // ------------------------------------------------------------------------
 
     const userActions = (
-        <div className="flex items-center gap-4">
-            <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+        <div className={cn("flex items-center gap-4", classNames?.userActions)}>
+            <ThemeToggle theme={theme} onToggle={onToggleTheme} classNames={classNames?.themeToggle} />
 
             <div className="relative" ref={menuRef}>
                 <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center gap-2 text-gray-700 dark:text-[#ccc] hover:text-gray-900 dark:hover:text-white transition-colors p-1 pr-2 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2a2a2a]"
+                    className={cn(
+                        "flex items-center gap-2 text-text-secondary dark:text-text-secondary-dark hover:text-text-primary dark:hover:text-text-primary-dark transition-colors p-1 pr-2 rounded-lg hover:bg-gray-100 dark:hover:bg-hover-dark",
+                        classNames?.userMenuTrigger
+                    )}
                 >
-                    <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-[#333] flex items-center justify-center text-gray-600 dark:text-[#aaa]">
+                    <div className={cn("w-8 h-8 rounded-full bg-gray-200 dark:bg-dark flex items-center justify-center text-text-secondary dark:text-text-muted-dark", classNames?.userMenuIconWrapper)}>
                         <User size={18} />
                     </div>
-                    <ChevronDown size={14} className={`transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown size={14} className={cn("transition-transform duration-200", isUserMenuOpen ? 'rotate-180' : '')} />
                 </button>
 
                 {isUserMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-[#252525] rounded-xl shadow-xl border border-gray-200 dark:border-[#333] py-2 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
-                        <div className="px-4 py-3 border-b border-gray-100 dark:border-[#333]">
-                            <p className="text-xs text-gray-500 dark:text-[#888] font-medium uppercase tracking-wider mb-1">Signed in as</p>
-                            <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{username}</p>
+                    <div className={cn(
+                        "absolute right-0 mt-2 w-56 bg-white dark:bg-app-surface-dark rounded-xl shadow-xl border border-gray-200 dark:border-dark py-2 animate-in fade-in slide-in-from-top-2 duration-200 z-50",
+                        classNames?.userMenuDropdown
+                    )}>
+                        <div className={cn("px-4 py-3 border-b border-gray-100 dark:border-dark", classNames?.userMenuInfo)}>
+                            <p className="text-xs text-text-muted dark:text-text-muted-dark font-medium uppercase tracking-wider mb-1">Signed in as</p>
+                            <p className="text-sm font-semibold text-text-primary dark:text-text-primary-dark truncate">{username}</p>
                         </div>
 
                         <div className="py-1">
                             <button
                                 onClick={onLogout}
-                                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2 transition-colors"
+                                className={cn(
+                                    "w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2 transition-colors",
+                                    classNames?.userMenuLogout
+                                )}
                             >
                                 <LogOut size={16} />
                                 Sign out
@@ -273,16 +308,16 @@ export const Dashboard = ({
         if (!mobileMoreMenu || !isMobileMoreMenuOpen) return null;
 
         return (
-            <div className="md:hidden fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-                <div className="absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto bg-white dark:bg-[#1a1a1a] rounded-t-2xl p-6 pb-24 animate-in slide-in-from-bottom duration-300 shadow-2xl">
-                    <div className="flex justify-between items-center mb-6 sticky top-0 bg-white dark:bg-[#1a1a1a] z-10 py-2">
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            {mobileMoreMenu.icon || <Shield className="text-gray-500" size={24} />}
+            <div className={cn("md:hidden fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm animate-in fade-in duration-200", classNames?.mobileMoreOverlay)}>
+                <div className={cn("absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto bg-white dark:bg-app-surface-dark rounded-t-2xl p-6 pb-24 animate-in slide-in-from-bottom duration-300 shadow-2xl", classNames?.mobileMoreSheet)}>
+                    <div className={cn("flex justify-between items-center mb-6 sticky top-0 bg-white dark:bg-app-surface-dark z-10 py-2", classNames?.mobileMoreHeader)}>
+                        <h2 className={cn("text-xl font-bold text-text-primary dark:text-text-primary-dark flex items-center gap-2", classNames?.mobileMoreTitle)}>
+                            {mobileMoreMenu.icon || <Shield className="text-text-muted" size={24} />}
                             {mobileMoreMenu.title || "More"}
                         </h2>
                         <button
                             onClick={() => setIsMobileMoreMenuOpen(false)}
-                            className="p-2 rounded-full bg-gray-100 dark:bg-[#2a2a2a] text-gray-500 hover:bg-gray-200 dark:hover:bg-[#333] transition-colors"
+                            className={cn("p-2 rounded-full bg-gray-100 dark:bg-dark text-text-muted hover:bg-gray-200 dark:hover:bg-dark/80 transition-colors", classNames?.mobileMoreClose)}
                         >
                             <X size={20} />
                         </button>
@@ -292,7 +327,7 @@ export const Dashboard = ({
                         {mobileMoreMenu.groups.map((group: SidebarGroup, groupIdx: number) => (
                             <div key={groupIdx} className="space-y-3">
                                 {group.title && (
-                                    <div className="text-gray-500 dark:text-[#666] text-xs font-bold uppercase tracking-wider px-2">
+                                    <div className={cn("text-text-muted dark:text-text-muted-dark text-xs font-bold uppercase tracking-wider px-2", classNames?.mobileMoreGroupTitle)}>
                                         {group.title}
                                     </div>
                                 )}
@@ -301,20 +336,26 @@ export const Dashboard = ({
                                         <button
                                             key={item.id}
                                             onClick={() => handleMobileMenuItemClick(item.onClick)}
-                                            className={`flex items-center gap-4 p-4 rounded-xl transition-colors w-full text-left ${item.active
-                                                ? "bg-gray-100 dark:bg-[#333] text-gray-900 dark:text-white ring-1 ring-gray-200 dark:ring-[#444]"
-                                                : "bg-gray-50 dark:bg-[#222] text-gray-700 dark:text-[#ccc] hover:bg-gray-100 dark:hover:bg-[#2a2a2a]"
-                                                }`}
+                                            className={cn(
+                                                "flex items-center gap-4 p-4 rounded-xl transition-colors w-full text-left",
+                                                item.active
+                                                    ? "bg-gray-100 dark:bg-dark text-text-primary dark:text-text-primary-dark ring-1 ring-gray-200 dark:ring-dark"
+                                                    : "bg-gray-50 dark:bg-black text-text-secondary dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-dark",
+                                                classNames?.mobileMoreItem,
+                                                item.active ? classNames?.mobileMoreItemActive : ''
+                                            )}
                                         >
-                                            <div className={`${item.active ? "text-primary" : ""}`}>
+                                            <div className={cn(item.active ? "text-primary" : "")}>
                                                 {item.icon}
                                             </div>
                                             <span className="font-semibold text-lg flex-1">{item.label}</span>
                                             {item.badge && (
-                                                <span className={`text-xs px-2 py-1 rounded-full ${item.active
-                                                    ? "bg-gray-200 dark:bg-[#444] text-gray-900 dark:text-white"
-                                                    : "bg-gray-200 dark:bg-[#333] text-gray-600 dark:text-[#aaa]"
-                                                    }`}>
+                                                <span className={cn(
+                                                    "text-xs px-2 py-1 rounded-full",
+                                                    item.active
+                                                        ? "bg-gray-200 dark:bg-dark text-text-primary dark:text-text-primary-dark"
+                                                        : "bg-gray-200 dark:bg-dark text-text-muted dark:text-text-muted-dark"
+                                                )}>
                                                     {item.badge}
                                                 </span>
                                             )}
@@ -331,9 +372,10 @@ export const Dashboard = ({
 
     return (
         <DashboardLayout
-            className={className}
+            className={cn(className, classNames?.root)}
             mainClassName={mainClassName}
             contentContainerClassName={contentContainerClassName}
+            classNames={classNames?.layout}
             header={
                 <DashboardHeader
                     branding={branding}
@@ -341,15 +383,17 @@ export const Dashboard = ({
                     title={title}
                     rightActions={userActions}
                     onToggleSidebar={onToggleSidebar}
+                    classNames={classNames?.header}
                 />
             }
             sidebar={
                 <Sidebar
                     groups={sidebarGroups}
                     isCollapsed={isSidebarCollapsed}
+                    classNames={classNames?.sidebar}
                 />
             }
-            bottomNav={<BottomNav items={effectiveNavItems} />}
+            bottomNav={<BottomNav items={effectiveNavItems} classNames={classNames?.bottomNav} />}
         >
             {children}
             {mobileMenuOverlay}

@@ -23,4 +23,5 @@ export * from "./Collapsible";
 export * from "./hooks/useActionMenu";
 export * from "./DashboardLayout";
 export * from "./Dashboard";
+export * from "./utils";
 // Trigger release
