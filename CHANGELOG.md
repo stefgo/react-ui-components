@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/stefgo/react-ui-components/compare/v1.6.0...v2.0.0) (2026-03-14)
+
+
+### Features
+
+* trigger major ([833b35d](https://github.com/stefgo/react-ui-components/commit/833b35d8a32e2d5ee6e575094119f5bbc6da2e3d))
+
+
+### BREAKING CHANGES
+
+* force release
+
 # [1.6.0](https://github.com/stefgo/react-ui-components/compare/v1.5.2...v1.6.0) (2026-03-10)
 
 
