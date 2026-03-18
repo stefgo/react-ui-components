@@ -91,10 +91,10 @@ export const DataAction = <TId extends string | number>({
                             const isDisabled = entry.disabled ?? false;
 
                             const enabledClass = isDanger
-                                ? 'text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10'
-                                : 'text-text-secondary dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-hover-dark';
+                                ? 'text-error hover:bg-error-bg dark:hover:bg-error-bg-dark'
+                                : 'text-text-secondary dark:text-text-secondary-dark hover:bg-hover dark:hover:bg-hover-dark';
 
-                            const disabledClass = 'text-gray-300 dark:text-gray-700 cursor-not-allowed';
+                            const disabledClass = 'text-text-muted dark:text-text-muted-dark cursor-not-allowed';
 
                             return (
                                 <button

@@ -31,9 +31,9 @@ export const Button = ({
 
     const variants = {
         primary: "bg-button-primary hover:bg-button-primary-hover text-button-primary-text focus:ring-primary shadow-lg hover:shadow-primary/20 active:scale-[0.98]",
-        secondary: "bg-button-secondary dark:bg-button-secondary-dark hover:bg-button-secondary-hover dark:hover:bg-button-secondary-dark-hover text-text-primary dark:text-text-primary-dark focus:ring-gray-500",
-        danger: "bg-button-danger hover:bg-button-danger-hover text-white focus:ring-red-500 shadow-sm",
-        ghost: "bg-transparent hover:bg-gray-100 dark:hover:bg-hover-dark text-text-secondary dark:text-text-secondary-dark"
+        secondary: "bg-button-secondary dark:bg-button-secondary-dark hover:bg-button-secondary-hover dark:hover:bg-button-secondary-dark-hover text-text-primary dark:text-text-primary-dark focus:ring-text-secondary",
+        danger: "bg-button-danger hover:bg-button-danger-hover text-white focus:ring-error shadow-sm",
+        ghost: "bg-transparent hover:bg-hover dark:hover:bg-hover-dark text-text-secondary dark:text-text-secondary-dark"
     };
 
     const sizes = {

@@ -27,7 +27,7 @@ export const Badge = ({
         warning: "bg-badge-warning-bg dark:bg-badge-warning-bg-dark text-badge-warning-text dark:text-badge-warning-text-dark",
         error: "bg-badge-error-bg dark:bg-badge-error-bg-dark text-badge-error-text dark:text-badge-error-text-dark",
         info: "bg-badge-info-bg dark:bg-badge-info-bg-dark text-badge-info-text dark:text-badge-info-text-dark",
-        gray: "bg-gray-100 dark:bg-button-secondary-dark text-text-secondary dark:text-text-muted-dark"
+        gray: "bg-hover dark:bg-button-secondary-dark text-text-secondary dark:text-text-muted-dark"
     };
 
     const sizes = {

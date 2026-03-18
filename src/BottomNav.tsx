@@ -39,7 +39,7 @@ const NavTab = ({ icon, active, onClick, classNames }: BottomNavItem & { classNa
 export const BottomNav = ({ items, className = "", classNames }: BottomNavProps) => {
     return (
         <div className={cn(
-            "md:hidden fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-sidebar-bg-dark/95 backdrop-blur-md border-t dark:border-dark z-50 flex justify-around items-center px-2 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.05)]",
+            "md:hidden fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-sidebar-bg-dark/95 backdrop-blur-md border-t border-border dark:border-border-dark z-50 flex justify-around items-center px-2 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.05)]",
             className,
             classNames?.root
         )}>

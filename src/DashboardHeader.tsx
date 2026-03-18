@@ -55,7 +55,7 @@ export const DashboardHeader = ({
 
     return (
         <header className={cn(
-            "px-5 py-3 border-b border-gray-200 dark:border-dark bg-browser-header dark:bg-browser-header-dark sticky top-0 z-40 shadow-sm flex items-center justify-between",
+            "px-5 py-3 border-b border-border dark:border-border-dark bg-browser-header dark:bg-browser-header-dark sticky top-0 z-40 shadow-sm flex items-center justify-between",
             className,
             classNames?.root
         )}>

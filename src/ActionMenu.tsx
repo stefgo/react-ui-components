@@ -41,7 +41,7 @@ export const ActionMenu = ({ isOpen, onClose, position, children, className = ''
             <div
                 ref={menuRef}
                 className={cn(
-                    "fixed mt-2 w-48 bg-card dark:bg-card-dark rounded-md shadow-lg border border-card dark:border-card-dark z-50 py-1",
+                    "fixed mt-2 w-48 bg-card dark:bg-card-dark rounded-md shadow-lg border border-border dark:border-border-dark z-50 py-1",
                     className,
                     classNames?.root
                 )}

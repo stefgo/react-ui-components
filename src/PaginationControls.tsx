@@ -39,7 +39,7 @@ export const PaginationControls = ({
 
     return (
         <div className={cn(
-            "flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-3 border-t border-gray-200 dark:border-dark bg-table-header dark:bg-table-header-dark",
+            "flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-3 border-t border-border dark:border-border-dark bg-table-header dark:bg-table-header-dark",
             classNames?.root
         )}>
             <div className={cn("flex items-center gap-2 text-sm text-text-secondary dark:text-text-muted-dark", classNames?.infoWrapper)}>
@@ -48,7 +48,7 @@ export const PaginationControls = ({
                     value={itemsPerPage}
                     onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
                     className={cn(
-                        "bg-input-bg dark:bg-input-bg-dark border border-input-border dark:border-input-border-dark text-text-primary dark:text-text-primary-dark text-sm rounded focus:ring-app-accent focus:border-app-accent block p-1",
+                        "bg-input-bg dark:bg-input-bg-dark border border-input-border dark:border-input-border-dark text-text-primary dark:text-text-primary-dark text-sm rounded focus:ring-primary focus:border-primary block p-1",
                         classNames?.select
                     )}
                 >
@@ -66,7 +66,7 @@ export const PaginationControls = ({
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                     className={cn(
-                        "p-1 rounded hover:bg-gray-200 dark:hover:bg-dark disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary dark:text-text-muted-dark transition-colors",
+                        "p-1 rounded hover:bg-hover dark:hover:bg-hover-dark disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary dark:text-text-muted-dark transition-colors",
                         classNames?.button
                     )}
                 >
@@ -81,7 +81,7 @@ export const PaginationControls = ({
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                     className={cn(
-                        "p-1 rounded hover:bg-gray-200 dark:hover:bg-dark disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary dark:text-text-muted-dark transition-colors",
+                        "p-1 rounded hover:bg-hover dark:hover:bg-hover-dark disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary dark:text-text-muted-dark transition-colors",
                         classNames?.button
                     )}
                 >

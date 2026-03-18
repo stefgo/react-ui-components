@@ -36,7 +36,7 @@ export class DataTable<T> extends AbstractDataView<T, DataTableProps<T>> {
             <div className="overflow-x-auto h-full w-full">
                 <table className={cn("w-full text-left border-collapse", classNames?.table)}>
                     <thead className={cn("sticky top-0 bg-table-header dark:bg-table-header-dark z-10", classNames?.thead)}>
-                        <tr className={cn("border-b border-gray-200 dark:border-dark", classNames?.headerRow)}>
+                        <tr className={cn("border-b border-border dark:border-border-dark", classNames?.headerRow)}>
                             {itemDef.map((col, idx) => (
                                 <th
                                     key={idx}
@@ -51,7 +51,7 @@ export class DataTable<T> extends AbstractDataView<T, DataTableProps<T>> {
                             ))}
                         </tr>
                     </thead>
-                    <tbody className={cn("divide-y divide-gray-200 dark:divide-dark", classNames?.tbody)}>
+                    <tbody className={cn("divide-y divide-border dark:divide-border-dark", classNames?.tbody)}>
                         {placeholder ? (
                             <tr>
                                 <td colSpan={itemDef.length} className={cn("px-6 py-8 text-center text-text-muted dark:text-text-muted-dark", classNames?.placeholderTd)}>

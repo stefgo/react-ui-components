@@ -37,26 +37,26 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
     const colorClasses: Record<ActionButtonColor, string> = {
         green: isDisabled
             ? "text-inherit cursor-not-allowed"
-            : "text-text-muted dark:text-text-muted-dark hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-100 dark:hover:bg-dark",
+            : "text-text-muted dark:text-text-muted-dark hover:text-success hover:bg-hover dark:hover:text-success-dark dark:hover:bg-hover-dark",
         blue: isDisabled
             ? "text-inherit cursor-not-allowed"
-            : "text-text-muted dark:text-text-muted-dark hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-dark",
+            : "text-text-muted dark:text-text-muted-dark hover:text-info hover:bg-hover dark:hover:text-info-dark dark:hover:bg-hover-dark",
         red: isDisabled
             ? "text-inherit cursor-not-allowed"
-            : "text-red-400 hover:text-red-600 dark:text-red-500/50 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10",
+            : "text-error/60 hover:text-error hover:bg-error-bg dark:text-error-dark/50 dark:hover:text-error-dark dark:hover:bg-error-bg-dark",
         orange: isDisabled
             ? "text-inherit cursor-not-allowed"
-            : "text-text-muted dark:text-text-muted-dark hover:text-primary dark:hover:text-primary-hover hover:bg-orange-50 dark:hover:bg-orange-900/10",
+            : "text-text-muted dark:text-text-muted-dark hover:text-primary hover:bg-warning-bg dark:hover:text-primary-hover dark:hover:bg-warning-bg-dark",
         gray: isDisabled
             ? "text-inherit cursor-not-allowed"
-            : "text-text-muted dark:text-text-muted-dark hover:text-text-secondary dark:hover:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-dark",
+            : "text-text-muted dark:text-text-muted-dark hover:text-text-secondary hover:bg-hover dark:hover:text-text-secondary-dark dark:hover:bg-hover-dark",
         indigo: isDisabled
             ? "text-inherit cursor-not-allowed"
-            : "text-text-muted dark:text-text-muted-dark hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/10",
+            : "text-text-muted dark:text-text-muted-dark hover:text-accent hover:bg-accent-bg dark:hover:text-accent-dark dark:hover:bg-accent-bg-dark",
     };
 
     const variantClasses = variant === 'solid' && !isDisabled
-        ? "bg-gray-100 dark:bg-[#252525] shadow-sm"
+        ? "bg-hover dark:bg-hover-dark shadow-sm"
         : "";
 
     const getTooltip = () => {

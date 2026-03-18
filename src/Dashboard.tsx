@@ -247,11 +247,11 @@ export const Dashboard = ({
                 <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                     className={cn(
-                        "flex items-center gap-2 text-text-secondary dark:text-text-secondary-dark hover:text-text-primary dark:hover:text-text-primary-dark transition-colors p-1 pr-2 rounded-lg hover:bg-gray-100 dark:hover:bg-hover-dark",
+                        "flex items-center gap-2 text-text-secondary dark:text-text-secondary-dark hover:text-text-primary dark:hover:text-text-primary-dark transition-colors p-1 pr-2 rounded-lg hover:bg-hover dark:hover:bg-hover-dark",
                         classNames?.userMenuTrigger
                     )}
                 >
-                    <div className={cn("w-8 h-8 rounded-full bg-gray-200 dark:bg-dark flex items-center justify-center text-text-secondary dark:text-text-muted-dark", classNames?.userMenuIconWrapper)}>
+                    <div className={cn("w-8 h-8 rounded-full bg-hover dark:bg-hover-dark flex items-center justify-center text-text-secondary dark:text-text-muted-dark", classNames?.userMenuIconWrapper)}>
                         <User size={18} />
                     </div>
                     <ChevronDown size={14} className={cn("transition-transform duration-200", isUserMenuOpen ? 'rotate-180' : '')} />
@@ -259,10 +259,10 @@ export const Dashboard = ({
 
                 {isUserMenuOpen && (
                     <div className={cn(
-                        "absolute right-0 mt-2 w-56 bg-white dark:bg-app-surface-dark rounded-xl shadow-xl border border-gray-200 dark:border-dark py-2 animate-in fade-in slide-in-from-top-2 duration-200 z-50",
+                        "absolute right-0 mt-2 w-56 bg-card dark:bg-card-dark rounded-xl shadow-xl border border-border dark:border-border-dark py-2 animate-in fade-in slide-in-from-top-2 duration-200 z-50",
                         classNames?.userMenuDropdown
                     )}>
-                        <div className={cn("px-4 py-3 border-b border-gray-100 dark:border-dark", classNames?.userMenuInfo)}>
+                        <div className={cn("px-4 py-3 border-b border-border dark:border-border-dark", classNames?.userMenuInfo)}>
                             <p className="text-xs text-text-muted dark:text-text-muted-dark font-medium uppercase tracking-wider mb-1">Signed in as</p>
                             <p className="text-sm font-semibold text-text-primary dark:text-text-primary-dark truncate">{username}</p>
                         </div>
@@ -271,7 +271,7 @@ export const Dashboard = ({
                             <button
                                 onClick={onLogout}
                                 className={cn(
-                                    "w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2 transition-colors",
+                                    "w-full text-left px-4 py-2 text-sm text-error hover:bg-error-bg dark:hover:bg-error-bg-dark flex items-center gap-2 transition-colors",
                                     classNames?.userMenuLogout
                                 )}
                             >
@@ -309,15 +309,15 @@ export const Dashboard = ({
 
         return (
             <div className={cn("md:hidden fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm animate-in fade-in duration-200", classNames?.mobileMoreOverlay)}>
-                <div className={cn("absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto bg-white dark:bg-app-surface-dark rounded-t-2xl p-6 pb-24 animate-in slide-in-from-bottom duration-300 shadow-2xl", classNames?.mobileMoreSheet)}>
-                    <div className={cn("flex justify-between items-center mb-6 sticky top-0 bg-white dark:bg-app-surface-dark z-10 py-2", classNames?.mobileMoreHeader)}>
+                <div className={cn("absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto bg-card dark:bg-card-dark rounded-t-2xl p-6 pb-24 animate-in slide-in-from-bottom duration-300 shadow-2xl", classNames?.mobileMoreSheet)}>
+                    <div className={cn("flex justify-between items-center mb-6 sticky top-0 bg-card dark:bg-card-dark z-10 py-2", classNames?.mobileMoreHeader)}>
                         <h2 className={cn("text-xl font-bold text-text-primary dark:text-text-primary-dark flex items-center gap-2", classNames?.mobileMoreTitle)}>
                             {mobileMoreMenu.icon || <Shield className="text-text-muted" size={24} />}
                             {mobileMoreMenu.title || "More"}
                         </h2>
                         <button
                             onClick={() => setIsMobileMoreMenuOpen(false)}
-                            className={cn("p-2 rounded-full bg-gray-100 dark:bg-dark text-text-muted hover:bg-gray-200 dark:hover:bg-dark/80 transition-colors", classNames?.mobileMoreClose)}
+                            className={cn("p-2 rounded-full bg-hover dark:bg-hover-dark text-text-muted hover:bg-border dark:hover:bg-hover-dark transition-colors", classNames?.mobileMoreClose)}
                         >
                             <X size={20} />
                         </button>
@@ -339,8 +339,8 @@ export const Dashboard = ({
                                             className={cn(
                                                 "flex items-center gap-4 p-4 rounded-xl transition-colors w-full text-left",
                                                 item.active
-                                                    ? "bg-gray-100 dark:bg-dark text-text-primary dark:text-text-primary-dark ring-1 ring-gray-200 dark:ring-dark"
-                                                    : "bg-gray-50 dark:bg-black text-text-secondary dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-dark",
+                                                    ? "bg-hover dark:bg-hover-dark text-text-primary dark:text-text-primary-dark ring-1 ring-border dark:ring-border-dark"
+                                                    : "bg-app-bg dark:bg-black text-text-secondary dark:text-text-secondary-dark hover:bg-hover dark:hover:bg-hover-dark",
                                                 classNames?.mobileMoreItem,
                                                 item.active ? classNames?.mobileMoreItemActive : ''
                                             )}
@@ -353,8 +353,8 @@ export const Dashboard = ({
                                                 <span className={cn(
                                                     "text-xs px-2 py-1 rounded-full",
                                                     item.active
-                                                        ? "bg-gray-200 dark:bg-dark text-text-primary dark:text-text-primary-dark"
-                                                        : "bg-gray-200 dark:bg-dark text-text-muted dark:text-text-muted-dark"
+                                                        ? "bg-border dark:bg-hover-dark text-text-primary dark:text-text-primary-dark"
+                                                        : "bg-border dark:bg-hover-dark text-text-muted dark:text-text-muted-dark"
                                                 )}>
                                                     {item.badge}
                                                 </span>
