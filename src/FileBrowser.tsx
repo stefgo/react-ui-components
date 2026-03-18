@@ -1,5 +1,6 @@
 import { ChevronRight, Folder, File } from 'lucide-react';
 import { useEffect } from 'react';
+import { Card } from './Card';
 import { cn } from './utils';
 
 export interface FsFile {
@@ -46,32 +47,32 @@ export const FileBrowser = ({ currentPath, onNavigate, files, isLoading, onSelec
         onNavigate('/' + (parts.length > 0 ? parts.join('/') : ''));
     }
 
-    return (
-        <div className={cn(
-            "border border-gray-200 dark:border-dark rounded-lg bg-input-bg dark:bg-input-bg-dark overflow-hidden flex flex-col",
-            className,
-            classNames?.root
-        )}>
-            <div className={cn("p-3 bg-browser-header dark:bg-browser-header-dark border-b border-gray-200 dark:border-dark flex items-center gap-2", classNames?.header)}>
-                <button onClick={goUp} className={cn("p-1.5 hover:bg-gray-100 dark:hover:bg-hover-dark rounded-full text-text-muted dark:text-text-muted-dark transition-colors", classNames?.backButton)}>
-                    <ChevronRight className="rotate-180" size={18} />
-                </button>
-                <div className="flex-1 min-w-0">
-                    <div className={cn("font-mono text-sm text-text-primary dark:text-text-primary-dark truncate font-medium", classNames?.pathDisplay)} title={currentPath}>{currentPath || '/'}</div>
-                </div>
-            </div>
+    const header = (
+        <>
+            <button onClick={goUp} className={cn("p-1.5 hover:bg-hover dark:hover:bg-hover-dark rounded-full text-text-muted dark:text-text-muted-dark transition-colors", classNames?.backButton)}>
+                <ChevronRight className="rotate-180" size={18} />
+            </button>
+            <div className={cn("font-mono text-sm truncate font-medium", classNames?.pathDisplay)} title={currentPath}>{currentPath || '/'}</div>
+        </>
+    );
 
+    return (
+        <Card
+            title={header}
+            className={cn("flex flex-col", className, classNames?.root)}
+            classNames={{ header: classNames?.header }}
+        >
             <div className={cn("overflow-y-auto p-2 space-y-1 flex-1 min-h-[200px]", classNames?.content)}>
                 {isLoading ? (
                     <div className={cn("text-text-muted dark:text-text-muted-dark text-xs p-4 text-center", classNames?.loading)}>Loading...</div>
                 ) : (
                     (files && Array.isArray(files) ? files : []).map((file) => (
-                         <div key={file.name} className={cn("flex items-center gap-2 px-2 py-1 hover:bg-gray-200 dark:hover:bg-hover-dark rounded group", classNames?.item)}>
+                         <div key={file.name} className={cn("flex items-center gap-2 px-2 py-1 hover:bg-hover dark:hover:bg-hover-dark rounded group", classNames?.item)}>
                             {file.isDirectory ? (
                                 <button
                                     onClick={() => onNavigate(file.path)}
                                     className={cn(
-                                        "flex items-center gap-2 flex-1 text-left text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 truncate",
+                                        "flex items-center gap-2 flex-1 text-left text-info dark:text-info-dark hover:text-info-hover dark:hover:text-info-light truncate",
                                         classNames?.itemFolder
                                     )}
                                 >
@@ -88,9 +89,9 @@ export const FileBrowser = ({ currentPath, onNavigate, files, isLoading, onSelec
                     ))
                 )}
                 {!isLoading && (files && Array.isArray(files) ? files : []).length === 0 && (
-                    <div className={cn("text-gray-400 text-xs p-4 text-center", classNames?.empty)}>Empty directory</div>
+                    <div className={cn("text-text-muted dark:text-text-muted-dark text-xs p-4 text-center", classNames?.empty)}>Empty directory</div>
                 )}
             </div>
-        </div>
+        </Card>
     );
 };

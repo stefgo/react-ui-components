@@ -55,7 +55,7 @@ const NavItem = ({
             "w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
             isCollapsed ? "justify-center" : "justify-between",
             active
-                ? "bg-sidebar-item-active dark:bg-sidebar-item-active-dark text-text-primary dark:text-text-primary-dark shadow-sm ring-1 ring-gray-200 dark:ring-dark"
+                ? "bg-sidebar-item-active dark:bg-sidebar-item-active-dark text-text-primary dark:text-text-primary-dark shadow-sm ring-1 ring-border dark:ring-border-dark"
                 : "text-text-muted dark:text-text-muted-dark hover:bg-sidebar-item-active dark:hover:bg-sidebar-item-active-dark hover:text-text-primary dark:hover:text-text-primary-dark",
             classNames?.item,
             active ? classNames?.itemActive : classNames?.itemInactive
@@ -91,7 +91,7 @@ export const Sidebar = ({
     return (
         <aside className={cn(
             isCollapsed ? "w-16" : "w-64",
-            "bg-sidebar-bg dark:bg-sidebar-bg-dark border-r dark:border-dark hidden md:flex flex-col transition-all duration-300 relative",
+            "bg-sidebar-bg dark:bg-sidebar-bg-dark border-r border-border dark:border-border-dark hidden md:flex flex-col transition-all duration-300 relative",
             className,
             classNames?.root
         )}>

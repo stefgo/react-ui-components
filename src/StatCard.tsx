@@ -25,8 +25,8 @@ export const StatCard = ({ label, value, sub, icon, onClick, className = '', cla
     <div
         onClick={onClick}
         className={cn(
-            "bg-statcard-bg dark:bg-statcard-bg-dark p-6 rounded-xl border border-gray-200 dark:border-dark shadow-sm hover:shadow-md transition-all h-full",
-            onClick ? 'cursor-pointer hover:border-gray-300 dark:hover:border-gray-600 active:scale-[0.98]' : '',
+            "bg-statcard-bg dark:bg-statcard-bg-dark p-6 rounded-xl border border-border dark:border-border-dark shadow-sm hover:shadow-md transition-all h-full",
+            onClick ? 'cursor-pointer hover:border-border dark:hover:border-border-dark active:scale-[0.98]' : '',
             className,
             classNames?.root
         )}

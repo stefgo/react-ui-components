@@ -1,7 +1,6 @@
 import { ReactNode, useState, useEffect } from 'react';
 import { LayoutList, Table as TableIcon } from 'lucide-react';
 import { Card, CardClassNames } from './Card';
-import { CardHeader, CardHeaderClassNames } from './CardHeader';
 import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
 import { DataList, DataListDef, DataListColumnDef, DataListClassNames } from './DataList';
 import { cn } from './utils';
@@ -9,7 +8,7 @@ import { cn } from './utils';
 export interface DataMultiViewClassNames {
     root?: string;
     card?: CardClassNames;
-    header?: CardHeaderClassNames;
+    header?: CardClassNames;
     toggleRoot?: string;
     toggleButton?: string;
     toggleButtonActive?: string;
@@ -81,13 +80,13 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     const effectiveViewMode = isMobile ? 'list' : viewMode;
 
     const viewToggle = !isMobile ? (
-        <div className={cn("bg-gray-200 dark:bg-dark rounded-lg p-1 flex items-center gap-1", classNames?.toggleRoot)}>
+        <div className={cn("bg-table-header-toggle-bg dark:bg-table-header-toggle-bg-dark rounded-lg p-1 flex items-center gap-1", classNames?.toggleRoot)}>
             <button
                 onClick={() => changeViewMode('table')}
                 className={cn(
                     "p-1 rounded transition-all",
                     effectiveViewMode === 'table'
-                        ? 'bg-white dark:bg-[#444] shadow text-text-primary dark:text-text-primary-dark'
+                        ? 'bg-table-header-toggle-active-bg dark:bg-table-header-toggle-active-bg-dark shadow text-text-primary dark:text-text-primary-dark'
                         : 'text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark',
                     classNames?.toggleButton,
                     effectiveViewMode === 'table' ? classNames?.toggleButtonActive : ''
@@ -101,7 +100,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                 className={cn(
                     "p-1 rounded transition-all",
                     effectiveViewMode === 'list'
-                        ? 'bg-white dark:bg-[#444] shadow text-text-primary dark:text-text-primary-dark'
+                        ? 'bg-table-header-toggle-active-bg dark:bg-table-header-toggle-active-bg-dark shadow text-text-primary dark:text-text-primary-dark'
                         : 'text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark',
                     classNames?.toggleButton,
                     effectiveViewMode === 'list' ? classNames?.toggleButtonActive : ''
@@ -126,8 +125,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     };
 
     return (
-        <Card className={cn("overflow-hidden flex flex-col h-full", className, classNames?.root)} classNames={classNames?.card}>
-            <CardHeader title={title} action={headerAction} classNames={classNames?.header} />
+        <Card className={cn("overflow-hidden flex flex-col h-full", className, classNames?.root)} classNames={{ ...classNames?.card, ...classNames?.header }} title={title} action={headerAction}>
             {effectiveViewMode === 'list' ? (
                 <DataList
                     {...containerProps}

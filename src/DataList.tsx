@@ -50,7 +50,7 @@ export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
             : (itemDef ? [{ fields: itemDef }] : []);
 
         return (
-            <div className={cn("divide-y divide-gray-200 dark:divide-dark", classNames?.listRoot)}>
+            <div className={cn("divide-y divide-border dark:divide-border-dark", classNames?.listRoot)}>
                 {placeholder ? (
                     <div className={cn("px-6 py-8 text-center text-text-muted dark:text-text-muted-dark", classNames?.placeholder)}>
                         {placeholder}

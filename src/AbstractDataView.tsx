@@ -45,7 +45,7 @@ export abstract class AbstractDataView<T, P extends BaseDataViewProps<T>> extend
 
     protected getInteractionClasses(): string {
         return this.props.onRowClick
-            ? 'cursor-pointer hover:bg-table-hover dark:hover:bg-table-hover-dark'
+            ? 'cursor-pointer hover:bg-table-row-hover dark:hover:bg-table-row-hover-dark'
             : '';
     }
 

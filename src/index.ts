@@ -3,7 +3,6 @@ export * from "./ActionButton";
 export * from "./ActionMenu";
 export * from "./Button";
 export * from "./Card";
-export * from "./CardHeader";
 export * from "./DataAction";
 export * from "./DataCard";
 export * from "./DataList";
