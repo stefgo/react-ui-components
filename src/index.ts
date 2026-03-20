@@ -15,6 +15,7 @@ export * from "./Select";
 export * from "./StatCard";
 export * from "./Badge";
 export * from "./ThemeToggle";
+export * from "./LoginPage";
 export * from "./Sidebar";
 export * from "./DashboardHeader";
 export * from "./BottomNav";
