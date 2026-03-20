@@ -1,3 +1,17 @@
+## [2.1.1](https://github.com/stefgo/react-ui-components/compare/v2.1.0...v2.1.1) (2026-03-20)
+
+
+### Bug Fixes
+
+* update color definitions in Tailwind preset for improved consistency ([5ae4b82](https://github.com/stefgo/react-ui-components/commit/5ae4b823ce85a1032c2e167bc45c9cffe663b32d))
+
+# [2.1.0](https://github.com/stefgo/react-ui-components/compare/v2.0.0...v2.1.0) (2026-03-18)
+
+
+### Features
+
+* update styling and theming across components ([41a61a0](https://github.com/stefgo/react-ui-components/commit/41a61a073f0be7ed883bf7c3f6a603e5ca636c75))
+
 # [2.0.0](https://github.com/stefgo/react-ui-components/compare/v1.6.0...v2.0.0) (2026-03-14)
 
 

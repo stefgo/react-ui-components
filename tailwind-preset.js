@@ -17,7 +17,7 @@ module.exports = {
         // ─── Brand ────────────────────────────────────────────────────────────
         primary: {
           DEFAULT: "rgb(var(--ruic-primary, 229 77 13) / <alpha-value>)",
-          hover:   "var(--ruic-primary-hover, #ff5f1f)",
+          hover:   "rgb(var(--ruic-primary-hover, 255 95 31) / <alpha-value>)",
         },
 
         // ─── Semantic State Colors ────────────────────────────────────────────
@@ -106,8 +106,8 @@ module.exports = {
         // ─── Component: Button ───────────────────────────────────────────────
         button: {
           primary: {
-            DEFAULT: "var(--ruic-button-primary-bg, #e54d0d)",
-            hover:   "var(--ruic-button-primary-hover-bg, #ff5f1f)",
+            DEFAULT: "rgb(var(--ruic-primary, 229 77 13) / <alpha-value>)",
+            hover:   "rgb(var(--ruic-primary-hover, 255 95 31) / <alpha-value>)",
             text:    "var(--ruic-button-primary-text, #ffffff)",
           },
           secondary: {
@@ -223,7 +223,7 @@ module.exports = {
 
       // ─── Shadows ──────────────────────────────────────────────────────────
       boxShadow: {
-        "glow-accent":   "0 0 15px #e54d0d4c",
+        "glow-accent":   "0 0 15px rgb(var(--ruic-primary, 229 77 13) / 0.3)",
         "glow-success":  "0 0 12px rgba(34, 197, 94, 0.4)",
         premium:         "0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05)",
         "premium-hover": "0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)",
