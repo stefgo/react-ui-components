@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/stefgo/react-ui-components/compare/v2.1.1...v2.2.0) (2026-03-20)
+
+
+### Features
+
+* add LoginPage component and export it from index ([56bf918](https://github.com/stefgo/react-ui-components/commit/56bf9185b733ed83f25efb592f0e55903fa9ceb1))
+
 ## [2.1.1](https://github.com/stefgo/react-ui-components/compare/v2.1.0...v2.1.1) (2026-03-20)
 
 
