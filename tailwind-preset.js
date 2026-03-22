@@ -11,6 +11,10 @@ const path = require("path");
  */
 module.exports = {
   content: [path.join(__dirname, "dist/**/*.{js,mjs}")],
+  safelist: [
+    "group-hover:bg-table-row-hover",
+    "dark:group-hover:bg-table-row-hover-dark",
+  ],
   theme: {
     extend: {
       colors: {
