@@ -36,22 +36,22 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
 
     const colorClasses: Record<ActionButtonColor, string> = {
         green: isDisabled
-            ? "text-inherit cursor-not-allowed"
+            ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
             : "text-text-muted dark:text-text-muted-dark hover:text-success hover:bg-hover dark:hover:text-success-dark dark:hover:bg-hover-dark",
         blue: isDisabled
-            ? "text-inherit cursor-not-allowed"
+            ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
             : "text-text-muted dark:text-text-muted-dark hover:text-info hover:bg-hover dark:hover:text-info-dark dark:hover:bg-hover-dark",
         red: isDisabled
-            ? "text-inherit cursor-not-allowed"
+            ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
             : "text-error/60 hover:text-error hover:bg-error-bg dark:text-error-dark/50 dark:hover:text-error-dark dark:hover:bg-error-bg-dark",
         orange: isDisabled
-            ? "text-inherit cursor-not-allowed"
+            ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
             : "text-text-muted dark:text-text-muted-dark hover:text-primary hover:bg-warning-bg dark:hover:text-primary-hover dark:hover:bg-warning-bg-dark",
         gray: isDisabled
-            ? "text-inherit cursor-not-allowed"
+            ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
             : "text-text-muted dark:text-text-muted-dark hover:text-text-secondary hover:bg-hover dark:hover:text-text-secondary-dark dark:hover:bg-hover-dark",
         indigo: isDisabled
-            ? "text-inherit cursor-not-allowed"
+            ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
             : "text-text-muted dark:text-text-muted-dark hover:text-accent hover:bg-accent-bg dark:hover:text-accent-dark dark:hover:bg-accent-bg-dark",
     };
 

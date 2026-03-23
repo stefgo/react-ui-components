@@ -8,6 +8,7 @@ export * from "./DataCard";
 export * from "./DataList";
 export * from "./DataMultiView";
 export * from "./DataTable";
+export * from "./DataExtendedTable";
 export * from "./FileBrowser";
 export * from "./Input";
 export * from "./PaginationControls";
