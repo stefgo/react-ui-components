@@ -1,3 +1,15 @@
+# [2.3.0](https://github.com/stefgo/react-ui-components/compare/v2.2.0...v2.3.0) (2026-03-23)
+
+
+### Bug Fixes
+
+* update disabled state styles for ActionButton component ([c9b3f74](https://github.com/stefgo/react-ui-components/commit/c9b3f74c57ec7496a945cdf0d7cc31773fa55414))
+
+
+### Features
+
+* implement DataExtendedTable component with expandable rows and custom rendering ([e45de31](https://github.com/stefgo/react-ui-components/commit/e45de31405546605a73bfd7c5fc623cf77ab9bd4))
+
 # [2.2.0](https://github.com/stefgo/react-ui-components/compare/v2.1.1...v2.2.0) (2026-03-20)
 
 
