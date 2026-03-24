@@ -7,6 +7,15 @@ import { DashboardLayout, DashboardLayoutClassNames } from "./DashboardLayout";
 import { ThemeToggle, ThemeToggleClassNames } from "./ThemeToggle";
 import { cn } from './utils';
 
+function matchesPath(pagePath: string | string[] | undefined, currentPath: string | undefined): boolean {
+    if (!pagePath || !currentPath) return false;
+    const paths = Array.isArray(pagePath) ? pagePath : [pagePath];
+    return paths.some(p => {
+        if (p === "/") return currentPath === "/";
+        return currentPath === p || currentPath.startsWith(p + "/");
+    });
+}
+
 export interface MobileMoreMenuConfig {
     icon?: ReactNode;
     title?: ReactNode;
@@ -20,6 +29,7 @@ export interface DashboardPage {
     icon: any; // Icon component (e.g. from lucide-react)
     badge?: string;
     active?: boolean;
+    path?: string | string[];
     onClick: () => void;
     isMobileMoreMenu?: boolean; // If true, it goes into the mobile 'More' menu instead of bottom nav
     content?: ReactNode; // The content to render when this page is active
@@ -65,6 +75,7 @@ export interface DashboardProps {
 
     // New Unified Page Prop
     pages?: DashboardPage[];
+    currentPath?: string;
 
     isSidebarCollapsed: boolean;
     onToggleSidebar: () => void;
@@ -93,6 +104,7 @@ export const Dashboard = ({
 
     // New Page Prop
     pages,
+    currentPath,
 
     isSidebarCollapsed,
     onToggleSidebar,
@@ -106,6 +118,10 @@ export const Dashboard = ({
     const [isMobileMoreMenuOpen, setIsMobileMoreMenuOpen] = useState(false);
     const [internalActiveId, setInternalActiveId] = useState<string | null>(() => {
         if (!pages || pages.length === 0) return null;
+        if (currentPath !== undefined) {
+            const pathMatch = pages.find(p => matchesPath(p.path, currentPath));
+            if (pathMatch) return pathMatch.id;
+        }
         const explicitlyActive = pages.find(p => p.active);
         return explicitlyActive ? explicitlyActive.id : pages[0].id;
     });
@@ -131,10 +147,14 @@ export const Dashboard = ({
 
     const effectiveActiveId = useMemo(() => {
         if (!pages) return null;
+        if (currentPath !== undefined) {
+            const pathMatch = pages.find(p => matchesPath(p.path, currentPath));
+            if (pathMatch) return pathMatch.id;
+        }
         const controlledActive = pages.find(p => p.active);
         if (controlledActive) return controlledActive.id;
         return internalActiveId;
-    }, [pages, internalActiveId]);
+    }, [pages, currentPath, internalActiveId]);
 
     const sidebarGroups = useMemo<SidebarGroup[]>(() => {
         if (!pages) return legacySidebarGroups;
