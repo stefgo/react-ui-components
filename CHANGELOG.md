@@ -1,3 +1,11 @@
+# [2.4.0](https://github.com/stefgo/react-ui-components/compare/v2.3.0...v2.4.0) (2026-03-24)
+
+
+### Features
+
+* add path matching logic and currentPath prop to Dashboard component ([5f56e4b](https://github.com/stefgo/react-ui-components/commit/5f56e4bd55c6f4b6ea7c7fa267fc0187c8fa5d66))
+* implement sorting functionality in DataTable component ([9bffe18](https://github.com/stefgo/react-ui-components/commit/9bffe182152b46ca05335a45875eba03542049ac))
+
 # [2.3.0](https://github.com/stefgo/react-ui-components/compare/v2.2.0...v2.3.0) (2026-03-23)
 
 
