@@ -70,7 +70,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     } = props;
 
     const hasTreeView = !!(tableDef && getChildren);
-
+    
     // Mobile detection
     const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
 
@@ -80,11 +80,13 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    const firstMode: ViewMode = hasTreeView ? 'tree' : tableDef ? 'table' : 'list';
+
     const [viewMode, setViewMode] = useState<ViewMode>(() => {
-        if (typeof localStorage === 'undefined') return 'table';
+        if (typeof localStorage === 'undefined') return firstMode;
         const savedMode = localStorage.getItem(viewModeStorageKey) as ViewMode;
-        if (savedMode === 'tree' && !hasTreeView) return 'table';
-        return savedMode || 'table';
+        if (savedMode === 'tree' && !hasTreeView) return firstMode;
+        return savedMode || firstMode;
     });
 
     const changeViewMode = (mode: ViewMode) => {
@@ -106,7 +108,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
 
     const visibleButtonCount = [hasTreeView, !!(tableDef && !hasTreeView), !!listDef].filter(Boolean).length;
 
-    const viewToggle = !isMobile && visibleButtonCount > 1 ? (
+    const viewToggle = !isMobile && visibleButtonCount >= 1 ? (
         <div className={cn("bg-table-header-toggle-bg dark:bg-table-header-toggle-bg-dark rounded-lg p-1 flex items-center gap-1", classNames?.toggleRoot)}>
             {hasTreeView && (
                 <button onClick={() => changeViewMode('tree')} className={toggleButtonClass('tree')} title="Tree View">
