@@ -108,7 +108,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
 
     const visibleButtonCount = [hasTreeView, !!(tableDef && !hasTreeView), !!listDef].filter(Boolean).length;
 
-    const viewToggle = !isMobile && visibleButtonCount >= 1 ? (
+    const viewToggle = !isMobile && visibleButtonCount > 1 ? (
         <div className={cn("bg-table-header-toggle-bg dark:bg-table-header-toggle-bg-dark rounded-lg p-1 flex items-center gap-1", classNames?.toggleRoot)}>
             {hasTreeView && (
                 <button onClick={() => changeViewMode('tree')} className={toggleButtonClass('tree')} title="Tree View">
