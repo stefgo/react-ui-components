@@ -62,7 +62,6 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         tableDef,
         listDef,
         listColumns,
-        treeTableDef,
         getChildren,
         treeTableDefaultExpanded,
         treeTableIndentSize,
@@ -70,7 +69,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         ...sharedProps
     } = props;
 
-    const hasTreeView = !!(treeTableDef && getChildren);
+    const hasTreeView = !!(tableDef && getChildren);
 
     // Mobile detection
     const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
@@ -105,17 +104,23 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         effectiveViewMode === mode ? classNames?.toggleButtonActive : ''
     );
 
-    const viewToggle = !isMobile ? (
+    const visibleButtonCount = [hasTreeView, !!(tableDef && !hasTreeView), !!listDef].filter(Boolean).length;
+
+    const viewToggle = !isMobile && visibleButtonCount > 1 ? (
         <div className={cn("bg-table-header-toggle-bg dark:bg-table-header-toggle-bg-dark rounded-lg p-1 flex items-center gap-1", classNames?.toggleRoot)}>
-            <button onClick={() => changeViewMode('table')} className={toggleButtonClass('table')} title="Table View">
-                <TableIcon size={14} />
-            </button>
-            <button onClick={() => changeViewMode('list')} className={toggleButtonClass('list')} title="List View">
-                <LayoutList size={14} />
-            </button>
             {hasTreeView && (
                 <button onClick={() => changeViewMode('tree')} className={toggleButtonClass('tree')} title="Tree View">
                     <Network size={14} />
+                </button>
+            )}
+            {tableDef && !hasTreeView && (
+                <button onClick={() => changeViewMode('table')} className={toggleButtonClass('table')} title="Table View">
+                    <TableIcon size={14} />
+                </button>
+            )}
+            {listDef && (
+                <button onClick={() => changeViewMode('list')} className={toggleButtonClass('list')} title="List View">
+                    <LayoutList size={14} />
                 </button>
             )}
         </div>
@@ -145,7 +150,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
             ) : effectiveViewMode === 'tree' && hasTreeView ? (
                 <DataTreeTable
                     {...containerProps}
-                    itemDef={treeTableDef!}
+                    itemDef={tableDef!}
                     getChildren={getChildren!}
                     defaultExpanded={treeTableDefaultExpanded}
                     indentSize={treeTableIndentSize}
