@@ -1,8 +1,9 @@
 import { ReactNode, useState, useEffect } from 'react';
-import { LayoutList, Table as TableIcon } from 'lucide-react';
+import { LayoutList, Table as TableIcon, Network } from 'lucide-react';
 import { Card, CardClassNames } from './Card';
 import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
 import { DataList, DataListDef, DataListColumnDef, DataListClassNames } from './DataList';
+import { DataTreeTable, DataTreeTableClassNames } from './DataTreeTable';
 import { cn } from './utils';
 
 export interface DataMultiViewClassNames {
@@ -14,6 +15,7 @@ export interface DataMultiViewClassNames {
     toggleButtonActive?: string;
     table?: DataTableClassNames;
     list?: DataListClassNames;
+    treeTable?: DataTreeTableClassNames;
     extraActionsWrapper?: string;
 }
 
@@ -26,6 +28,12 @@ export interface DataMultiViewProps<T> {
     tableDef: DataTableDef<T>[];
     listDef?: DataListDef<T>[];
     listColumns?: DataListColumnDef<T>[];
+    /** Column definitions for tree table view. Requires `getChildren` to be set. */
+    treeTableDef?: DataTableDef<T>[];
+    /** Required for tree table view: returns child items for a given item. */
+    getChildren?: (item: T) => T[] | undefined | null;
+    treeTableDefaultExpanded?: boolean;
+    treeTableIndentSize?: number;
     keyField: keyof T | ((item: T) => string | number);
     isLoading?: boolean;
     emptyMessage?: ReactNode;
@@ -43,6 +51,8 @@ export interface DataMultiViewProps<T> {
     classNames?: DataMultiViewClassNames;
 }
 
+type ViewMode = 'table' | 'list' | 'tree';
+
 export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     const {
         title,
@@ -52,9 +62,15 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         tableDef,
         listDef,
         listColumns,
+        treeTableDef,
+        getChildren,
+        treeTableDefaultExpanded,
+        treeTableIndentSize,
         classNames,
         ...sharedProps
     } = props;
+
+    const hasTreeView = !!(treeTableDef && getChildren);
 
     // Mobile detection
     const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
@@ -65,50 +81,43 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const [viewMode, setViewMode] = useState<'table' | 'list'>(() => {
+    const [viewMode, setViewMode] = useState<ViewMode>(() => {
         if (typeof localStorage === 'undefined') return 'table';
-        const savedMode = localStorage.getItem(viewModeStorageKey) as 'table' | 'list';
+        const savedMode = localStorage.getItem(viewModeStorageKey) as ViewMode;
+        if (savedMode === 'tree' && !hasTreeView) return 'table';
         return savedMode || 'table';
     });
 
-    const changeViewMode = (mode: 'table' | 'list') => {
+    const changeViewMode = (mode: ViewMode) => {
         setViewMode(mode);
         localStorage.setItem(viewModeStorageKey, mode);
     };
 
     // Effective view mode is forced to 'list' on mobile
-    const effectiveViewMode = isMobile ? 'list' : viewMode;
+    const effectiveViewMode: ViewMode = isMobile ? 'list' : viewMode;
+
+    const toggleButtonClass = (mode: ViewMode) => cn(
+        "p-1 rounded transition-all",
+        effectiveViewMode === mode
+            ? 'bg-table-header-toggle-active-bg dark:bg-table-header-toggle-active-bg-dark shadow text-text-primary dark:text-text-primary-dark'
+            : 'text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark',
+        classNames?.toggleButton,
+        effectiveViewMode === mode ? classNames?.toggleButtonActive : ''
+    );
 
     const viewToggle = !isMobile ? (
         <div className={cn("bg-table-header-toggle-bg dark:bg-table-header-toggle-bg-dark rounded-lg p-1 flex items-center gap-1", classNames?.toggleRoot)}>
-            <button
-                onClick={() => changeViewMode('table')}
-                className={cn(
-                    "p-1 rounded transition-all",
-                    effectiveViewMode === 'table'
-                        ? 'bg-table-header-toggle-active-bg dark:bg-table-header-toggle-active-bg-dark shadow text-text-primary dark:text-text-primary-dark'
-                        : 'text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark',
-                    classNames?.toggleButton,
-                    effectiveViewMode === 'table' ? classNames?.toggleButtonActive : ''
-                )}
-                title="Table View"
-            >
+            <button onClick={() => changeViewMode('table')} className={toggleButtonClass('table')} title="Table View">
                 <TableIcon size={14} />
             </button>
-            <button
-                onClick={() => changeViewMode('list')}
-                className={cn(
-                    "p-1 rounded transition-all",
-                    effectiveViewMode === 'list'
-                        ? 'bg-table-header-toggle-active-bg dark:bg-table-header-toggle-active-bg-dark shadow text-text-primary dark:text-text-primary-dark'
-                        : 'text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark',
-                    classNames?.toggleButton,
-                    effectiveViewMode === 'list' ? classNames?.toggleButtonActive : ''
-                )}
-                title="List View"
-            >
+            <button onClick={() => changeViewMode('list')} className={toggleButtonClass('list')} title="List View">
                 <LayoutList size={14} />
             </button>
+            {hasTreeView && (
+                <button onClick={() => changeViewMode('tree')} className={toggleButtonClass('tree')} title="Tree View">
+                    <Network size={14} />
+                </button>
+            )}
         </div>
     ) : null;
 
@@ -133,6 +142,15 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                     columns={listColumns}
                     classNames={classNames?.list}
                 />
+            ) : effectiveViewMode === 'tree' && hasTreeView ? (
+                <DataTreeTable
+                    {...containerProps}
+                    itemDef={treeTableDef!}
+                    getChildren={getChildren!}
+                    defaultExpanded={treeTableDefaultExpanded}
+                    indentSize={treeTableIndentSize}
+                    classNames={classNames?.treeTable}
+                />
             ) : (
                 <DataTable
                     {...containerProps}
@@ -143,4 +161,3 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         </Card>
     );
 };
-
