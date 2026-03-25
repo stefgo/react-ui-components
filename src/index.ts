@@ -9,6 +9,7 @@ export * from "./DataList";
 export * from "./DataMultiView";
 export * from "./DataTable";
 export * from "./DataExtendedTable";
+export * from "./DataTreeTable";
 export * from "./FileBrowser";
 export * from "./Input";
 export * from "./PaginationControls";
