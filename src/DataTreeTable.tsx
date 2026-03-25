@@ -25,13 +25,20 @@ export interface DataTreeTableProps<T> extends BaseDataViewProps<T> {
     classNames?: DataTreeTableClassNames;
 }
 
+interface SortEntry {
+    colIndex: number;
+    direction: 'asc' | 'desc';
+}
+
 interface DataTreeTableState {
     expandedKeys: Set<string | number>;
+    sortColumns: SortEntry[];
 }
 
 export class DataTreeTable<T> extends AbstractDataView<T, DataTreeTableProps<T>, DataTreeTableState> {
     state: DataTreeTableState = {
         expandedKeys: new Set(),
+        sortColumns: [],
     };
 
     constructor(props: DataTreeTableProps<T>) {
@@ -39,6 +46,7 @@ export class DataTreeTable<T> extends AbstractDataView<T, DataTreeTableProps<T>,
         if (props.defaultExpanded) {
             this.state = {
                 expandedKeys: new Set(this.collectExpandableKeys(props.data, props.getChildren, props.keyField)),
+                sortColumns: [],
             };
         }
     }
@@ -86,11 +94,74 @@ export class DataTreeTable<T> extends AbstractDataView<T, DataTreeTableProps<T>,
         });
     }
 
+    private isSortable(col: DataTableDef<T>): boolean {
+        return !!col.sortable && (!!col.accessorKey || !!col.sortValue);
+    }
+
+    private handleSortClick(col: DataTableDef<T>, idx: number, event: React.MouseEvent): void {
+        if (!this.isSortable(col)) return;
+        this.setState((prev) => {
+            const existing = prev.sortColumns.find((s) => s.colIndex === idx);
+            if (event.shiftKey) {
+                if (existing) {
+                    if (existing.direction === 'asc') {
+                        return { sortColumns: prev.sortColumns.map((s) => s.colIndex === idx ? { ...s, direction: 'desc' } : s) };
+                    } else {
+                        return { sortColumns: prev.sortColumns.filter((s) => s.colIndex !== idx) };
+                    }
+                }
+                return { sortColumns: [...prev.sortColumns, { colIndex: idx, direction: 'asc' }] };
+            } else {
+                if (existing && prev.sortColumns.length === 1) {
+                    return { sortColumns: [{ colIndex: idx, direction: existing.direction === 'asc' ? 'desc' : 'asc' }] };
+                }
+                return { sortColumns: [{ colIndex: idx, direction: 'asc' }] };
+            }
+        });
+    }
+
+    private renderSortIcon(col: DataTableDef<T>, idx: number): ReactNode {
+        if (!this.isSortable(col)) return null;
+        const { sortColumns } = this.state;
+        const entry = sortColumns.find((s) => s.colIndex === idx);
+        if (!entry) return <span className="ml-1 opacity-40">↕</span>;
+        const arrow = entry.direction === 'asc' ? '↑' : '↓';
+        const priority = sortColumns.length > 1 ? sortColumns.indexOf(entry) + 1 : null;
+        return <span className="ml-1">{arrow}{priority !== null && <sup>{priority}</sup>}</span>;
+    }
+
+    private sortItems(items: T[]): T[] {
+        const { itemDef } = this.props;
+        const { sortColumns } = this.state;
+        if (sortColumns.length === 0) return items;
+
+        const resolvers = sortColumns.map(({ colIndex, direction }) => {
+            const col = itemDef[colIndex];
+            const getValue = col.sortValue
+                ? col.sortValue
+                : (item: T) => item[col.accessorKey!] as unknown as string | number;
+            return { getValue, direction };
+        });
+
+        return [...items].sort((a, b) => {
+            for (const { getValue, direction } of resolvers) {
+                const aVal = getValue(a);
+                const bVal = getValue(b);
+                if (aVal == null && bVal == null) continue;
+                if (aVal == null) return 1;
+                if (bVal == null) return -1;
+                const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+                if (cmp !== 0) return direction === 'asc' ? cmp : -cmp;
+            }
+            return 0;
+        });
+    }
+
     private flattenTree(items: T[], depth: number): Array<{ item: T; depth: number }> {
         const { getChildren } = this.props;
         const { expandedKeys } = this.state;
         const result: Array<{ item: T; depth: number }> = [];
-        for (const item of items) {
+        for (const item of this.sortItems(items)) {
             result.push({ item, depth });
             const key = this.getKey(item);
             if (expandedKeys.has(key)) {
@@ -121,8 +192,10 @@ export class DataTreeTable<T> extends AbstractDataView<T, DataTreeTableProps<T>,
                             {itemDef.map((col, idx) => (
                                 <th
                                     key={idx}
+                                    onClick={(e) => this.handleSortClick(col, idx, e)}
                                     className={cn(
                                         "px-6 py-2 text-xs font-medium text-text-muted dark:text-text-muted-dark uppercase tracking-wider",
+                                        this.isSortable(col) && "cursor-pointer select-none hover:text-text-primary dark:hover:text-text-primary-dark",
                                         col.tableHeaderClassName,
                                         classNames?.th,
                                     )}
@@ -130,7 +203,7 @@ export class DataTreeTable<T> extends AbstractDataView<T, DataTreeTableProps<T>,
                                     {idx === 0 ? (
                                         <div className="flex items-center gap-2">
                                             <span
-                                                onClick={() => this.toggleAll()}
+                                                onClick={(e) => { e.stopPropagation(); this.toggleAll(); }}
                                                 className={cn("shrink-0 cursor-pointer hover:text-text-primary dark:hover:text-text-primary-dark", classNames?.chevronIcon)}
                                             >
                                                 {allExpanded
@@ -139,9 +212,13 @@ export class DataTreeTable<T> extends AbstractDataView<T, DataTreeTableProps<T>,
                                                 }
                                             </span>
                                             {col.tableHeader}
+                                            {this.renderSortIcon(col, idx)}
                                         </div>
                                     ) : (
-                                        col.tableHeader
+                                        <>
+                                            {col.tableHeader}
+                                            {this.renderSortIcon(col, idx)}
+                                        </>
                                     )}
                                 </th>
                             ))}
