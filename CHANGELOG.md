@@ -1,3 +1,10 @@
+# [2.7.0](https://github.com/stefgo/react-ui-components/compare/v2.6.0...v2.7.0) (2026-03-25)
+
+
+### Features
+
+* add sorting functionality to DataTreeTable and improve view handling ([c5ff0cb](https://github.com/stefgo/react-ui-components/commit/c5ff0cb5c66afe1ae62e3360d2fc9b31404f1d9c))
+
 # [2.6.0](https://github.com/stefgo/react-ui-components/compare/v2.5.0...v2.6.0) (2026-03-25)
 
 
