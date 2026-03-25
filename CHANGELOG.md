@@ -1,3 +1,10 @@
+# [2.6.0](https://github.com/stefgo/react-ui-components/compare/v2.5.0...v2.6.0) (2026-03-25)
+
+
+### Features
+
+* update DataMultiView to use tableDef for tree view logic and adjust view toggle buttons ([0c8e369](https://github.com/stefgo/react-ui-components/commit/0c8e369704454f53a70744bcefdc0e9fd89ff74f))
+
 # [2.5.0](https://github.com/stefgo/react-ui-components/compare/v2.4.0...v2.5.0) (2026-03-25)
 
 
