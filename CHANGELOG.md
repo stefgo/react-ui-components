@@ -1,3 +1,12 @@
+# [2.5.0](https://github.com/stefgo/react-ui-components/compare/v2.4.0...v2.5.0) (2026-03-25)
+
+
+### Features
+
+* add DataTreeTable component and export it from index ([ac846e4](https://github.com/stefgo/react-ui-components/commit/ac846e4ff780c2fb984a88500c7c18c0ef2dacd2))
+* enhance DataMultiView with tree table view support and related props ([309d106](https://github.com/stefgo/react-ui-components/commit/309d1064e68194c7f77fe92e8b15098905f0e1c6))
+* remove DataExtendedTable export from index ([4b24e9c](https://github.com/stefgo/react-ui-components/commit/4b24e9cf80edb87f8b812583d96e3d6952289f9e))
+
 # [2.4.0](https://github.com/stefgo/react-ui-components/compare/v2.3.0...v2.4.0) (2026-03-24)
 
 
