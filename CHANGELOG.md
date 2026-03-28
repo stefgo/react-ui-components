@@ -1,3 +1,10 @@
+## [2.7.2](https://github.com/stefgo/react-ui-components/compare/v2.7.1...v2.7.2) (2026-03-28)
+
+
+### Bug Fixes
+
+* update layout styles for DashboardLayout and Sidebar components; add custom scrollbar utility ([e80b5f1](https://github.com/stefgo/react-ui-components/commit/e80b5f11629fc2f3d7ec0a01f1cc2195292db6c7))
+
 ## [2.7.1](https://github.com/stefgo/react-ui-components/compare/v2.7.0...v2.7.1) (2026-03-28)
 
 
