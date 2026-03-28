@@ -25,7 +25,7 @@ export interface DataMultiViewProps<T> {
     className?: string;
     viewModeStorageKey?: string;
     data: T[];
-    tableDef: DataTableDef<T>[];
+    tableDef?: DataTableDef<T>[];
     listDef?: DataListDef<T>[];
     listColumns?: DataListColumnDef<T>[];
     /** Column definitions for tree table view. Requires `getChildren` to be set. */
@@ -60,7 +60,6 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         className = '',
         viewModeStorageKey = 'dataViewMode',
         tableDef,
-        listDef,
         listColumns,
         getChildren,
         treeTableDefaultExpanded,
@@ -106,7 +105,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         effectiveViewMode === mode ? classNames?.toggleButtonActive : ''
     );
 
-    const visibleButtonCount = [hasTreeView, !!(tableDef && !hasTreeView), !!listDef].filter(Boolean).length;
+    const visibleButtonCount = [hasTreeView, !!(tableDef && !hasTreeView), !!listColumns].filter(Boolean).length;
 
     const viewToggle = !isMobile && visibleButtonCount > 1 ? (
         <div className={cn("bg-table-header-toggle-bg dark:bg-table-header-toggle-bg-dark rounded-lg p-1 flex items-center gap-1", classNames?.toggleRoot)}>
@@ -120,7 +119,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                     <TableIcon size={14} />
                 </button>
             )}
-            {listDef && (
+            {listColumns && (
                 <button onClick={() => changeViewMode('list')} className={toggleButtonClass('list')} title="List View">
                     <LayoutList size={14} />
                 </button>
@@ -145,7 +144,6 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
             {effectiveViewMode === 'list' ? (
                 <DataList
                     {...containerProps}
-                    itemDef={listDef}
                     columns={listColumns}
                     classNames={classNames?.list}
                 />
@@ -161,7 +159,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
             ) : (
                 <DataTable
                     {...containerProps}
-                    itemDef={tableDef}
+                    itemDef={tableDef!}
                     classNames={classNames?.table}
                 />
             )}

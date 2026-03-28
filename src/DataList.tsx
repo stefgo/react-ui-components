@@ -27,7 +27,6 @@ export interface DataListClassNames extends DataViewClassNames {
 }
 
 export interface DataListProps<T> extends BaseDataViewProps<T> {
-    itemDef?: DataListDef<T>[];
     columns?: DataListColumnDef<T>[];
     classNames?: DataListClassNames;
 }
@@ -40,14 +39,9 @@ export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
     }
 
     protected renderContent(): ReactNode {
-        const { data, itemDef, columns: columnsProp, onRowClick, classNames } = this.props;
+        const { data, columns: columnsProp, onRowClick, classNames } = this.props;
         const placeholder = this.getPlaceholder();
         const interactionClasses = this.getInteractionClasses();
-
-        const isMultiColumn = !!columnsProp && columnsProp.length > 0;
-        const columns = isMultiColumn
-            ? columnsProp
-            : (itemDef ? [{ fields: itemDef }] : []);
 
         return (
             <div className={cn("divide-y divide-border dark:divide-border-dark", classNames?.listRoot)}>
@@ -67,8 +61,8 @@ export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
                                 classNames?.row
                             )}
                         >
-                            <div className={cn("flex flex-col", isMultiColumn ? 'md:flex-row md:items-center' : '', classNames?.colWrapper)}>
-                                {columns.map((colGroup, colIdx) => (
+                            <div className={cn("flex flex-col md:flex-row md:items-center", classNames?.colWrapper)}>
+                                {columnsProp?.map((colGroup, colIdx) => (
                                     <div key={colIdx} className={cn(colGroup.columnClassName, classNames?.column)}>
                                         {colGroup.fields
                                             .filter(def => def.listItemRender !== undefined || def.accessorKey !== undefined)
