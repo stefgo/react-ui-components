@@ -1,3 +1,10 @@
+## [2.7.1](https://github.com/stefgo/react-ui-components/compare/v2.7.0...v2.7.1) (2026-03-28)
+
+
+### Bug Fixes
+
+* adjust view toggle condition to require more than one visible button ([a0cf924](https://github.com/stefgo/react-ui-components/commit/a0cf9242b310b5df79f150ab3ef7cc9ce1af41cd))
+
 # [2.7.0](https://github.com/stefgo/react-ui-components/compare/v2.6.0...v2.7.0) (2026-03-25)
 
 
