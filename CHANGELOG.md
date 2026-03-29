@@ -1,3 +1,10 @@
+# [2.11.0](https://github.com/stefgo/react-ui-components/compare/v2.10.0...v2.11.0) (2026-03-29)
+
+
+### Features
+
+* add grow property to DataListColumnDef for flexible column sizing ([9505965](https://github.com/stefgo/react-ui-components/commit/95059655ee09e355f9bcb2d35bd2d89a6fe01e1a))
+
 # [2.10.0](https://github.com/stefgo/react-ui-components/compare/v2.9.0...v2.10.0) (2026-03-29)
 
 
