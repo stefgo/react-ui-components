@@ -170,17 +170,19 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         <Card className={cn("overflow-hidden flex flex-col h-full", className, classNames?.root)} classNames={{ ...classNames?.card, ...classNames?.header }} title={title} action={headerAction}>
             {searchable && (
                 <div className={cn(
-                    "px-4 py-2 border-b border-border dark:border-border-dark bg-card dark:bg-card-dark flex items-center gap-2",
+                    "px-4 py-2 border-b border-border dark:border-border-dark bg-card-header dark:bg-card-header-dark",
                     classNames?.searchBar
                 )}>
-                    <Search size={14} className="text-text-muted dark:text-text-muted-dark shrink-0" />
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={e => handleSearchChange(e.target.value)}
-                        placeholder={searchPlaceholder}
-                        className="w-full bg-transparent text-sm text-text-primary dark:text-text-primary-dark placeholder:text-text-muted dark:placeholder:text-text-muted-dark outline-none"
-                    />
+                    <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-border dark:border-border-dark bg-app-bg dark:bg-app-bg-dark">
+                        <Search size={14} className="text-text-muted dark:text-text-muted-dark shrink-0" />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={e => handleSearchChange(e.target.value)}
+                            placeholder={searchPlaceholder}
+                            className="w-full bg-transparent text-sm text-text-primary dark:text-text-primary-dark placeholder:text-text-muted dark:placeholder:text-text-muted-dark outline-none"
+                        />
+                    </div>
                 </div>
             )}
             {effectiveViewMode === 'list' ? (
