@@ -25,6 +25,8 @@ export interface DataTableClassNames extends DataViewClassNames {
 
 export interface DataTableProps<T> extends BaseDataViewProps<T> {
     itemDef: DataTableDef<T>[];
+    defaultSort?: { colIndex: number; direction: 'asc' | 'desc' };
+    sortStorageKey?: string;
     classNames?: DataTableClassNames;
 }
 
@@ -38,9 +40,27 @@ interface DataTableState {
 }
 
 export class DataTable<T> extends AbstractDataView<T, DataTableProps<T>, DataTableState> {
+    private initSortColumns(): SortEntry[] {
+        const { sortStorageKey, defaultSort } = this.props;
+        if (sortStorageKey && typeof localStorage !== 'undefined') {
+            const saved = localStorage.getItem(sortStorageKey);
+            if (saved) {
+                try { return JSON.parse(saved); } catch { /* ignore */ }
+            }
+        }
+        return defaultSort ? [defaultSort] : [];
+    }
+
     state: DataTableState = {
-        sortColumns: [],
+        sortColumns: this.initSortColumns(),
     };
+
+    componentDidUpdate(_prevProps: DataTableProps<T>, prevState: DataTableState): void {
+        const { sortStorageKey } = this.props;
+        if (sortStorageKey && prevState.sortColumns !== this.state.sortColumns) {
+            localStorage.setItem(sortStorageKey, JSON.stringify(this.state.sortColumns));
+        }
+    }
 
     private isSortable(col: DataTableDef<T>): boolean {
         return !!col.sortable && (!!col.accessorKey || !!col.sortValue);

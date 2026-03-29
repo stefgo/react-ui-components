@@ -91,12 +91,12 @@ export const Sidebar = ({
     return (
         <aside className={cn(
             isCollapsed ? "w-16" : "w-64",
-            "bg-sidebar-bg dark:bg-sidebar-bg-dark border-r border-border dark:border-border-dark hidden md:flex flex-col transition-all duration-300 relative",
+            "h-full bg-sidebar-bg dark:bg-sidebar-bg-dark border-r border-border dark:border-border-dark hidden md:flex flex-col transition-all duration-300 relative",
             className,
             classNames?.root
         )}>
             <div className={cn(
-                "p-4 flex flex-1 flex-col gap-8 overflow-y-auto",
+                "p-4 flex flex-1 flex-col gap-8 overflow-y-auto scrollbar-none",
                 isCollapsed ? "pt-8 items-center" : "pt-8",
                 classNames?.content
             )}>

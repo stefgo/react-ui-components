@@ -1,3 +1,69 @@
+## [2.11.1](https://github.com/stefgo/react-ui-components/compare/v2.11.0...v2.11.1) (2026-03-29)
+
+
+### Bug Fixes
+
+* adjust column layout for responsive design in DataList component ([1712e00](https://github.com/stefgo/react-ui-components/commit/1712e00b803c1e25ebd9257b5195de44f22c1d16))
+
+# [2.11.0](https://github.com/stefgo/react-ui-components/compare/v2.10.0...v2.11.0) (2026-03-29)
+
+
+### Features
+
+* add grow property to DataListColumnDef for flexible column sizing ([9505965](https://github.com/stefgo/react-ui-components/commit/95059655ee09e355f9bcb2d35bd2d89a6fe01e1a))
+
+# [2.10.0](https://github.com/stefgo/react-ui-components/compare/v2.9.0...v2.10.0) (2026-03-29)
+
+
+### Features
+
+* add defaultSort prop to DataTreeTable for customizable sorting ([e39d1de](https://github.com/stefgo/react-ui-components/commit/e39d1de478a91219adb2699f5aa866a9a87c160b))
+
+# [2.9.0](https://github.com/stefgo/react-ui-components/compare/v2.8.0...v2.9.0) (2026-03-29)
+
+
+### Features
+
+* enhance header styling in DataMultiView component for improved search visibility ([be98543](https://github.com/stefgo/react-ui-components/commit/be98543facbf6ffdc8e70489579c148cdd78dbcc))
+* improve search bar styling in DataMultiView component ([b170caa](https://github.com/stefgo/react-ui-components/commit/b170caa6ae05139da77bccb1d0a19fa2abf6f4c8))
+
+# [2.8.0](https://github.com/stefgo/react-ui-components/compare/v2.7.2...v2.8.0) (2026-03-29)
+
+
+### Features
+
+* add defaultSort prop to DataMultiView and DataTable components for enhanced sorting functionality ([86cc664](https://github.com/stefgo/react-ui-components/commit/86cc6648354e93ea8ca96f2ab544ab61f62aaaf4))
+* add search functionality to DataMultiView component with customizable filter and placeholder ([8f55307](https://github.com/stefgo/react-ui-components/commit/8f55307f4eee7062d93c0cc04c8da9b203ab01f0))
+* add sortStorageKey to DataTable and DataMultiView for persistent sorting state ([3e65b09](https://github.com/stefgo/react-ui-components/commit/3e65b09f5e4e4a77003f1aa71f3d28972d251e89))
+
+## [2.7.2](https://github.com/stefgo/react-ui-components/compare/v2.7.1...v2.7.2) (2026-03-28)
+
+
+### Bug Fixes
+
+* update layout styles for DashboardLayout and Sidebar components; add custom scrollbar utility ([e80b5f1](https://github.com/stefgo/react-ui-components/commit/e80b5f11629fc2f3d7ec0a01f1cc2195292db6c7))
+
+## [2.7.1](https://github.com/stefgo/react-ui-components/compare/v2.7.0...v2.7.1) (2026-03-28)
+
+
+### Bug Fixes
+
+* adjust view toggle condition to require more than one visible button ([a0cf924](https://github.com/stefgo/react-ui-components/commit/a0cf9242b310b5df79f150ab3ef7cc9ce1af41cd))
+
+# [2.7.0](https://github.com/stefgo/react-ui-components/compare/v2.6.0...v2.7.0) (2026-03-25)
+
+
+### Features
+
+* add sorting functionality to DataTreeTable and improve view handling ([c5ff0cb](https://github.com/stefgo/react-ui-components/commit/c5ff0cb5c66afe1ae62e3360d2fc9b31404f1d9c))
+
+# [2.6.0](https://github.com/stefgo/react-ui-components/compare/v2.5.0...v2.6.0) (2026-03-25)
+
+
+### Features
+
+* update DataMultiView to use tableDef for tree view logic and adjust view toggle buttons ([0c8e369](https://github.com/stefgo/react-ui-components/commit/0c8e369704454f53a70744bcefdc0e9fd89ff74f))
+
 # [2.5.0](https://github.com/stefgo/react-ui-components/compare/v2.4.0...v2.5.0) (2026-03-25)
 
 
