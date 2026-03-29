@@ -40,11 +40,14 @@ export const DashboardLayout = ({
                 {sidebar}
 
                 {/* Content */}
-                <main className={cn(
-                    "flex-1 overflow-y-auto p-4 pb-20 md:pb-4",
-                    mainClassName,
-                    classNames?.main
-                )}>
+                <main
+                    className={cn(
+                        "flex-1 overflow-y-auto p-4 pb-20 md:pb-4",
+                        mainClassName,
+                        classNames?.main
+                    )}
+                    style={{ scrollbarGutter: "stable" }}
+                >
                     <div className={cn(
                         "max-w-7xl mx-auto space-y-6",
                         contentContainerClassName,
