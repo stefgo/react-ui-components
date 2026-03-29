@@ -62,7 +62,7 @@ export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
                                 classNames?.row
                             )}
                         >
-                            <div className={cn("flex flex-col md:flex-row md:items-center", classNames?.colWrapper)}>
+                            <div className={cn("flex flex-col", columnsProp && columnsProp.length > 1 && "md:flex-row md:items-center", classNames?.colWrapper)}>
                                 {columnsProp?.map((colGroup, colIdx) => (
                                     <div key={colIdx} className={cn(colGroup.grow && "flex-1", colGroup.columnClassName, classNames?.column)}>
                                         {colGroup.fields
