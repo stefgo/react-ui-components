@@ -197,6 +197,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                     itemDef={tableDef!}
                     getChildren={getChildren!}
                     defaultExpanded={treeTableDefaultExpanded}
+                    defaultSort={defaultSort}
                     indentSize={treeTableIndentSize}
                     classNames={classNames?.treeTable}
                 />

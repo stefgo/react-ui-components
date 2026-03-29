@@ -20,6 +20,7 @@ export interface DataTreeTableProps<T> extends BaseDataViewProps<T> {
     itemDef: DataTableDef<T>[];
     getChildren: (item: T) => T[] | undefined | null;
     defaultExpanded?: boolean;
+    defaultSort?: { colIndex: number; direction: 'asc' | 'desc' };
     /** Pixels of indentation per depth level. Default: 20 */
     indentSize?: number;
     classNames?: DataTreeTableClassNames;
@@ -43,11 +44,14 @@ export class DataTreeTable<T> extends AbstractDataView<T, DataTreeTableProps<T>,
 
     constructor(props: DataTreeTableProps<T>) {
         super(props);
+        const sortColumns = props.defaultSort ? [props.defaultSort] : [];
         if (props.defaultExpanded) {
             this.state = {
                 expandedKeys: new Set(this.collectExpandableKeys(props.data, props.getChildren, props.keyField)),
-                sortColumns: [],
+                sortColumns,
             };
+        } else {
+            this.state = { ...this.state, sortColumns };
         }
     }
 
