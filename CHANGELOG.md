@@ -1,3 +1,10 @@
+# [2.10.0](https://github.com/stefgo/react-ui-components/compare/v2.9.0...v2.10.0) (2026-03-29)
+
+
+### Features
+
+* add defaultSort prop to DataTreeTable for customizable sorting ([e39d1de](https://github.com/stefgo/react-ui-components/commit/e39d1de478a91219adb2699f5aa866a9a87c160b))
+
 # [2.9.0](https://github.com/stefgo/react-ui-components/compare/v2.8.0...v2.9.0) (2026-03-29)
 
 
