@@ -38,6 +38,7 @@ export interface DataMultiViewProps<T> {
     isLoading?: boolean;
     emptyMessage?: ReactNode;
     loadingMessage?: ReactNode;
+    defaultSort?: { colIndex: number; direction: 'asc' | 'desc' };
     rowClassName?: string | ((item: T) => string);
     onRowClick?: (item: T) => void;
     pagination?: {
@@ -65,6 +66,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         treeTableDefaultExpanded,
         treeTableIndentSize,
         classNames,
+        defaultSort,
         ...sharedProps
     } = props;
 
@@ -160,6 +162,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                 <DataTable
                     {...containerProps}
                     itemDef={tableDef!}
+                    defaultSort={defaultSort}
                     classNames={classNames?.table}
                 />
             )}

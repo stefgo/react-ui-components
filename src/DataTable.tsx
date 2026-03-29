@@ -25,6 +25,7 @@ export interface DataTableClassNames extends DataViewClassNames {
 
 export interface DataTableProps<T> extends BaseDataViewProps<T> {
     itemDef: DataTableDef<T>[];
+    defaultSort?: { colIndex: number; direction: 'asc' | 'desc' };
     classNames?: DataTableClassNames;
 }
 
@@ -39,7 +40,7 @@ interface DataTableState {
 
 export class DataTable<T> extends AbstractDataView<T, DataTableProps<T>, DataTableState> {
     state: DataTableState = {
-        sortColumns: [],
+        sortColumns: this.props.defaultSort ? [this.props.defaultSort] : [],
     };
 
     private isSortable(col: DataTableDef<T>): boolean {
