@@ -1,3 +1,12 @@
+# [2.8.0](https://github.com/stefgo/react-ui-components/compare/v2.7.2...v2.8.0) (2026-03-29)
+
+
+### Features
+
+* add defaultSort prop to DataMultiView and DataTable components for enhanced sorting functionality ([86cc664](https://github.com/stefgo/react-ui-components/commit/86cc6648354e93ea8ca96f2ab544ab61f62aaaf4))
+* add search functionality to DataMultiView component with customizable filter and placeholder ([8f55307](https://github.com/stefgo/react-ui-components/commit/8f55307f4eee7062d93c0cc04c8da9b203ab01f0))
+* add sortStorageKey to DataTable and DataMultiView for persistent sorting state ([3e65b09](https://github.com/stefgo/react-ui-components/commit/3e65b09f5e4e4a77003f1aa71f3d28972d251e89))
+
 ## [2.7.2](https://github.com/stefgo/react-ui-components/compare/v2.7.1...v2.7.2) (2026-03-28)
 
 
