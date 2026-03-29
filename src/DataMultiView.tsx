@@ -163,6 +163,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                     {...containerProps}
                     itemDef={tableDef!}
                     defaultSort={defaultSort}
+                    sortStorageKey={`${viewModeStorageKey}_sort`}
                     classNames={classNames?.table}
                 />
             )}
