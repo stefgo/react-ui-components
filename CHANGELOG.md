@@ -1,3 +1,10 @@
+## [2.11.1](https://github.com/stefgo/react-ui-components/compare/v2.11.0...v2.11.1) (2026-03-29)
+
+
+### Bug Fixes
+
+* adjust column layout for responsive design in DataList component ([1712e00](https://github.com/stefgo/react-ui-components/commit/1712e00b803c1e25ebd9257b5195de44f22c1d16))
+
 # [2.11.0](https://github.com/stefgo/react-ui-components/compare/v2.10.0...v2.11.0) (2026-03-29)
 
 
