@@ -1,5 +1,5 @@
 import { ReactNode, useState, useEffect } from 'react';
-import { LayoutList, Table as TableIcon, Network } from 'lucide-react';
+import { LayoutList, Table as TableIcon, Network, Search } from 'lucide-react';
 import { Card, CardClassNames } from './Card';
 import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
 import { DataList, DataListDef, DataListColumnDef, DataListClassNames } from './DataList';
@@ -17,6 +17,7 @@ export interface DataMultiViewClassNames {
     list?: DataListClassNames;
     treeTable?: DataTreeTableClassNames;
     extraActionsWrapper?: string;
+    searchBar?: string;
 }
 
 export interface DataMultiViewProps<T> {
@@ -25,13 +26,13 @@ export interface DataMultiViewProps<T> {
     className?: string;
     viewModeStorageKey?: string;
     data: T[];
+    getChildren?: (item: T) => T[] | undefined | null;
     tableDef?: DataTableDef<T>[];
     listDef?: DataListDef<T>[];
     listColumns?: DataListColumnDef<T>[];
     /** Column definitions for tree table view. Requires `getChildren` to be set. */
     treeTableDef?: DataTableDef<T>[];
     /** Required for tree table view: returns child items for a given item. */
-    getChildren?: (item: T) => T[] | undefined | null;
     treeTableDefaultExpanded?: boolean;
     treeTableIndentSize?: number;
     keyField: keyof T | ((item: T) => string | number);
@@ -50,6 +51,14 @@ export interface DataMultiViewProps<T> {
         onItemsPerPageChange: (limit: number) => void;
     };
     classNames?: DataMultiViewClassNames;
+    /** Show search input between header and content */
+    searchable?: boolean;
+    /** Placeholder text for the search input */
+    searchPlaceholder?: string;
+    /** Filter function for internal filtering. Receives each item and the current query string. */
+    searchFilter?: (item: T, query: string) => boolean;
+    /** Called whenever the search query changes (for external/controlled filtering) */
+    onSearchChange?: (query: string) => void;
 }
 
 type ViewMode = 'table' | 'list' | 'tree';
@@ -67,8 +76,23 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         treeTableIndentSize,
         classNames,
         defaultSort,
+        searchable,
+        searchPlaceholder = 'Suchen…',
+        searchFilter,
+        onSearchChange,
         ...sharedProps
     } = props;
+
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const handleSearchChange = (query: string) => {
+        setSearchQuery(query);
+        onSearchChange?.(query);
+    };
+
+    const filteredData = searchable && searchFilter && searchQuery
+        ? sharedProps.data.filter(item => searchFilter(item, searchQuery))
+        : sharedProps.data;
 
     const hasTreeView = !!(tableDef && getChildren);
     
@@ -138,11 +162,27 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
 
     const containerProps = {
         ...sharedProps,
+        data: filteredData,
         containerClassName: "rounded-none border-0 shadow-none flex-1",
     };
 
     return (
         <Card className={cn("overflow-hidden flex flex-col h-full", className, classNames?.root)} classNames={{ ...classNames?.card, ...classNames?.header }} title={title} action={headerAction}>
+            {searchable && (
+                <div className={cn(
+                    "px-4 py-2 border-b border-border dark:border-border-dark bg-card dark:bg-card-dark flex items-center gap-2",
+                    classNames?.searchBar
+                )}>
+                    <Search size={14} className="text-text-muted dark:text-text-muted-dark shrink-0" />
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={e => handleSearchChange(e.target.value)}
+                        placeholder={searchPlaceholder}
+                        className="w-full bg-transparent text-sm text-text-primary dark:text-text-primary-dark placeholder:text-text-muted dark:placeholder:text-text-muted-dark outline-none"
+                    />
+                </div>
+            )}
             {effectiveViewMode === 'list' ? (
                 <DataList
                     {...containerProps}
