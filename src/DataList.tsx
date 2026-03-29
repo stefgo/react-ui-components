@@ -12,6 +12,7 @@ export interface DataListDef<T> {
 export interface DataListColumnDef<T> {
     fields: DataListDef<T>[];
     columnClassName?: string;
+    grow?: boolean;
 }
 
 export interface DataListClassNames extends DataViewClassNames {
@@ -63,7 +64,7 @@ export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
                         >
                             <div className={cn("flex flex-col md:flex-row md:items-center", classNames?.colWrapper)}>
                                 {columnsProp?.map((colGroup, colIdx) => (
-                                    <div key={colIdx} className={cn(colGroup.columnClassName, classNames?.column)}>
+                                    <div key={colIdx} className={cn(colGroup.grow && "flex-1", colGroup.columnClassName, classNames?.column)}>
                                         {colGroup.fields
                                             .filter(def => def.listItemRender !== undefined || def.accessorKey !== undefined)
                                             .map((col, idx) => (
