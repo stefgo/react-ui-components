@@ -1,3 +1,11 @@
+# [2.9.0](https://github.com/stefgo/react-ui-components/compare/v2.8.0...v2.9.0) (2026-03-29)
+
+
+### Features
+
+* enhance header styling in DataMultiView component for improved search visibility ([be98543](https://github.com/stefgo/react-ui-components/commit/be98543facbf6ffdc8e70489579c148cdd78dbcc))
+* improve search bar styling in DataMultiView component ([b170caa](https://github.com/stefgo/react-ui-components/commit/b170caa6ae05139da77bccb1d0a19fa2abf6f4c8))
+
 # [2.8.0](https://github.com/stefgo/react-ui-components/compare/v2.7.2...v2.8.0) (2026-03-29)
 
 
