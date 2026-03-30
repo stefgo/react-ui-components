@@ -12,7 +12,8 @@ function matchesPath(pagePath: string | string[] | undefined, currentPath: strin
     const paths = Array.isArray(pagePath) ? pagePath : [pagePath];
     return paths.some(p => {
         if (p === "/") return currentPath === "/";
-        return currentPath === p || currentPath.startsWith(p + "/");
+        const pattern = p.replace(/:[^/]+/g, "[^/]+");
+        return new RegExp(`^${pattern}(/|$)`).test(currentPath);
     });
 }
 
@@ -69,7 +70,6 @@ export interface DashboardProps {
 
     // Legacy Explicit Props (kept for backwards compatibility)
     sidebarGroups?: SidebarGroup[];
-    navItems?: BottomNavItem[];
     children?: ReactNode;
     mobileMoreMenu?: MobileMoreMenuConfig;
 
@@ -98,8 +98,7 @@ export const Dashboard = ({
 
     // Legacy Explicit Props
     sidebarGroups: legacySidebarGroups = [],
-    navItems: legacyNavItems = [],
-    children: legacyChildren,
+children: legacyChildren,
     mobileMoreMenu: legacyMobileMoreMenu,
 
     // New Page Prop
@@ -192,7 +191,7 @@ export const Dashboard = ({
     }, [pages, legacySidebarGroups, effectiveActiveId]);
 
     const navItems = useMemo<BottomNavItem[]>(() => {
-        if (!pages) return legacyNavItems;
+        if (!pages) return [];
 
         return pages
             .filter(p => !p.isMobileMoreMenu)
@@ -205,7 +204,7 @@ export const Dashboard = ({
                     p.onClick();
                 }
             }));
-    }, [pages, legacyNavItems, effectiveActiveId]);
+    }, [pages, effectiveActiveId]);
 
     const mobileMoreMenu = useMemo<MobileMoreMenuConfig | undefined>(() => {
         if (!pages) return legacyMobileMoreMenu;
