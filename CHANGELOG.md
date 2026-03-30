@@ -1,3 +1,10 @@
+## [2.11.2](https://github.com/stefgo/react-ui-components/compare/v2.11.1...v2.11.2) (2026-03-30)
+
+
+### Bug Fixes
+
+* prevent layout shift when scrollbar appears/disappears ([1f2866c](https://github.com/stefgo/react-ui-components/commit/1f2866c8b9d5c450c4a5ce51b713e9e48cfac27c))
+
 ## [2.11.1](https://github.com/stefgo/react-ui-components/compare/v2.11.0...v2.11.1) (2026-03-29)
 
 
