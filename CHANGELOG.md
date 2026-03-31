@@ -1,3 +1,10 @@
+# [2.12.0](https://github.com/stefgo/react-ui-components/compare/v2.11.2...v2.12.0) (2026-03-31)
+
+
+### Features
+
+* add usePagination hook ([97e0dcd](https://github.com/stefgo/react-ui-components/commit/97e0dcdb48278aef24f202c7c0978df14e55a0f1))
+
 ## [2.11.2](https://github.com/stefgo/react-ui-components/compare/v2.11.1...v2.11.2) (2026-03-30)
 
 
