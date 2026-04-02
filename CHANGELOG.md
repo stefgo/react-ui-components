@@ -1,3 +1,10 @@
+## [2.12.1](https://github.com/stefgo/react-ui-components/compare/v2.12.0...v2.12.1) (2026-04-02)
+
+
+### Bug Fixes
+
+* remove whitespace-nowrap from DataTable td to allow text wrapping ([c169aff](https://github.com/stefgo/react-ui-components/commit/c169aff63e99414e44615b318716c0602da55a71))
+
 # [2.12.0](https://github.com/stefgo/react-ui-components/compare/v2.11.2...v2.12.0) (2026-03-31)
 
 
