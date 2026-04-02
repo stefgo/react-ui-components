@@ -1,5 +1,5 @@
 import { ReactNode, useState, useEffect } from 'react';
-import { LayoutList, Table as TableIcon, Network, Search } from 'lucide-react';
+import { LayoutList, Table as TableIcon, Network, Search, X } from 'lucide-react';
 import { Card, CardClassNames } from './Card';
 import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
 import { DataList, DataListDef, DataListColumnDef, DataListClassNames } from './DataList';
@@ -59,6 +59,8 @@ export interface DataMultiViewProps<T> {
     searchFilter?: (item: T, query: string) => boolean;
     /** Called whenever the search query changes (for external/controlled filtering) */
     onSearchChange?: (query: string) => void;
+    /** Initial value for the search input */
+    defaultSearchValue?: string;
 }
 
 type ViewMode = 'table' | 'list' | 'tree';
@@ -80,10 +82,11 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         searchPlaceholder = 'Suchen…',
         searchFilter,
         onSearchChange,
+        defaultSearchValue,
         ...sharedProps
     } = props;
 
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(defaultSearchValue ?? '');
 
     const handleSearchChange = (query: string) => {
         setSearchQuery(query);
@@ -182,6 +185,14 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                             placeholder={searchPlaceholder}
                             className="w-full bg-transparent text-sm text-text-primary dark:text-text-primary-dark placeholder:text-text-muted dark:placeholder:text-text-muted-dark outline-none"
                         />
+                        {searchQuery && (
+                            <button
+                                onClick={() => handleSearchChange('')}
+                                className="text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark shrink-0"
+                            >
+                                <X size={14} />
+                            </button>
+                        )}
                     </div>
                 </div>
             )}
