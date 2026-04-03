@@ -1,3 +1,10 @@
+# [2.14.0](https://github.com/stefgo/react-ui-components/compare/v2.13.1...v2.14.0) (2026-04-03)
+
+
+### Features
+
+* render PaginationControls in DataMultiView when pagination prop is set ([93667d8](https://github.com/stefgo/react-ui-components/commit/93667d819c9535c371622801384a235d6558f116))
+
 ## [2.13.1](https://github.com/stefgo/react-ui-components/compare/v2.13.0...v2.13.1) (2026-04-03)
 
 
