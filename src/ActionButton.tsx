@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from './utils';
 
-export type ActionButtonColor = 'green' | 'blue' | 'red' | 'orange' | 'gray' | 'indigo';
+export type ActionButtonColor = 'green' | 'blue' | 'red' | 'orange' | 'gray' | 'indigo' | 'error';
 export type ActionButtonVariant = 'solid' | 'ghost';
 
 export interface ActionButtonClassNames {
@@ -43,7 +43,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
             : "text-text-muted dark:text-text-muted-dark hover:text-info hover:bg-hover dark:hover:text-info-dark dark:hover:bg-hover-dark",
         red: isDisabled
             ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
-            : "text-error/60 hover:text-error hover:bg-error-bg dark:text-error-dark/50 dark:hover:text-error-dark dark:hover:bg-error-bg-dark",
+            : "text-text-muted dark:text-text-muted-dark hover:text-error hover:bg-hover dark:hover:text-error-dark dark:hover:bg-hover-dark",
         orange: isDisabled
             ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
             : "text-text-muted dark:text-text-muted-dark hover:text-primary hover:bg-warning-bg dark:hover:text-primary-hover dark:hover:bg-warning-bg-dark",
@@ -53,7 +53,10 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
         indigo: isDisabled
             ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
             : "text-text-muted dark:text-text-muted-dark hover:text-accent hover:bg-accent-bg dark:hover:text-accent-dark dark:hover:bg-accent-bg-dark",
-    };
+        error: isDisabled
+            ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
+            : "text-error/60 dark:text-error-dark/50 hover:text-error hover:bg-error-bg dark:hover:text-error-dark dark:hover:bg-error-bg-dark",
+        };
 
     const variantClasses = variant === 'solid' && !isDisabled
         ? "bg-hover dark:bg-hover-dark shadow-sm"
