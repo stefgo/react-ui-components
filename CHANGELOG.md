@@ -1,3 +1,10 @@
+# [2.13.0](https://github.com/stefgo/react-ui-components/compare/v2.12.1...v2.13.0) (2026-04-02)
+
+
+### Features
+
+* add defaultSearchValue prop and clear button to DataMultiView search ([adf73e0](https://github.com/stefgo/react-ui-components/commit/adf73e0ff1965d1559d210ff695ad8dbc33ca2a9))
+
 ## [2.12.1](https://github.com/stefgo/react-ui-components/compare/v2.12.0...v2.12.1) (2026-04-02)
 
 
