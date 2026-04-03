@@ -4,6 +4,7 @@ import { Card, CardClassNames } from './Card';
 import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
 import { DataList, DataListDef, DataListColumnDef, DataListClassNames } from './DataList';
 import { DataTreeTable, DataTreeTableClassNames } from './DataTreeTable';
+import { PaginationControls } from './PaginationControls';
 import { cn } from './utils';
 
 export interface DataMultiViewClassNames {
@@ -83,6 +84,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         searchFilter,
         onSearchChange,
         defaultSearchValue,
+        pagination,
         ...sharedProps
     } = props;
 
@@ -219,6 +221,16 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                     defaultSort={defaultSort}
                     sortStorageKey={`${viewModeStorageKey}_sort`}
                     classNames={classNames?.table}
+                />
+            )}
+            {pagination && (
+                <PaginationControls
+                    currentPage={pagination.currentPage}
+                    totalPages={pagination.totalPages}
+                    itemsPerPage={pagination.itemsPerPage}
+                    totalItems={pagination.totalItems}
+                    onPageChange={pagination.onPageChange}
+                    onItemsPerPageChange={pagination.onItemsPerPageChange}
                 />
             )}
         </Card>
