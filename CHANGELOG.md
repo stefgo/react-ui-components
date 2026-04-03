@@ -1,3 +1,10 @@
+## [2.13.1](https://github.com/stefgo/react-ui-components/compare/v2.13.0...v2.13.1) (2026-04-03)
+
+
+### Bug Fixes
+
+* normalize red color to ghost style, add error color for permanent red tint ([0bf35e3](https://github.com/stefgo/react-ui-components/commit/0bf35e33a247d6977b2a0be4c45710232ac17709))
+
 # [2.13.0](https://github.com/stefgo/react-ui-components/compare/v2.12.1...v2.13.0) (2026-04-02)
 
 
