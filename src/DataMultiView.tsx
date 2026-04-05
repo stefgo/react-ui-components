@@ -124,8 +124,8 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         localStorage.setItem(viewModeStorageKey, mode);
     };
 
-    // Effective view mode is forced to 'list' on mobile
-    const effectiveViewMode: ViewMode = isMobile ? 'list' : viewMode;
+    // Effective view mode is forced to 'list' on mobile (only if listColumns is defined)
+    const effectiveViewMode: ViewMode = isMobile && listColumns ? 'list' : viewMode;
 
     const toggleButtonClass = (mode: ViewMode) => cn(
         "p-1 rounded transition-all",
