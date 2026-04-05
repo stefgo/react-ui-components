@@ -23,12 +23,17 @@ export interface MobileMoreMenuConfig {
     groups: SidebarGroup[];
 }
 
+export interface DashboardNavGroup {
+    id: string;
+    title?: string;
+}
+
 export interface DashboardPageNav {
     label: string;
     icon: any; // Icon component (e.g. from lucide-react)
     badge?: string;
     badgeDot?: boolean; // If true, show a dot indicator when sidebar is collapsed
-    group?: string; // Optional group for sidebar/mobile-more categorization
+    groupId?: string; // References DashboardNavGroup.id
     placement?: 'sidebar' | 'mobile-more'; // default: 'sidebar'
     onClick: () => void;
 }
@@ -78,6 +83,7 @@ export interface DashboardProps {
 
     // New Unified Page Prop
     pages?: DashboardPage[];
+    navGroups?: DashboardNavGroup[];
     currentPath?: string;
 
     isSidebarCollapsed: boolean;
@@ -105,6 +111,7 @@ export const Dashboard = ({
 
     // New Page Prop
     pages,
+    navGroups,
     currentPath,
 
     isSidebarCollapsed,
@@ -161,41 +168,32 @@ export const Dashboard = ({
     const sidebarGroups = useMemo<SidebarGroup[]>(() => {
         if (!pages) return [];
 
-        const groupsMap = new Map<string | undefined, DashboardPage[]>();
+        const sidebarPages = pages.filter(p => p.nav);
 
-        pages
-            .filter(page => page.nav)
-            .forEach(page => {
-                const groupName = page.nav!.group;
-                if (!groupsMap.has(groupName)) {
-                    groupsMap.set(groupName, []);
-                }
-                groupsMap.get(groupName)!.push(page);
-            });
-
-        const generatedGroups: SidebarGroup[] = [];
-        groupsMap.forEach((groupPages, groupTitle) => {
-            generatedGroups.push({
-                title: groupTitle,
-                items: groupPages.map(p => {
-                    const NavIcon = p.nav!.icon;
-                    return {
-                        id: p.id,
-                        label: p.nav!.label,
-                        icon: <NavIcon size={18} />,
-                        active: p.id === effectiveActiveId,
-                        onClick: () => {
-                            setInternalActiveId(p.id);
-                            p.nav!.onClick();
-                        },
-                        badge: p.nav!.badge,
-                        badgeDot: p.nav!.badgeDot
-                    };
-                })
-            });
+        const toItems = (groupPages: DashboardPage[]) => groupPages.map(p => {
+            const NavIcon = p.nav!.icon;
+            return {
+                id: p.id,
+                label: p.nav!.label,
+                icon: <NavIcon size={18} />,
+                active: p.id === effectiveActiveId,
+                onClick: () => { setInternalActiveId(p.id); p.nav!.onClick(); },
+                badge: p.nav!.badge,
+                badgeDot: p.nav!.badgeDot
+            };
         });
-        return generatedGroups;
-    }, [pages, effectiveActiveId]);
+
+        if (navGroups) {
+            return navGroups
+                .map(g => ({
+                    title: g.title,
+                    items: toItems(sidebarPages.filter(p => p.nav!.groupId === g.id))
+                }))
+                .filter(g => g.items.length > 0);
+        }
+
+        return [{ title: undefined, items: toItems(sidebarPages) }];
+    }, [pages, navGroups, effectiveActiveId]);
 
     const navItems = useMemo<BottomNavItem[]>(() => {
         if (!pages) return [];
@@ -225,36 +223,28 @@ export const Dashboard = ({
         return {
             title: "More",
             groups: (() => {
-                const groupsMap = new Map<string, DashboardPage[]>();
-                moreMenuPages.forEach(page => {
-                    const groupName = page.nav!.group || "Settings";
-                    if (!groupsMap.has(groupName)) {
-                        groupsMap.set(groupName, []);
-                    }
-                    groupsMap.get(groupName)!.push(page);
+                const toItems = (groupPages: DashboardPage[]) => groupPages.map(p => {
+                    const NavIcon = p.nav!.icon;
+                    return {
+                        id: p.id,
+                        label: p.nav!.label,
+                        icon: <NavIcon size={18} />,
+                        active: p.id === effectiveActiveId,
+                        onClick: () => { setInternalActiveId(p.id); p.nav!.onClick(); },
+                        badge: p.nav!.badge
+                    };
                 });
 
-                const generatedGroups: SidebarGroup[] = [];
-                groupsMap.forEach((groupPages, groupTitle) => {
-                    generatedGroups.push({
-                        title: groupTitle,
-                        items: groupPages.map(p => {
-                            const NavIcon = p.nav!.icon;
-                            return {
-                                id: p.id,
-                                label: p.nav!.label,
-                                icon: <NavIcon size={18} />,
-                                active: p.id === effectiveActiveId,
-                                onClick: () => {
-                                    setInternalActiveId(p.id);
-                                    p.nav!.onClick();
-                                },
-                                badge: p.nav!.badge
-                            };
-                        })
-                    });
-                });
-                return generatedGroups;
+                if (navGroups) {
+                    return navGroups
+                        .map(g => ({
+                            title: g.title,
+                            items: toItems(moreMenuPages.filter(p => p.nav!.groupId === g.id))
+                        }))
+                        .filter(g => g.items.length > 0);
+                }
+
+                return [{ title: undefined, items: toItems(moreMenuPages) }];
             })()
         };
     }, [pages, legacyMobileMoreMenu, effectiveActiveId]);
