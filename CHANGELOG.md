@@ -1,3 +1,15 @@
+# [2.15.0](https://github.com/stefgo/react-ui-components/compare/v2.14.0...v2.15.0) (2026-04-05)
+
+
+### Bug Fixes
+
+* only force list view on mobile when listColumns is defined ([7fcaff4](https://github.com/stefgo/react-ui-components/commit/7fcaff4a960d7604a3eb3e0f1d6943f9a17bebb7))
+
+
+### Features
+
+* add DashboardNavGroup for explicit sidebar grouping with optional titles ([80c3b73](https://github.com/stefgo/react-ui-components/commit/80c3b7324792063689dbfaa73bc178dfd87ec579))
+
 # [2.14.0](https://github.com/stefgo/react-ui-components/compare/v2.13.1...v2.14.0) (2026-04-03)
 
 
