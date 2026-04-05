@@ -23,17 +23,22 @@ export interface MobileMoreMenuConfig {
     groups: SidebarGroup[];
 }
 
-export interface DashboardPage {
-    id: string;
-    group?: string; // Optional group for sidebar categorization
+export interface DashboardPageNav {
     label: string;
     icon: any; // Icon component (e.g. from lucide-react)
     badge?: string;
-    active?: boolean;
-    path?: string | string[];
+    badgeDot?: boolean; // If true, show a dot indicator when sidebar is collapsed
+    group?: string; // Optional group for sidebar/mobile-more categorization
+    placement?: 'sidebar' | 'mobile-more'; // default: 'sidebar'
     onClick: () => void;
-    isMobileMoreMenu?: boolean; // If true, it goes into the mobile 'More' menu instead of bottom nav
-    content?: ReactNode; // The content to render when this page is active
+}
+
+export interface DashboardPage {
+    id: string;
+    path?: string | string[];
+    active?: boolean;
+    content?: ReactNode;
+    nav?: DashboardPageNav;
 }
 
 export interface DashboardClassNames {
@@ -69,8 +74,6 @@ export interface DashboardProps {
     onToggleTheme: () => void;
 
     // Legacy Explicit Props (kept for backwards compatibility)
-    sidebarGroups?: SidebarGroup[];
-    children?: ReactNode;
     mobileMoreMenu?: MobileMoreMenuConfig;
 
     // New Unified Page Prop
@@ -80,6 +83,7 @@ export interface DashboardProps {
     isSidebarCollapsed: boolean;
     onToggleSidebar: () => void;
 
+    headerLeftActions?: ReactNode;
     mobileMenuOverlay?: ReactNode; // Kept for backwards compatibility during transition
     className?: string; // Root className
     mainClassName?: string;
@@ -97,8 +101,6 @@ export const Dashboard = ({
     onToggleTheme,
 
     // Legacy Explicit Props
-    sidebarGroups: legacySidebarGroups = [],
-children: legacyChildren,
     mobileMoreMenu: legacyMobileMoreMenu,
 
     // New Page Prop
@@ -107,6 +109,7 @@ children: legacyChildren,
 
     isSidebarCollapsed,
     onToggleSidebar,
+    headerLeftActions,
     mobileMenuOverlay,
     className = "",
     mainClassName = "",
@@ -156,60 +159,67 @@ children: legacyChildren,
     }, [pages, currentPath, internalActiveId]);
 
     const sidebarGroups = useMemo<SidebarGroup[]>(() => {
-        if (!pages) return legacySidebarGroups;
+        if (!pages) return [];
 
-        // Group pages by their 'group' property
-        const groupsMap = new Map<string, DashboardPage[]>();
-        const defaultGroupKey = "Main";
+        const groupsMap = new Map<string | undefined, DashboardPage[]>();
 
-        pages.forEach(page => {
-            const groupName = page.group || defaultGroupKey;
-            if (!groupsMap.has(groupName)) {
-                groupsMap.set(groupName, []);
-            }
-            groupsMap.get(groupName)!.push(page);
-        });
+        pages
+            .filter(page => page.nav)
+            .forEach(page => {
+                const groupName = page.nav!.group;
+                if (!groupsMap.has(groupName)) {
+                    groupsMap.set(groupName, []);
+                }
+                groupsMap.get(groupName)!.push(page);
+            });
 
         const generatedGroups: SidebarGroup[] = [];
         groupsMap.forEach((groupPages, groupTitle) => {
             generatedGroups.push({
-                title: groupTitle === defaultGroupKey && groupsMap.size === 1 ? undefined : groupTitle,
-                items: groupPages.map(p => ({
-                    id: p.id,
-                    label: p.label,
-                    icon: <p.icon size={18} />,
-                    active: p.id === effectiveActiveId,
-                    onClick: () => {
-                        setInternalActiveId(p.id);
-                        p.onClick();
-                    },
-                    badge: p.badge
-                }))
+                title: groupTitle,
+                items: groupPages.map(p => {
+                    const NavIcon = p.nav!.icon;
+                    return {
+                        id: p.id,
+                        label: p.nav!.label,
+                        icon: <NavIcon size={18} />,
+                        active: p.id === effectiveActiveId,
+                        onClick: () => {
+                            setInternalActiveId(p.id);
+                            p.nav!.onClick();
+                        },
+                        badge: p.nav!.badge,
+                        badgeDot: p.nav!.badgeDot
+                    };
+                })
             });
         });
         return generatedGroups;
-    }, [pages, legacySidebarGroups, effectiveActiveId]);
+    }, [pages, effectiveActiveId]);
 
     const navItems = useMemo<BottomNavItem[]>(() => {
         if (!pages) return [];
 
         return pages
-            .filter(p => !p.isMobileMoreMenu)
-            .map(p => ({
-                id: p.id,
-                icon: <p.icon size={24} />,
-                active: p.id === effectiveActiveId,
-                onClick: () => {
-                    setInternalActiveId(p.id);
-                    p.onClick();
-                }
-            }));
+            .filter(p => p.nav && p.nav.placement !== 'mobile-more')
+            .map(p => {
+                const NavIcon = p.nav!.icon;
+                return {
+                    id: p.id,
+                    icon: <NavIcon size={24} />,
+                    active: p.id === effectiveActiveId,
+                    onClick: () => {
+                        setInternalActiveId(p.id);
+                        p.nav!.onClick();
+                    }
+                };
+            });
     }, [pages, effectiveActiveId]);
 
     const mobileMoreMenu = useMemo<MobileMoreMenuConfig | undefined>(() => {
         if (!pages) return legacyMobileMoreMenu;
 
-        const moreMenuPages = pages.filter(p => p.isMobileMoreMenu);
+        const moreMenuPages = pages.filter(p => p.nav?.placement === 'mobile-more');
         if (moreMenuPages.length === 0) return undefined;
 
         return {
@@ -217,7 +227,7 @@ children: legacyChildren,
             groups: (() => {
                 const groupsMap = new Map<string, DashboardPage[]>();
                 moreMenuPages.forEach(page => {
-                    const groupName = page.group || "Settings";
+                    const groupName = page.nav!.group || "Settings";
                     if (!groupsMap.has(groupName)) {
                         groupsMap.set(groupName, []);
                     }
@@ -228,17 +238,20 @@ children: legacyChildren,
                 groupsMap.forEach((groupPages, groupTitle) => {
                     generatedGroups.push({
                         title: groupTitle,
-                        items: groupPages.map(p => ({
-                            id: p.id,
-                            label: p.label,
-                            icon: <p.icon size={18} />,
-                            active: p.id === effectiveActiveId,
-                            onClick: () => {
-                                setInternalActiveId(p.id);
-                                p.onClick();
-                            },
-                            badge: p.badge
-                        }))
+                        items: groupPages.map(p => {
+                            const NavIcon = p.nav!.icon;
+                            return {
+                                id: p.id,
+                                label: p.nav!.label,
+                                icon: <NavIcon size={18} />,
+                                active: p.id === effectiveActiveId,
+                                onClick: () => {
+                                    setInternalActiveId(p.id);
+                                    p.nav!.onClick();
+                                },
+                                badge: p.nav!.badge
+                            };
+                        })
                     });
                 });
                 return generatedGroups;
@@ -247,11 +260,9 @@ children: legacyChildren,
     }, [pages, legacyMobileMoreMenu, effectiveActiveId]);
 
     const children = useMemo<ReactNode>(() => {
-        if (!pages) return legacyChildren;
-
-        const activePage = pages.find(p => p.id === effectiveActiveId);
-        return activePage?.content || legacyChildren;
-    }, [pages, effectiveActiveId, legacyChildren]);
+        const activePage = pages?.find(p => p.id === effectiveActiveId);
+        return activePage?.content;
+    }, [pages, effectiveActiveId]);
 
 
     // ------------------------------------------------------------------------
@@ -400,6 +411,7 @@ children: legacyChildren,
                     branding={branding}
                     logo={logo}
                     title={title}
+                    leftActions={headerLeftActions}
                     rightActions={userActions}
                     onToggleSidebar={onToggleSidebar}
                     classNames={classNames?.header}

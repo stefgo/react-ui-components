@@ -7,6 +7,7 @@ export interface SidebarItem {
     label: string;
     icon: ReactNode;
     badge?: string;
+    badgeDot?: boolean; // If true, show a dot indicator when sidebar is collapsed
     active?: boolean;
     onClick: () => void;
 }
@@ -45,6 +46,7 @@ const NavItem = ({
     active,
     onClick,
     badge,
+    badgeDot,
     isCollapsed,
     classNames
 }: SidebarItem & { isCollapsed?: boolean; classNames?: SidebarClassNames }) => (
@@ -62,7 +64,12 @@ const NavItem = ({
         )}
     >
         <div className={cn("flex items-center gap-3", classNames?.itemContent)}>
-            <div className={cn("flex-shrink-0", classNames?.itemIcon)}>{icon}</div>
+            <div className={cn("flex-shrink-0 relative", classNames?.itemIcon)}>
+                {icon}
+                {isCollapsed && badgeDot && (
+                    <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500" />
+                )}
+            </div>
             {!isCollapsed && <span className={cn("truncate", classNames?.itemLabel)}>{label}</span>}
         </div>
         {!isCollapsed && badge && (
@@ -96,12 +103,12 @@ export const Sidebar = ({
             classNames?.root
         )}>
             <div className={cn(
-                "p-4 flex flex-1 flex-col gap-8 overflow-y-auto scrollbar-none",
+                "p-4 flex flex-1 flex-col overflow-y-auto scrollbar-none",
                 isCollapsed ? "pt-8 items-center" : "pt-8",
                 classNames?.content
             )}>
                 {groups.map((group, groupIdx) => (
-                    <div key={groupIdx} className={cn("space-y-1 w-full", classNames?.group)}>
+                    <div key={groupIdx} className={cn("space-y-1 w-full", groupIdx > 0 && (group.title ? "mt-8" : "mt-6"), classNames?.group)}>
                         {!isCollapsed && group.title && (
                             <div className={cn(
                                 "text-text-muted dark:text-text-muted-dark text-xs font-bold uppercase tracking-wider px-3 mb-2",
