@@ -25,7 +25,7 @@ export interface DataTableActionItem {
 }
 
 export interface DataTableActionMenuEntry {
-    label: string;
+    label: string | { enabled: string; disabled: string };
     icon: React.ComponentType<{ size?: number; className?: string }>;
     onClick: () => void;
     disabled?: boolean;
@@ -96,6 +96,10 @@ export const DataAction = <TId extends string | number>({
 
                             const disabledClass = 'text-text-muted dark:text-text-muted-dark cursor-not-allowed';
 
+                            const labelText = typeof entry.label === 'string'
+                                ? entry.label
+                                : isDisabled ? entry.label.disabled : entry.label.enabled;
+
                             return (
                                 <button
                                     key={index}
@@ -112,10 +116,10 @@ export const DataAction = <TId extends string | number>({
                                         classNames?.menuItem,
                                         isDisabled ? classNames?.menuItemDisabled : classNames?.menuItemActive
                                     )}
-                                    title={isDisabled ? entry.disabledTitle : entry.label}
+                                    title={isDisabled ? (entry.disabledTitle ?? labelText) : labelText}
                                 >
                                     <entry.icon size={14} />
-                                    {entry.label}
+                                    {labelText}
                                 </button>
                             );
                         })}
