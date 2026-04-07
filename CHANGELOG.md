@@ -1,3 +1,10 @@
+# [2.16.0](https://github.com/stefgo/react-ui-components/compare/v2.15.0...v2.16.0) (2026-04-07)
+
+
+### Features
+
+* support object label in DataTableActionMenuEntry ([1e88b63](https://github.com/stefgo/react-ui-components/commit/1e88b6319273b59eda186646010fb82334eaea3c))
+
 # [2.15.0](https://github.com/stefgo/react-ui-components/compare/v2.14.0...v2.15.0) (2026-04-05)
 
 
