@@ -129,7 +129,9 @@ export class DataTable<T> extends AbstractDataView<T, DataTableProps<T>, DataTab
         const { itemDef, onRowClick, classNames } = this.props;
         const placeholder = this.getPlaceholder();
         const interactionClasses = this.getInteractionClasses();
-        const sortedData = this.getSortedData();
+        // Sort across everything first, then take the page — the other order sorts
+        // only the rows that happen to be on screen.
+        const sortedData = this.applyPageSlice(this.getSortedData());
 
         return (
             <div className="overflow-x-auto h-full w-full">

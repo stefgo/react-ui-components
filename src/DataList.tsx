@@ -43,6 +43,9 @@ export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
         const { data, columns: columnsProp, onRowClick, classNames } = this.props;
         const placeholder = this.getPlaceholder();
         const interactionClasses = this.getInteractionClasses();
+        // No sorting here — the caller's order is kept — but the page still has to be
+        // taken, or a sliceInternally caller would get every row in the card view.
+        const rows = this.applyPageSlice(data);
 
         return (
             <div className={cn("divide-y divide-border dark:divide-border-dark", classNames?.listRoot)}>
@@ -51,7 +54,7 @@ export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
                         {placeholder}
                     </div>
                 ) : (
-                    data.map((item) => (
+                    rows.map((item) => (
                         <div
                             key={this.getKey(item)}
                             onClick={() => onRowClick?.(item)}

@@ -4,6 +4,7 @@ import { Card, CardClassNames } from './Card';
 import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
 import { DataList, DataListDef, DataListColumnDef, DataListClassNames } from './DataList';
 import { DataTreeTable, DataTreeTableClassNames } from './DataTreeTable';
+import { BaseDataViewProps } from './AbstractDataView';
 import { PaginationControls } from './PaginationControls';
 import { cn } from './utils';
 
@@ -43,14 +44,8 @@ export interface DataMultiViewProps<T> {
     defaultSort?: { colIndex: number; direction: 'asc' | 'desc' };
     rowClassName?: string | ((item: T) => string);
     onRowClick?: (item: T) => void;
-    pagination?: {
-        currentPage: number;
-        totalPages: number;
-        itemsPerPage: number;
-        totalItems: number;
-        onPageChange: (page: number) => void;
-        onItemsPerPageChange: (limit: number) => void;
-    };
+    /** Derived from the data views so the two shapes cannot drift apart. */
+    pagination?: BaseDataViewProps<T>['pagination'];
     classNames?: DataMultiViewClassNames;
     /** Show search input between header and content */
     searchable?: boolean;
@@ -169,6 +164,9 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         ...sharedProps,
         data: filteredData,
         containerClassName: "rounded-none border-0 shadow-none flex-1",
+        // The child view needs the page bounds to slice with, but this component
+        // draws the controls itself further down.
+        pagination: pagination && { ...pagination, renderControls: false },
     };
 
     return (

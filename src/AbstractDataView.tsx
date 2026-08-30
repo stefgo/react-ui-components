@@ -25,6 +25,23 @@ export interface BaseDataViewProps<T> {
         totalItems: number;
         onPageChange: (page: number) => void;
         onItemsPerPageChange: (limit: number) => void;
+        /**
+         * Pass the *full* data set and let the view take the current page itself.
+         *
+         * Callers that slice before handing over their data get a table that sorts
+         * only what is already on screen — DataTable sorts the rows it is given, so
+         * on page 2 of 5 a column sort reorders ten rows and leaves the rest alone.
+         * With this set the view sorts first and slices second, which is the order
+         * the user expects.
+         *
+         * Off by default so existing callers keep their current behaviour.
+         *
+         * Honoured by DataTable and DataList. DataTreeTable ignores it: it sorts each
+         * level inside flattenTree, so paging it correctly needs that split up first.
+         */
+        sliceInternally?: boolean;
+        /** Set false when an outer component already draws the controls. Default true. */
+        renderControls?: boolean;
     };
     classNames?: DataViewClassNames;
 }
@@ -49,9 +66,22 @@ export abstract class AbstractDataView<T, P extends BaseDataViewProps<T>, S = {}
             : '';
     }
 
+    /**
+     * Takes the current page out of `rows`, but only when the caller opted into
+     * `pagination.sliceInternally`. Subclasses call this last, after any sorting,
+     * so that the sort runs across the whole data set rather than one page of it.
+     */
+    protected applyPageSlice(rows: T[]): T[] {
+        const { pagination } = this.props;
+        if (!pagination?.sliceInternally) return rows;
+
+        const start = (pagination.currentPage - 1) * pagination.itemsPerPage;
+        return rows.slice(start, start + pagination.itemsPerPage);
+    }
+
     protected renderPagination(): ReactNode {
         const { pagination, classNames } = this.props;
-        if (!pagination) return null;
+        if (!pagination || pagination.renderControls === false) return null;
 
         return (
             <div className={cn("shrink-0 border-t border-card dark:border-card-dark bg-card dark:bg-card-dark", classNames?.paginationWrapper)}>
