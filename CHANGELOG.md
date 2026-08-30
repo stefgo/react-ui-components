@@ -1,3 +1,10 @@
+## [2.16.1](https://github.com/stefgo/react-ui-components/compare/v2.16.0...v2.16.1) (2026-08-30)
+
+
+### Bug Fixes
+
+* **data-views:** vor dem Paginieren sortieren statt danach ([87dbe55](https://github.com/stefgo/react-ui-components/commit/87dbe55c7b1cfe9dd43b4a1149b15b086bb84ac8))
+
 # [2.16.0](https://github.com/stefgo/react-ui-components/compare/v2.15.0...v2.16.0) (2026-04-07)
 
 
