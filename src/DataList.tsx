@@ -41,9 +41,9 @@ function resolveContent<T>(col: DataListDef<T>, item: T): ReactNode {
 }
 
 export const DataList = <T,>(props: DataListProps<T>) => {
-    const { columns: columnsProp, onRowClick, classNames, className } = props;
+    const { columns: columnsProp, classNames, className } = props;
     // No comparator — the caller's order is kept.
-    const { rows, placeholder, getKey, getRowClass, interactionClasses, pagination } = useDataView(props);
+    const { rows, placeholder, getKey, getRowClass, rowActivationProps, interactionClasses, pagination } = useDataView(props);
 
     return (
         <DataViewFrame className={className} classNames={classNames} pagination={pagination}>
@@ -56,7 +56,7 @@ export const DataList = <T,>(props: DataListProps<T>) => {
                     rows.map((item) => (
                         <div
                             key={getKey(item)}
-                            onClick={() => onRowClick?.(item)}
+                            {...rowActivationProps(item)}
                             className={cn(
                                 "px-5 py-2 transition-colors group",
                                 interactionClasses,

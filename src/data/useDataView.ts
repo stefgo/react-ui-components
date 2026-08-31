@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useMemo } from 'react';
+import { KeyboardEvent, MouseEvent, ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { BaseDataViewProps, Comparator } from './types';
 import { runDataPipeline } from './pipeline';
 import { usePaginationState } from './usePaginationState';
@@ -15,6 +15,27 @@ export interface PaginationView {
     onPageSizeChange: (size: number) => void;
 }
 
+/**
+ * Anything inside a row that is a control in its own right. A click on one of
+ * these is that control's click, not the row's.
+ */
+const INTERACTIVE_DESCENDANT = 'button, a[href], input, select, textarea, [role="button"], [role="menuitem"]';
+
+/** True when the event started on a control inside the row rather than on the row. */
+function startedOnAControl(event: { target: EventTarget | null; currentTarget: EventTarget | null }): boolean {
+    const target = event.target;
+    if (!(target instanceof Element)) return false;
+    const control = target.closest(INTERACTIVE_DESCENDANT);
+    return !!control && control !== event.currentTarget;
+}
+
+/** What a clickable row spreads onto its element. Empty when `onRowClick` is unset. */
+export interface RowActivationProps {
+    tabIndex?: number;
+    onClick?: (event: MouseEvent<HTMLElement>) => void;
+    onKeyDown?: (event: KeyboardEvent<HTMLElement>) => void;
+}
+
 export interface UseDataViewResult<T> {
     /** Exactly the rows to render — filtered, sorted and reduced to the current page. */
     rows: T[];
@@ -22,6 +43,11 @@ export interface UseDataViewResult<T> {
     placeholder: ReactNode | null;
     getKey: (item: T) => string | number;
     getRowClass: (item: T) => string;
+    /**
+     * Spread onto the row element. A row with `onRowClick` is reachable by Tab
+     * and fires on Enter or Space, not on click alone.
+     */
+    rowActivationProps: (item: T) => RowActivationProps;
     interactionClasses: string;
     /** null when the caller did not ask for pagination. */
     pagination: PaginationView | null;
@@ -73,8 +99,34 @@ export function useDataView<T>(
         typeof rowClassName === 'function' ? rowClassName(item) : (rowClassName ?? '')
     ), [rowClassName]);
 
+    const rowActivationProps = useCallback((item: T): RowActivationProps => {
+        if (!onRowClick) return {};
+        return {
+            tabIndex: 0,
+            // A row action, a link, a checkbox in a cell: their click bubbles
+            // to the row, and without this the row fires alongside them.
+            onClick: (event) => {
+                if (startedOnAControl(event)) return;
+                onRowClick(item);
+            },
+            onKeyDown: (event) => {
+                // Only the row's own keystrokes. A button inside a cell — the
+                // tree chevron, a row action — handles its own Enter, and
+                // without this guard it would trigger the row as well.
+                if (event.target !== event.currentTarget) return;
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                // Space on a focused element scrolls the page otherwise.
+                event.preventDefault();
+                onRowClick(item);
+            },
+        };
+    }, [onRowClick]);
+
+    // No `role="button"`: it would replace the row semantics that let a screen
+    // reader announce the column a cell belongs to. Focusable and operable is
+    // what the row is missing, not a different role.
     const interactionClasses = onRowClick
-        ? 'cursor-pointer hover:bg-table-row-hover'
+        ? 'cursor-pointer hover:bg-table-row-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary'
         : '';
 
     const placeholder = isLoading ? loadingMessage
@@ -95,5 +147,5 @@ export function useDataView<T>(
         onPageSizeChange: (size) => pagination.setState({ page: 1, pageSize: size }),
     } : null;
 
-    return { rows: result.rows, placeholder, getKey, getRowClass, interactionClasses, pagination: paginationView };
+    return { rows: result.rows, placeholder, getKey, getRowClass, rowActivationProps, interactionClasses, pagination: paginationView };
 }

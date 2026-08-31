@@ -16,6 +16,7 @@ export interface DataTreeTableClassNames extends DataViewClassNames {
     thead?: string;
     headerRow?: string;
     th?: string;
+    sortButton?: string;
     tbody?: string;
     tr?: string;
     td?: string;
@@ -36,15 +37,15 @@ export interface DataTreeTableProps<T> extends BaseDataViewProps<T> {
 }
 
 export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
-    const { itemDef, getChildren, expanded, sort, indentSize = 20, onRowClick, classNames, className } = props;
+    const { itemDef, getChildren, expanded, sort, indentSize = 20, classNames, className } = props;
 
-    const { sortColumns, comparator, handleSortClick } = useSortColumns({ itemDef, sort });
+    const { sortColumns, comparator, handleSortClick, sortStateOf } = useSortColumns({ itemDef, sort });
 
     // A page is taken from the root level only — `rows` are the roots on this
     // page, and their children are expanded underneath regardless of the page
     // size. Counting rendered rows instead would make a page's length depend on
     // what happens to be expanded.
-    const { rows, placeholder, getKey, getRowClass, interactionClasses, pagination } = useDataView(props, comparator);
+    const { rows, placeholder, getKey, getRowClass, rowActivationProps, interactionClasses, pagination } = useDataView(props, comparator);
 
     const { expandedKeys, allExpanded, toggleRow, toggleAll } = useTreeExpansion({
         data: props.data,
@@ -62,39 +63,64 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                 <table className={cn("w-full text-left border-collapse", classNames?.table)}>
                     <thead className={cn("sticky top-0 bg-table-header z-sticky", classNames?.thead)}>
                         <tr className={cn("border-b border-border", classNames?.headerRow)}>
-                            {itemDef.map((col, idx) => (
-                                <th
-                                    key={idx}
-                                    onClick={(e) => handleSortClick(col, idx, e)}
-                                    className={cn(
-                                        "px-6 py-2 text-xs font-medium text-text-muted uppercase tracking-wider",
-                                        isSortable(col) && "cursor-pointer select-none hover:text-text-primary",
-                                        col.tableHeaderClassName,
-                                        classNames?.th,
-                                    )}
-                                >
-                                    {idx === 0 ? (
+                            {itemDef.map((col, idx) => {
+                                const sortable = isSortable(col);
+                                return (
+                                    <th
+                                        key={idx}
+                                        scope="col"
+                                        aria-sort={sortable ? sortStateOf(idx) : undefined}
+                                        className={cn(
+                                            "px-6 py-2 text-xs font-medium text-text-muted uppercase tracking-wider",
+                                            col.tableHeaderClassName,
+                                            classNames?.th,
+                                        )}
+                                    >
+                                        {/*
+                                            The expand-all toggle is a sibling of the sort button,
+                                            not its child: nesting one button inside another is
+                                            invalid HTML, and the split is what removes the
+                                            stopPropagation the <th> click handler needed.
+                                        */}
                                         <div className="flex items-center gap-2">
-                                            <span
-                                                onClick={(e) => { e.stopPropagation(); toggleAll(); }}
-                                                className={cn("shrink-0 cursor-pointer hover:text-text-primary", classNames?.chevronIcon)}
-                                            >
-                                                {allExpanded
-                                                    ? <ChevronDown size={14} />
-                                                    : <ChevronRight size={14} />
-                                                }
-                                            </span>
-                                            {col.tableHeader}
-                                            <SortIcon col={col} colIndex={idx} sortColumns={sortColumns} />
+                                            {idx === 0 && (
+                                                <button
+                                                    type="button"
+                                                    onClick={toggleAll}
+                                                    aria-expanded={allExpanded}
+                                                    aria-label={allExpanded ? 'Collapse all rows' : 'Expand all rows'}
+                                                    className={cn(
+                                                        "shrink-0 hover:text-text-primary rounded-sm",
+                                                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                                                        classNames?.chevronIcon,
+                                                    )}
+                                                >
+                                                    {allExpanded
+                                                        ? <ChevronDown size={14} aria-hidden />
+                                                        : <ChevronRight size={14} aria-hidden />
+                                                    }
+                                                </button>
+                                            )}
+                                            {sortable ? (
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => handleSortClick(col, idx, e)}
+                                                    className={cn(
+                                                        "inline-flex items-center gap-1 select-none uppercase hover:text-text-primary",
+                                                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm",
+                                                        classNames?.sortButton,
+                                                    )}
+                                                >
+                                                    {col.tableHeader}
+                                                    <SortIcon col={col} colIndex={idx} sortColumns={sortColumns} />
+                                                </button>
+                                            ) : (
+                                                col.tableHeader
+                                            )}
                                         </div>
-                                    ) : (
-                                        <>
-                                            {col.tableHeader}
-                                            <SortIcon col={col} colIndex={idx} sortColumns={sortColumns} />
-                                        </>
-                                    )}
-                                </th>
-                            ))}
+                                    </th>
+                                );
+                            })}
                         </tr>
                     </thead>
                     <tbody className={cn("divide-y divide-border", classNames?.tbody)}>
@@ -122,7 +148,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                 return (
                                     <tr
                                         key={key}
-                                        onClick={() => onRowClick?.(item)}
+                                        {...rowActivationProps(item)}
                                         className={cn(
                                             "transition-colors group",
                                             interactionClasses,
@@ -143,24 +169,37 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                                         className={cn("px-6 py-2 whitespace-nowrap text-text-primary", cellClass, classNames?.td)}
                                                     >
                                                         <div className="flex items-center gap-2">
-                                                            <span
-                                                                className={cn(
-                                                                    "shrink-0 w-4 text-text-muted",
-                                                                    hasChildren && "cursor-pointer hover:text-text-primary",
-                                                                    classNames?.chevronIcon,
-                                                                )}
-                                                                onClick={(e) => {
-                                                                    if (hasChildren) {
-                                                                        e.stopPropagation();
-                                                                        toggleRow(key);
+                                                            {/*
+                                                                A leaf gets an empty span, not a disabled
+                                                                button: it only has to hold the indent open,
+                                                                and a disabled control would still show up
+                                                                in the accessibility tree saying nothing.
+                                                            */}
+                                                            {hasChildren ? (
+                                                                <button
+                                                                    type="button"
+                                                                    aria-expanded={isExpanded}
+                                                                    aria-label={isExpanded ? 'Collapse row' : 'Expand row'}
+                                                                    // The row itself may be clickable; expanding is
+                                                                    // not the same action as opening the row.
+                                                                    onClick={(e) => { e.stopPropagation(); toggleRow(key); }}
+                                                                    className={cn(
+                                                                        "shrink-0 w-4 text-text-muted hover:text-text-primary rounded-sm",
+                                                                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                                                                        classNames?.chevronIcon,
+                                                                    )}
+                                                                >
+                                                                    {isExpanded
+                                                                        ? <ChevronDown size={16} aria-hidden />
+                                                                        : <ChevronRight size={16} aria-hidden />
                                                                     }
-                                                                }}
-                                                            >
-                                                                {hasChildren && (isExpanded
-                                                                    ? <ChevronDown size={16} />
-                                                                    : <ChevronRight size={16} />
-                                                                )}
-                                                            </span>
+                                                                </button>
+                                                            ) : (
+                                                                <span
+                                                                    aria-hidden="true"
+                                                                    className={cn("shrink-0 w-4", classNames?.chevronIcon)}
+                                                                />
+                                                            )}
                                                             {cellContent(col)}
                                                         </div>
                                                     </td>

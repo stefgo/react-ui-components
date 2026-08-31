@@ -1,4 +1,4 @@
-import { MouseEvent, useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { DataTableDef } from '../DataTable';
 import { useControllableState } from '../hooks/useControllableState';
 import type { Controllable } from '../types';
@@ -14,6 +14,20 @@ export interface SortOptions extends Controllable<SortEntry[]> {
     storageKey?: string;
 }
 
+/**
+ * What the sort transition actually reads off an event.
+ *
+ * Deliberately not `MouseEvent`: a header is activated by click *and* by Enter
+ * or Space on the button, and the only thing the transition needs from either
+ * is whether Shift was held. Narrowing to this shape keeps every existing
+ * mouse call valid and makes Shift+Enter additive without a second code path.
+ */
+export interface SortActivation {
+    shiftKey: boolean;
+}
+
+export type AriaSort = 'ascending' | 'descending' | 'none';
+
 export interface UseSortColumnsOptions<T> {
     itemDef: DataTableDef<T>[];
     sort?: SortOptions;
@@ -23,7 +37,12 @@ export interface UseSortColumnsResult<T> {
     sortColumns: SortEntry[];
     /** undefined while nothing is sorted — the caller's order stays untouched. */
     comparator: Comparator<T> | undefined;
-    handleSortClick: (col: DataTableDef<T>, colIndex: number, event: MouseEvent) => void;
+    handleSortClick: (col: DataTableDef<T>, colIndex: number, event: SortActivation) => void;
+    /**
+     * The `aria-sort` value for a column — the only thing that tells a screen
+     * reader the table is sorted, and by which column.
+     */
+    sortStateOf: (colIndex: number) => AriaSort;
 }
 
 /** Column sorting for the table views: state, persistence and the click logic. */
@@ -57,10 +76,16 @@ export function useSortColumns<T>({ itemDef, sort }: UseSortColumnsOptions<T>): 
 
     const comparator = useMemo(() => buildComparator(itemDef, sortColumns), [itemDef, sortColumns]);
 
-    const handleSortClick = useCallback((col: DataTableDef<T>, colIndex: number, event: MouseEvent) => {
+    const handleSortClick = useCallback((col: DataTableDef<T>, colIndex: number, event: SortActivation) => {
         if (!isSortable(col)) return;
         setSortColumns((prev) => nextSortColumns(prev, colIndex, event.shiftKey));
     }, [setSortColumns]);
 
-    return { sortColumns, comparator, handleSortClick };
+    const sortStateOf = useCallback((colIndex: number): AriaSort => {
+        const entry = sortColumns.find((s) => s.colIndex === colIndex);
+        if (!entry) return 'none';
+        return entry.direction === 'asc' ? 'ascending' : 'descending';
+    }, [sortColumns]);
+
+    return { sortColumns, comparator, handleSortClick, sortStateOf };
 }
