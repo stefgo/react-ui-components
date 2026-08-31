@@ -1,4 +1,3 @@
-export * from "./AbstractDataView";
 export * from "./data/types";
 export * from "./data/useDataView";
 export * from "./data/sorting";
