@@ -2,7 +2,7 @@ import { ReactNode, useState, useEffect, useMemo } from 'react';
 import { LayoutList, Table as TableIcon, Network, Search, X } from 'lucide-react';
 import { Card, CardClassNames } from './Card';
 import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
-import { DataList, DataListDef, DataListColumnDef, DataListClassNames } from './DataList';
+import { DataList, DataListColumnDef, DataListClassNames } from './DataList';
 import { DataTreeTable, DataTreeTableClassNames } from './DataTreeTable';
 import { BaseDataViewProps } from './data/types';
 import { cn } from './utils';
@@ -29,7 +29,6 @@ export interface DataMultiViewProps<T> {
     data: T[];
     getChildren?: (item: T) => T[] | undefined | null;
     tableDef?: DataTableDef<T>[];
-    listDef?: DataListDef<T>[];
     listColumns?: DataListColumnDef<T>[];
     /** Column definitions for tree table view. Requires `getChildren` to be set. */
     treeTableDef?: DataTableDef<T>[];
