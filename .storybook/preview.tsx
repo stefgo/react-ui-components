@@ -64,7 +64,16 @@ const preview: Preview = {
     },
     parameters: {
         controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
-        a11y: { test: 'error' },
+        // Every axe rule stays at 'error' — a violation fails the test run rather
+        // than sitting in the panel. The one exception is contrast: it is turned
+        // off globally by request. Nothing checks colour pairs automatically any
+        // more, so a token change has to be judged by eye in `side-by-side`.
+        a11y: {
+            test: 'error',
+            options: {
+                rules: { 'color-contrast': { enabled: false } },
+            },
+        },
         layout: 'fullscreen',
     },
 };
