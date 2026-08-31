@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip } from './Tooltip';
 import { ICON_SIZE, type ControlSize, type IconComponent } from './types';
 import { cn } from './utils';
 
@@ -79,11 +80,9 @@ export const ActionButton = ({
         return isDisabled ? tooltip.disabled : tooltip.enabled;
     };
 
-    // The button renders an icon only, so the tooltip has to double as its
-    // accessible name – `title` alone is not reliably announced.
     const tooltipText = getTooltip();
 
-    return (
+    const button = (
         <button
             ref={ref}
             type="button"
@@ -102,11 +101,23 @@ export const ActionButton = ({
                 variantClasses,
                 className
             )}
-            title={tooltipText}
             aria-label={props['aria-label'] ?? tooltipText}
             {...props}
         >
             <Icon size={ICON_SIZE[size]} className={cn(classNames?.icon)} aria-hidden />
         </button>
     );
+
+    /*
+     * The button shows an icon only, so `tooltip` does two jobs: it is the
+     * accessible name (above) and the visible explanation (here).
+     *
+     * It used to be a native `title` for both, which fails at each: `title` is
+     * invisible on touch devices and unreliably announced. The name now comes
+     * from `aria-label`, which always works, and the visible half from a real
+     * tooltip element. A caller-supplied `aria-label` still wins over both.
+     */
+    if (!tooltipText) return button;
+
+    return <Tooltip content={tooltipText}>{button}</Tooltip>;
 };

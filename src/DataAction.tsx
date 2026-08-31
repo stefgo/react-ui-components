@@ -88,7 +88,7 @@ export const DataAction = <TId extends string | number>({
                     <ActionMenu
                         isOpen={isMenuOpen}
                         onClose={closeMenu}
-                        position={menuState || { x: 0, y: 0, top: 0 }}
+                        anchor={menuState?.anchor ?? null}
                         triggerRef={triggerRef}
                     >
                         {menuEntries.map((entry, index) => {

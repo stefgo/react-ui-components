@@ -16,6 +16,12 @@ export interface FormFieldProps {
     error?: string;
     required?: boolean;
     fullWidth?: boolean;
+    /**
+     * `stacked` — label above the control, for text-like inputs.
+     * `inline` — label beside it, for checkbox, radio and switch, where the
+     * label is what you actually click.
+     */
+    layout?: 'stacked' | 'inline';
     /** Wins over the generated one, so a field can be addressed from outside. */
     id?: string;
     /** The caller's own `aria-describedby`; merged, not replaced. */
@@ -41,6 +47,7 @@ export const FormField = ({
     error,
     required,
     fullWidth = true,
+    layout = 'stacked',
     id,
     describedBy,
     className = '',
@@ -48,27 +55,48 @@ export const FormField = ({
     children
 }: FormFieldProps) => {
     const ids = useFieldIds({ id, error, hint, describedBy });
+    const isInline = layout === 'inline';
+
+    const labelElement = label && (
+        <label
+            htmlFor={ids.id}
+            className={cn(
+                isInline
+                    ? "text-sm text-text-primary cursor-pointer select-none"
+                    : "block text-xs font-bold text-text-muted uppercase mb-1.5 ml-1",
+                classNames?.label
+            )}
+        >
+            {label}
+            {/*
+                The asterisk is decoration: `required` on the control is what
+                assistive technology reads, and hearing "star" adds nothing to it.
+            */}
+            {required && <span className="text-error" aria-hidden="true"> *</span>}
+        </label>
+    );
+
+    const control = (
+        <div className={cn(isInline ? "flex items-center" : "relative", classNames?.control)}>
+            {children(ids)}
+        </div>
+    );
 
     return (
-        <div className={cn(fullWidth ? 'w-full' : '', className)}>
-            {label && (
-                <label
-                    htmlFor={ids.id}
-                    className={cn("block text-xs font-bold text-text-muted uppercase mb-1.5 ml-1", classNames?.label)}
-                >
-                    {label}
-                    {/*
-                        The asterisk is decoration: `required` on the control is
-                        what assistive technology reads, and hearing "star" adds
-                        nothing to it.
-                    */}
-                    {required && <span className="text-error" aria-hidden="true"> *</span>}
-                </label>
+        <div className={cn(fullWidth && !isInline ? 'w-full' : '', className)}>
+            {isInline ? (
+                // Control first in the DOM as well as on screen, so tab order and
+                // reading order agree with what the layout shows.
+                <div className="flex items-center gap-2.5">
+                    {control}
+                    {labelElement}
+                </div>
+            ) : (
+                <>
+                    {labelElement}
+                    {control}
+                </>
             )}
-
-            <div className={cn("relative", classNames?.control)}>
-                {children(ids)}
-            </div>
 
             {error && (
                 <p id={ids.errorId} role="alert" className={cn("mt-1 text-xs text-error", classNames?.error)}>

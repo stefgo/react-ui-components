@@ -1,33 +1,24 @@
-import { useLayoutEffect, useState, RefObject } from 'react';
+import { ReactNode, RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { useMenuBehavior } from './hooks/useMenuBehavior';
+import { usePopoverPosition, type AnchorRect } from './hooks/usePopoverPosition';
 import { cn } from './utils';
-
-export interface ActionMenuPosition {
-    /** Right edge of the trigger – the menu is right-aligned to it. */
-    x: number;
-    /** Bottom edge of the trigger – the menu opens below it. */
-    y: number;
-    /** Top edge of the trigger. Lets the menu flip above when space runs out. */
-    top?: number;
-}
 
 interface ActionMenuProps {
     isOpen: boolean;
     onClose: () => void;
-    position: ActionMenuPosition;
-    children: React.ReactNode;
+    /** The trigger's bounding rect. `useActionMenu` produces it. */
+    anchor: AnchorRect | null;
+    children: ReactNode;
     /** Focus returns here when the menu closes. */
     triggerRef?: RefObject<HTMLElement | null>;
     className?: string;
 }
 
-const VIEWPORT_MARGIN = 8;
-
 export const ActionMenu = ({
     isOpen,
     onClose,
-    position,
+    anchor,
     children,
     triggerRef,
     className = ''
@@ -40,47 +31,33 @@ export const ActionMenu = ({
         closeOnViewportChange: true
     });
 
-    const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
-
-    // Measure the rendered menu and keep it inside the viewport. Runs before paint,
-    // so the menu never shows up at the unclamped position first.
-    // A closed menu renders nothing, so there is no stale position to clear – the
-    // next open re-measures before the browser paints.
-    useLayoutEffect(() => {
-        const el = containerRef.current;
-        if (!isOpen || !el) return;
-
-        const { width, height } = el.getBoundingClientRect();
-        const maxLeft = window.innerWidth - width - VIEWPORT_MARGIN;
-        const maxTop = window.innerHeight - height - VIEWPORT_MARGIN;
-
-        const left = Math.max(VIEWPORT_MARGIN, Math.min(position.x - width, maxLeft));
-
-        let top = position.y + VIEWPORT_MARGIN;
-        if (top > maxTop) {
-            // Flip above the trigger when we know where it starts, otherwise clamp.
-            top = position.top !== undefined
-                ? position.top - height - VIEWPORT_MARGIN
-                : maxTop;
-        }
-        top = Math.max(VIEWPORT_MARGIN, top);
-
-        setCoords({ top, left });
-    }, [isOpen, position.x, position.y, position.top, containerRef]);
+    // Right-aligned under the trigger, flipping above it when the page bottom
+    // is closer than the menu is tall.
+    const { ref: positionRef, style, isPositioned } = usePopoverPosition<HTMLDivElement>({
+        isOpen,
+        anchor,
+        placement: 'bottom',
+        align: 'end'
+    });
 
     if (!isOpen) return null;
 
     return createPortal(
         <div
-            ref={containerRef}
+            ref={(node) => {
+                containerRef.current = node;
+                positionRef.current = node;
+            }}
             role="menu"
             tabIndex={-1}
             className={cn(
-                "fixed w-48 bg-card rounded-md shadow-lg border border-border z-dropdown py-1 focus:outline-none",
-                coords ? "visible" : "invisible",
+                "w-48 bg-card rounded-md shadow-lg border border-border z-dropdown py-1 focus:outline-none",
+                // In the DOM but not yet measured: it needs a size before it can
+                // be placed, and it has no size until it is rendered.
+                isPositioned ? "visible" : "invisible",
                 className
             )}
-            style={coords ?? { top: position.y, left: position.x }}
+            style={style}
         >
             {children}
         </div>,
