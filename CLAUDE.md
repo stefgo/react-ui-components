@@ -50,12 +50,18 @@ The preset does three things: adds the library's dist files to Tailwind's `conte
 | `hooks/useMenuBehavior.ts` | outside click, Escape, focus movement, focus trap, focus restoration, scroll lock. Used by `ActionMenu`, `UserMenu`, `MobileMoreSheet` and `Modal`. |
 | `hooks/usePopoverPosition.ts` | measuring a floating element and keeping it in the viewport, before paint. Used by `ActionMenu` and `Tooltip`. |
 | `hooks/useControllableState.ts` | controlled vs. uncontrolled, for every such state. |
-| `form/FormField.tsx` + `form/useFieldIds.ts` | label, hint, error and the ARIA wiring between them. Every control sits in one. |
+| `form/FormField.tsx` + `form/useFieldIds.ts` + `form/FieldMessages.tsx` | label, hint, error and the ARIA wiring between them. |
 
 `FormField` encodes one rule worth knowing: an error replaces the hint on screen
 **and** in `aria-describedby`, so nothing is announced that is not visible. It
 has two layouts — `stacked` for text inputs, `inline` for checkbox, radio and
 switch.
+
+Every *single* control sits in a `FormField`. `RadioGroup` is the exception and
+has to be: a group is a `<fieldset>` with a `<legend>`, which is what ties the
+question to each option's answer — a label above a control cannot do that. It
+still shares the wiring (`useFieldIds`) and the two message paragraphs
+(`FieldMessages`), so only the layout differs, not the rule.
 
 Form controls are **restyled native elements**, not divs with ARIA. Arrow-key
 navigation in a radio group, the roving tab stop, the checkbox's third state:
