@@ -11,6 +11,12 @@ export interface DataTableDef<T> {
     accessorKey?: keyof T;
     sortable?: boolean;
     sortValue?: (item: T) => string | number;
+    /**
+     * The column heading. A blank string is not an option: an empty `<th>`
+     * promises a screen reader a column name and then gives it none. A column
+     * whose heading is deliberately invisible — an actions column — passes a
+     * visually hidden node instead: `<span className="sr-only">Actions</span>`.
+     */
     tableHeader: ReactNode;
     tableHeaderClassName?: string;
     tableCellClassName?: string | ((item: T) => string);

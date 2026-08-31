@@ -18,7 +18,7 @@ const columns: DataTableDef<DemoClient>[] = [
     { accessorKey: 'jobs', tableHeader: 'Jobs', sortable: true },
     { accessorKey: 'lastSeen', tableHeader: 'Last seen' },
     {
-        tableHeader: '',
+        tableHeader: <span className="sr-only">Actions</span>,
         tableCellClassName: 'w-px',
         tableItemRender: (c) => (
             <DataAction
