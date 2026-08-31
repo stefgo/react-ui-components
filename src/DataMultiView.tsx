@@ -4,7 +4,7 @@ import { Card, CardClassNames } from './Card';
 import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
 import { DataList, DataListDef, DataListColumnDef, DataListClassNames } from './DataList';
 import { DataTreeTable, DataTreeTableClassNames } from './DataTreeTable';
-import { BaseDataViewProps } from './AbstractDataView';
+import { BaseDataViewProps } from './data/types';
 import { PaginationControls } from './PaginationControls';
 import { cn } from './utils';
 

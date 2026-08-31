@@ -1,4 +1,7 @@
 export * from "./AbstractDataView";
+export * from "./data/types";
+export * from "./data/useDataView";
+export * from "./data/DataViewFrame";
 export * from "./ActionButton";
 export * from "./ActionMenu";
 export * from "./Button";

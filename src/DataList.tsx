@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
-import { AbstractDataView, BaseDataViewProps, DataViewClassNames } from './AbstractDataView';
+import { BaseDataViewProps, DataViewClassNames } from './data/types';
+import { useDataView } from './data/useDataView';
+import { DataViewFrame } from './data/DataViewFrame';
 import { cn } from './utils';
 
 export interface DataListDef<T> {
@@ -32,22 +34,19 @@ export interface DataListProps<T> extends BaseDataViewProps<T> {
     classNames?: DataListClassNames;
 }
 
-export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
-    private resolveContent(col: DataListDef<T>, item: T): ReactNode {
-        if (col.listItemRender) return col.listItemRender(item);
-        if (col.accessorKey) return item[col.accessorKey] as unknown as ReactNode;
-        return null;
-    }
+function resolveContent<T>(col: DataListDef<T>, item: T): ReactNode {
+    if (col.listItemRender) return col.listItemRender(item);
+    if (col.accessorKey) return item[col.accessorKey] as unknown as ReactNode;
+    return null;
+}
 
-    protected renderContent(): ReactNode {
-        const { data, columns: columnsProp, onRowClick, classNames } = this.props;
-        const placeholder = this.getPlaceholder();
-        const interactionClasses = this.getInteractionClasses();
-        // No sorting here — the caller's order is kept — but the page still has to be
-        // taken, or a sliceInternally caller would get every row in the card view.
-        const rows = this.applyPageSlice(data);
+export const DataList = <T,>(props: DataListProps<T>) => {
+    const { columns: columnsProp, onRowClick, classNames, containerClassName, pagination } = props;
+    // No comparator — the caller's order is kept.
+    const { rows, placeholder, getKey, getRowClass, interactionClasses } = useDataView(props);
 
-        return (
+    return (
+        <DataViewFrame containerClassName={containerClassName} classNames={classNames} pagination={pagination}>
             <div className={cn("divide-y divide-border dark:divide-border-dark", classNames?.listRoot)}>
                 {placeholder ? (
                     <div className={cn("px-6 py-8 text-center text-text-muted dark:text-text-muted-dark", classNames?.placeholder)}>
@@ -56,12 +55,12 @@ export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
                 ) : (
                     rows.map((item) => (
                         <div
-                            key={this.getKey(item)}
+                            key={getKey(item)}
                             onClick={() => onRowClick?.(item)}
                             className={cn(
                                 "px-5 py-2 transition-colors group",
                                 interactionClasses,
-                                this.getRowClass(item),
+                                getRowClass(item),
                                 classNames?.row
                             )}
                         >
@@ -82,11 +81,11 @@ export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
                                                                 {col.listLabel}:
                                                             </span>
                                                             <div className={cn("flex-1 overflow-hidden", classNames?.value)}>
-                                                                {this.resolveContent(col, item)}
+                                                                {resolveContent(col, item)}
                                                             </div>
                                                         </div>
                                                     ) : (
-                                                        <div className={cn(classNames?.value)}>{this.resolveContent(col, item)}</div>
+                                                        <div className={cn(classNames?.value)}>{resolveContent(col, item)}</div>
                                                     )}
                                                 </div>
                                             ))}
@@ -97,7 +96,6 @@ export class DataList<T> extends AbstractDataView<T, DataListProps<T>> {
                     ))
                 )}
             </div>
-        );
-    }
-}
-
+        </DataViewFrame>
+    );
+};

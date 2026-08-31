@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
-import { AbstractDataView, BaseDataViewProps, DataViewClassNames } from './AbstractDataView';
+import { AbstractDataView } from './AbstractDataView';
+import { BaseDataViewProps, DataViewClassNames } from './data/types';
 import { DataTableDef } from './DataTable';
 import { cn } from './utils';
 
