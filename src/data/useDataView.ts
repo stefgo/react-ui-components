@@ -1,7 +1,5 @@
 import { ReactNode, useCallback, useMemo } from 'react';
-import { BaseDataViewProps } from './types';
-
-export type Comparator<T> = (a: T, b: T) => number;
+import { BaseDataViewProps, Comparator } from './types';
 
 export interface UseDataViewResult<T> {
     /** Exactly the rows to render — already sorted and reduced to the current page. */

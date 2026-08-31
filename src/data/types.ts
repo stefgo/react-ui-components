@@ -44,3 +44,10 @@ export interface BaseDataViewProps<T> {
     };
     classNames?: DataViewClassNames;
 }
+
+export type Comparator<T> = (a: T, b: T) => number;
+
+export interface SortEntry {
+    colIndex: number;
+    direction: 'asc' | 'desc';
+}
