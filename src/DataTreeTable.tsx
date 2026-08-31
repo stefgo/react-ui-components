@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
-import { BaseDataViewProps, DataViewClassNames, SortEntry } from './data/types';
+import { BaseDataViewProps, DataViewClassNames } from './data/types';
 import { DataTableDef } from './DataTable';
 import { isSortable } from './data/sorting';
 import { useDataView } from './data/useDataView';
-import { useSortColumns } from './data/useSortColumns';
-import { useTreeExpansion } from './data/useTreeExpansion';
+import { useSortColumns, type SortOptions } from './data/useSortColumns';
+import { useTreeExpansion, type TreeExpansionOptions } from './data/useTreeExpansion';
 import { SortIcon } from './data/SortIcon';
 import { DataViewFrame } from './data/DataViewFrame';
 import { flattenTree } from './data/tree';
@@ -27,16 +27,19 @@ export interface DataTreeTableProps<T> extends BaseDataViewProps<T> {
     itemDef: DataTableDef<T>[];
     getChildren: (item: T) => T[] | undefined | null;
     defaultExpanded?: boolean;
-    defaultSort?: SortEntry;
+    /** Column sorting. Leave it out and the view owns it. */
+    sort?: SortOptions;
+    /** Row expansion. Leave it out and the view owns it. */
+    expanded?: TreeExpansionOptions;
     /** Pixels of indentation per depth level. Default: 20 */
     indentSize?: number;
     classNames?: DataTreeTableClassNames;
 }
 
 export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
-    const { itemDef, getChildren, defaultExpanded, defaultSort, indentSize = 20, onRowClick, classNames, className } = props;
+    const { itemDef, getChildren, expanded, sort, indentSize = 20, onRowClick, classNames, className } = props;
 
-    const { sortColumns, comparator, handleSortClick } = useSortColumns({ itemDef, defaultSort });
+    const { sortColumns, comparator, handleSortClick } = useSortColumns({ itemDef, sort });
 
     // A page is taken from the root level only — `rows` are the roots on this
     // page, and their children are expanded underneath regardless of the page
@@ -49,7 +52,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
         visibleRows: rows,
         getChildren,
         getKey,
-        defaultExpanded,
+        expanded,
     });
 
     const flatRows = placeholder ? [] : flattenTree(rows, { getChildren, getKey, expandedKeys, comparator });

@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
-import { BaseDataViewProps, DataViewClassNames, SortEntry } from './data/types';
+import { BaseDataViewProps, DataViewClassNames } from './data/types';
 import { isSortable } from './data/sorting';
 import { useDataView } from './data/useDataView';
-import { useSortColumns } from './data/useSortColumns';
+import { useSortColumns, type SortOptions } from './data/useSortColumns';
 import { SortIcon } from './data/SortIcon';
 import { DataViewFrame } from './data/DataViewFrame';
 import { cn } from './utils';
@@ -30,19 +30,15 @@ export interface DataTableClassNames extends DataViewClassNames {
 
 export interface DataTableProps<T> extends BaseDataViewProps<T> {
     itemDef: DataTableDef<T>[];
-    defaultSort?: SortEntry;
-    sortStorageKey?: string;
+    /** Column sorting. Leave it out and the view owns it. */
+    sort?: SortOptions;
     classNames?: DataTableClassNames;
 }
 
 export const DataTable = <T,>(props: DataTableProps<T>) => {
-    const { itemDef, defaultSort, sortStorageKey, onRowClick, classNames, className } = props;
+    const { itemDef, sort, onRowClick, classNames, className } = props;
 
-    const { sortColumns, comparator, handleSortClick } = useSortColumns({
-        itemDef,
-        defaultSort,
-        storageKey: sortStorageKey,
-    });
+    const { sortColumns, comparator, handleSortClick } = useSortColumns({ itemDef, sort });
     // Sort across everything first, then take the page — the other order sorts
     // only the rows that happen to be on screen.
     const { rows, placeholder, getKey, getRowClass, interactionClasses, pagination } = useDataView(props, comparator);

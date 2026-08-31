@@ -25,9 +25,9 @@ describe('DataTable end to end', () => {
     });
 
     it('sorts the whole set, not just the page', () => {
-        // defaultSort ascending: the first page must start at row-01, which only
+        // Ascending default sort: the first page must start at row-01, which only
         // happens if the sort ran before the slice.
-        const html = render({ pagination: true, defaultSort: { colIndex: 0, direction: 'asc' } });
+        const html = render({ pagination: true, sort: { defaultValue: [{ colIndex: 0, direction: 'asc' }] } });
         expect(cells(html)[0]).toBe('row-01');
         expect(cells(html)[9]).toBe('row-10');
     });

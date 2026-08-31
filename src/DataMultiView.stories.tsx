@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Pencil, Trash2 } from 'lucide-react';
-import { DataMultiView, DataMultiViewProps } from './DataMultiView';
+import { DataMultiView, DataMultiViewProps, ViewMode } from './DataMultiView';
 import { DataTableDef } from './DataTable';
 import { DataListColumnDef } from './DataList';
 import { Badge } from './Badge';
@@ -82,8 +83,46 @@ export const WithHeaderActions: Story = {
 
 /** With `getChildren` the tree view becomes available and replaces the table toggle. */
 export const TreeView: Story = {
-    args: { data: clientTree, getChildren, treeTableDefaultExpanded: true },
+    args: { data: clientTree, getChildren, treeExpanded: { all: true } },
 };
 
 export const Loading: Story = { args: { data: [], isLoading: true } };
 export const Empty: Story = { args: { data: [], emptyMessage: 'No clients registered yet.' } };
+
+/**
+ * Every one of the three states — search, view mode and pagination — can be
+ * taken over by the caller, and they all take the same shape. The view mode in
+ * particular used to be locked to `localStorage`, so a caller could neither
+ * preset it nor restore it from the URL.
+ */
+const ControlledDemo = (props: DataMultiViewProps<DemoClient>) => {
+    const [view, setView] = useState<ViewMode>('list');
+    const [query, setQuery] = useState('');
+
+    return (
+        <div className="space-y-3">
+            <div className="flex items-center gap-2 text-sm text-text-secondary">
+                <span>Owned by the page:</span>
+                <code className="px-2 py-0.5 rounded bg-hover text-text-primary">{view}</code>
+                <code className="px-2 py-0.5 rounded bg-hover text-text-primary">
+                    {query ? `“${query}”` : 'no query'}
+                </code>
+                <Button size="sm" variant="secondary" onClick={() => setView('table')}>
+                    Force table
+                </Button>
+            </div>
+            <DataMultiView
+                {...props}
+                searchable
+                searchPlaceholder="Search clients…"
+                searchFilter={(c, q) => c.hostname.toLowerCase().includes(q.toLowerCase())}
+                search={{ value: query, onChange: setQuery }}
+                viewMode={{ value: view, onChange: setView }}
+            />
+        </div>
+    );
+};
+
+export const ControlledState: Story = {
+    render: (args) => <ControlledDemo {...(args as DataMultiViewProps<DemoClient>)} />,
+};

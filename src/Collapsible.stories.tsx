@@ -23,7 +23,7 @@ type Story = StoryObj<typeof meta>;
 export const Playground: Story = { render: (args) => <Collapsible {...args}><Body /></Collapsible> };
 
 export const Expanded: Story = {
-    render: (args) => <Collapsible {...args} initiallyExpanded><Body /></Collapsible>,
+    render: (args) => <Collapsible {...args} defaultValue><Body /></Collapsible>,
 };
 
 /**
@@ -31,7 +31,7 @@ export const Expanded: Story = {
  * silently cut off. Expand this one and scroll to the last line.
  */
 export const VeryTallContent: Story = {
-    render: (args) => <Collapsible {...args} title="80 lines of content" initiallyExpanded><Body lines={80} /></Collapsible>,
+    render: (args) => <Collapsible {...args} title="80 lines of content" defaultValue><Body lines={80} /></Collapsible>,
 };
 
 export const WithRichTitle: Story = {
@@ -51,8 +51,8 @@ const AccordionDemo = (args: React.ComponentProps<typeof Collapsible>) => {
                     {...args}
                     key={id}
                     title={`Section ${id.toUpperCase()}`}
-                    expanded={open === id}
-                    onExpandedChange={(next) => setOpen(next ? id : null)}
+                    value={open === id}
+                    onChange={(next) => setOpen(next ? id : null)}
                 >
                     <Body lines={2} />
                 </Collapsible>

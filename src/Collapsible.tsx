@@ -1,5 +1,7 @@
-import { useState, useId, ReactNode, Ref } from 'react';
+import { useId, ReactNode, Ref } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
+import { useControllableState } from './hooks/useControllableState';
+import type { Controllable } from './types';
 import { cn } from './utils';
 
 export interface CollapsibleClassNames {
@@ -9,14 +11,9 @@ export interface CollapsibleClassNames {
     content?: string;
 }
 
-interface CollapsibleProps {
+interface CollapsibleProps extends Controllable<boolean> {
     title: ReactNode;
     children: ReactNode;
-    /** Initial state when uncontrolled. Ignored once `expanded` is passed. */
-    initiallyExpanded?: boolean;
-    /** Controlled state. Pass together with `onExpandedChange`. */
-    expanded?: boolean;
-    onExpandedChange?: (expanded: boolean) => void;
     className?: string;
     headerClassName?: string;
     contentClassName?: string;
@@ -27,27 +24,25 @@ interface CollapsibleProps {
 export const Collapsible = ({
     title,
     children,
-    initiallyExpanded = false,
-    expanded,
-    onExpandedChange,
+    value,
+    defaultValue,
+    onChange,
     className = "",
     headerClassName = "",
     contentClassName = "",
     classNames,
     ref
 }: CollapsibleProps) => {
-    const [uncontrolledExpanded, setUncontrolledExpanded] = useState(initiallyExpanded);
-
-    const isControlled = expanded !== undefined;
-    const isExpanded = isControlled ? expanded : uncontrolledExpanded;
+    const [isExpanded, setExpanded] = useControllableState({
+        value,
+        defaultValue,
+        onChange,
+        fallback: false
+    });
 
     const contentId = useId();
 
-    const toggle = () => {
-        const next = !isExpanded;
-        if (!isControlled) setUncontrolledExpanded(next);
-        onExpandedChange?.(next);
-    };
+    const toggle = () => setExpanded((prev) => !prev);
 
     return (
         <div ref={ref} className={cn("overflow-hidden transition-all", className)}>

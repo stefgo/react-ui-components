@@ -53,9 +53,9 @@ describe('Collapsible', () => {
     });
 
     it('defers to the caller when controlled', async () => {
-        const onExpandedChange = vi.fn();
+        const onChange = vi.fn();
         render(
-            <Collapsible title="Advanced" expanded={false} onExpandedChange={onExpandedChange}>
+            <Collapsible title="Advanced" value={false} onChange={onChange}>
                 <p>Body</p>
             </Collapsible>
         );
@@ -63,7 +63,7 @@ describe('Collapsible', () => {
         const trigger = screen.getByRole('button', { name: /advanced/i });
         await userEvent.click(trigger);
 
-        expect(onExpandedChange).toHaveBeenCalledWith(true);
+        expect(onChange).toHaveBeenCalledWith(true);
         expect(trigger).toHaveAttribute('aria-expanded', 'false');
     });
 });

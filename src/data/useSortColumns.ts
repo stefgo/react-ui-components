@@ -1,13 +1,22 @@
-import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { MouseEvent, useCallback, useEffect, useMemo, useRef } from 'react';
 import type { DataTableDef } from '../DataTable';
+import { useControllableState } from '../hooks/useControllableState';
+import type { Controllable } from '../types';
 import { Comparator, SortEntry } from './types';
 import { buildComparator, isSortable, nextSortColumns, readStoredSort } from './sorting';
 
+export interface SortOptions extends Controllable<SortEntry[]> {
+    /**
+     * Persists the sort across reloads while uncontrolled. It is the *default*
+     * of the uncontrolled variant, not a second mode: a controlled caller owns
+     * the sort and decides for itself whether to store it.
+     */
+    storageKey?: string;
+}
+
 export interface UseSortColumnsOptions<T> {
     itemDef: DataTableDef<T>[];
-    defaultSort?: SortEntry;
-    /** When set, the sort survives a reload. */
-    storageKey?: string;
+    sort?: SortOptions;
 }
 
 export interface UseSortColumnsResult<T> {
@@ -18,8 +27,17 @@ export interface UseSortColumnsResult<T> {
 }
 
 /** Column sorting for the table views: state, persistence and the click logic. */
-export function useSortColumns<T>({ itemDef, defaultSort, storageKey }: UseSortColumnsOptions<T>): UseSortColumnsResult<T> {
-    const [sortColumns, setSortColumns] = useState<SortEntry[]>(() => readStoredSort(itemDef, storageKey, defaultSort));
+export function useSortColumns<T>({ itemDef, sort }: UseSortColumnsOptions<T>): UseSortColumnsResult<T> {
+    const storageKey = sort?.storageKey;
+
+    const [sortColumns, setSortColumns, isControlled] = useControllableState<SortEntry[]>({
+        value: sort?.value,
+        // `defaultValue` deliberately goes through the fallback rather than
+        // straight in: a stored sort still wins over it, the way it did before
+        // the sort became controllable.
+        onChange: sort?.onChange,
+        fallback: () => readStoredSort(itemDef, storageKey, sort?.defaultValue),
+    });
 
     const isFirstRun = useRef(true);
     useEffect(() => {
@@ -28,21 +46,21 @@ export function useSortColumns<T>({ itemDef, defaultSort, storageKey }: UseSortC
             isFirstRun.current = false;
             return;
         }
-        if (!storageKey || typeof localStorage === 'undefined') return;
+        if (isControlled || !storageKey || typeof localStorage === 'undefined') return;
         try {
             localStorage.setItem(storageKey, JSON.stringify(sortColumns));
         } catch {
             // Private mode or a full quota: losing the persisted sort is not
             // worth taking the render down for.
         }
-    }, [sortColumns, storageKey]);
+    }, [sortColumns, storageKey, isControlled]);
 
     const comparator = useMemo(() => buildComparator(itemDef, sortColumns), [itemDef, sortColumns]);
 
     const handleSortClick = useCallback((col: DataTableDef<T>, colIndex: number, event: MouseEvent) => {
         if (!isSortable(col)) return;
         setSortColumns((prev) => nextSortColumns(prev, colIndex, event.shiftKey));
-    }, []);
+    }, [setSortColumns]);
 
     return { sortColumns, comparator, handleSortClick };
 }

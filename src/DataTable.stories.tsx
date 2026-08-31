@@ -50,7 +50,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const Sorted: Story = {
-    args: { defaultSort: { colIndex: 2, direction: 'desc' } },
+    args: { sort: { defaultValue: [{ colIndex: 2, direction: 'desc' }] } },
 };
 
 export const Paginated: Story = {

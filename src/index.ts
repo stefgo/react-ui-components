@@ -35,6 +35,7 @@ export * from "./Collapsible";
 export * from "./hooks/useActionMenu";
 export * from "./hooks/useMenuBehavior";
 export * from "./hooks/usePagination";
+export * from "./hooks/useControllableState";
 export * from "./DashboardLayout";
 export * from "./Dashboard";
 export * from "./utils";

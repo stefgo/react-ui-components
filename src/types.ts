@@ -38,3 +38,23 @@ export const ICON_SIZE = {
 } as const;
 
 export type ControlSize = keyof typeof ICON_SIZE;
+
+/**
+ * One state a caller may either own or leave to the component.
+ *
+ * Pass `value` and the state is yours: the component reads it and reports every
+ * change through `onChange`, but never writes. Pass neither and the component
+ * keeps the state itself, seeded from `defaultValue`.
+ *
+ * Every controllable state in the library has this shape — flat on the props
+ * when a component has exactly one (`Collapsible`), grouped under the state's
+ * own name when it has several (`DataMultiView`'s `search`, `viewMode` and
+ * `pagination`).
+ */
+export interface Controllable<T> {
+    /** Makes the state controlled. Pass `onChange` with it. */
+    value?: T;
+    /** Starting value while uncontrolled. Ignored once `value` is passed. */
+    defaultValue?: T;
+    onChange?: (next: T) => void;
+}

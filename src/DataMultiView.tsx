@@ -5,6 +5,10 @@ import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
 import { DataList, DataListColumnDef, DataListClassNames } from './DataList';
 import { DataTreeTable, DataTreeTableClassNames } from './DataTreeTable';
 import { BaseDataViewProps } from './data/types';
+import type { SortOptions } from './data/useSortColumns';
+import type { TreeExpansionOptions } from './data/useTreeExpansion';
+import { useControllableState } from './hooks/useControllableState';
+import type { Controllable } from './types';
 import { cn } from './utils';
 
 export interface DataMultiViewClassNames {
@@ -24,21 +28,21 @@ export interface DataMultiViewProps<T> {
     title?: ReactNode;
     extraActions?: ReactNode;
     className?: string;
-    viewModeStorageKey?: string;
     data: T[];
     getChildren?: (item: T) => T[] | undefined | null;
     tableDef?: DataTableDef<T>[];
     listColumns?: DataListColumnDef<T>[];
     /** Column definitions for tree table view. Requires `getChildren` to be set. */
     treeTableDef?: DataTableDef<T>[];
-    /** Required for tree table view: returns child items for a given item. */
-    treeTableDefaultExpanded?: boolean;
+    /** Row expansion of the tree view. Leave it out and the view owns it. */
+    treeExpanded?: TreeExpansionOptions;
     treeTableIndentSize?: number;
     keyField: keyof T | ((item: T) => string | number);
     isLoading?: boolean;
     emptyMessage?: ReactNode;
     loadingMessage?: ReactNode;
-    defaultSort?: { colIndex: number; direction: 'asc' | 'desc' };
+    /** Column sorting. Leave it out and the view owns it. */
+    sort?: SortOptions;
     rowClassName?: string | ((item: T) => string);
     onRowClick?: (item: T) => void;
     /** Derived from the data views so the two shapes cannot drift apart. */
@@ -52,42 +56,51 @@ export interface DataMultiViewProps<T> {
     searchPlaceholder?: string;
     /** Filter function for internal filtering. Receives each item and the current query string. */
     searchFilter?: (item: T, query: string) => boolean;
-    /** Called whenever the search query changes (for external/controlled filtering) */
-    onSearchChange?: (query: string) => void;
-    /** Initial value for the search input */
-    defaultSearchValue?: string;
+    /** The search query. Leave it out and the view owns it. */
+    search?: Controllable<string>;
+    /** Which view is shown. Leave it out and the view owns it. */
+    viewMode?: ViewModeOptions;
 }
 
-type ViewMode = 'table' | 'list' | 'tree';
+export type ViewMode = 'table' | 'list' | 'tree';
+
+export interface ViewModeOptions extends Controllable<ViewMode> {
+    /**
+     * Remembers the chosen view across reloads while uncontrolled. It is the
+     * *default* of the uncontrolled variant, not a second mode — a controlled
+     * caller can restore the view from the URL instead, which used to be
+     * impossible.
+     */
+    storageKey?: string;
+}
 
 export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     const {
         title,
         extraActions,
         className = '',
-        viewModeStorageKey = 'dataViewMode',
         tableDef,
         listColumns,
         getChildren,
-        treeTableDefaultExpanded,
+        treeExpanded,
         treeTableIndentSize,
         classNames,
-        defaultSort,
+        sort,
         searchable,
         searchPlaceholder = 'Suchen…',
         searchFilter,
-        onSearchChange,
-        defaultSearchValue,
+        search,
+        viewMode,
         pagination,
         ...sharedProps
     } = props;
 
-    const [searchQuery, setSearchQuery] = useState(defaultSearchValue ?? '');
-
-    const handleSearchChange = (query: string) => {
-        setSearchQuery(query);
-        onSearchChange?.(query);
-    };
+    const [searchQuery, setSearchQuery] = useControllableState({
+        value: search?.value,
+        defaultValue: search?.defaultValue,
+        onChange: search?.onChange,
+        fallback: ''
+    });
 
     // Handed down instead of applied here: the view that counts the rows has to
     // be the one that filters them, or the page numbers describe a different set
@@ -122,20 +135,36 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
 
     const firstMode: ViewMode = hasTreeView ? 'tree' : tableDef ? 'table' : 'list';
 
-    const [viewMode, setViewMode] = useState<ViewMode>(() => {
-        if (typeof localStorage === 'undefined') return firstMode;
-        const savedMode = localStorage.getItem(viewModeStorageKey) as ViewMode;
-        if (savedMode === 'tree' && !hasTreeView) return firstMode;
-        return savedMode || firstMode;
+    const viewModeStorageKey = viewMode?.storageKey;
+
+    const [currentViewMode, setViewMode] = useControllableState<ViewMode>({
+        value: viewMode?.value,
+        defaultValue: viewMode?.defaultValue,
+        onChange: viewMode?.onChange,
+        fallback: () => {
+            if (!viewModeStorageKey || typeof localStorage === 'undefined') return firstMode;
+            const saved = localStorage.getItem(viewModeStorageKey) as ViewMode | null;
+            // A stored 'tree' is meaningless without a tree definition.
+            if (saved === 'tree' && !hasTreeView) return firstMode;
+            return saved ?? firstMode;
+        }
     });
 
     const changeViewMode = (mode: ViewMode) => {
         setViewMode(mode);
-        localStorage.setItem(viewModeStorageKey, mode);
+        // Persistence follows the uncontrolled state only; a controlled caller
+        // decides for itself whether the choice outlives the session.
+        if (!viewMode?.value && viewModeStorageKey && typeof localStorage !== 'undefined') {
+            try {
+                localStorage.setItem(viewModeStorageKey, mode);
+            } catch {
+                // Private mode or a full quota — not worth failing a click over.
+            }
+        }
     };
 
     // Effective view mode is forced to 'list' on mobile (only if listColumns is defined)
-    const effectiveViewMode: ViewMode = isMobile && listColumns ? 'list' : viewMode;
+    const effectiveViewMode: ViewMode = isMobile && listColumns ? 'list' : currentViewMode;
 
     const toggleButtonClass = (mode: ViewMode) => cn(
         "p-1 rounded-sm transition-all",
@@ -198,7 +227,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                         <input
                             type="text"
                             value={searchQuery}
-                            onChange={e => handleSearchChange(e.target.value)}
+                            onChange={e => setSearchQuery(e.target.value)}
                             placeholder={searchPlaceholder}
                             className="w-full bg-transparent text-sm text-text-primary placeholder:text-text-muted outline-none"
                         />
@@ -206,7 +235,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                             <button
                                 type="button"
                                 aria-label="Clear search"
-                                onClick={() => handleSearchChange('')}
+                                onClick={() => setSearchQuery('')}
                                 className="text-text-muted hover:text-text-primary shrink-0"
                             >
                                 <X size={14} />
@@ -226,8 +255,8 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                     {...containerProps}
                     itemDef={tableDef!}
                     getChildren={getChildren!}
-                    defaultExpanded={treeTableDefaultExpanded}
-                    defaultSort={defaultSort}
+                    expanded={treeExpanded}
+                    sort={sort}
                     indentSize={treeTableIndentSize}
                     classNames={classNames?.treeTable}
                 />
@@ -235,8 +264,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                 <DataTable
                     {...containerProps}
                     itemDef={tableDef!}
-                    defaultSort={defaultSort}
-                    sortStorageKey={`${viewModeStorageKey}_sort`}
+                    sort={sort}
                     classNames={classNames?.table}
                 />
             )}

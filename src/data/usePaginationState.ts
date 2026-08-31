@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useControllableState } from '../hooks/useControllableState';
 import { PaginationProps, PaginationState } from './types';
 
 export interface ResolvedPagination {
@@ -26,33 +27,34 @@ export function usePaginationState(
 ): ResolvedPagination | null {
     const opts: PaginationProps | null = pagination === true ? {} : (pagination || null);
 
-    const [inner, setInner] = useState<PaginationState>(() => ({ ...DEFAULT_STATE, ...opts?.defaultValue }));
+    const [state, setState, isControlled, correct] = useControllableState<PaginationState>({
+        value: opts?.value,
+        defaultValue: opts?.defaultValue ? { ...DEFAULT_STATE, ...opts.defaultValue } : undefined,
+        onChange: opts?.onChange,
+        fallback: DEFAULT_STATE,
+    });
 
     // Back to page 1 when the data or the filter changes. Adjusted during render
     // rather than in an effect, so no frame is spent showing a page that no
     // longer exists — React re-runs this component before anything is painted.
-    // Controlled callers are left alone: the state is theirs.
+    // Controlled callers are left alone: the state is theirs, and `correct`
+    // knows it.
     const [seenKeys, setSeenKeys] = useState(resetKeys);
     const keysChanged = resetKeys.length !== seenKeys.length
         || resetKeys.some((key, i) => !Object.is(key, seenKeys[i]));
     if (keysChanged) {
         setSeenKeys(resetKeys);
-        if (opts && !opts.value && opts.autoResetPage !== false && inner.page !== 1) {
-            setInner((prev) => ({ ...prev, page: 1 }));
+        if (opts && opts.autoResetPage !== false && state.page !== 1) {
+            correct((prev) => ({ ...prev, page: 1 }));
         }
     }
 
     if (!opts) return null;
 
-    const isControlled = !!opts.value;
-
     return {
         mode: opts.mode ?? 'client',
-        state: opts.value ?? inner,
-        setState: (next) => {
-            if (!isControlled) setInner(next);
-            opts.onChange?.(next);
-        },
+        state,
+        setState,
         isControlled,
         pageSizeOptions: opts.pageSizeOptions,
         totalItems: opts.totalItems,
