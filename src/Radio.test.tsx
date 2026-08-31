@@ -84,6 +84,24 @@ describe('RadioGroup', () => {
         expect(screen.getByRole('alert')).toHaveTextContent('Pick a schedule');
     });
 
+    it('replaces the hint with the error, on screen and in the description', () => {
+        // The group renders its own fieldset rather than sitting in a FormField,
+        // so this is the one place the shared FieldMessages rule could drift.
+        const { rerender } = group({ hint: 'Runs at 03:00' });
+        expect(screen.getByText('Runs at 03:00')).toBeInTheDocument();
+
+        rerender(
+            <RadioGroup label="Schedule" hint="Runs at 03:00" error="Pick a schedule">
+                <Radio value="daily" label="Daily" />
+            </RadioGroup>
+        );
+
+        expect(screen.queryByText('Runs at 03:00')).not.toBeInTheDocument();
+        const describedBy = screen.getByRole('group').getAttribute('aria-describedby');
+        expect(describedBy).toBeTruthy();
+        expect(document.getElementById(describedBy!)).toHaveTextContent('Pick a schedule');
+    });
+
     it('refuses to render an option outside a group', () => {
         const quiet = vi.spyOn(console, 'error').mockImplementation(() => {});
         expect(() => render(<Radio value="daily" label="Daily" />)).toThrow(/RadioGroup/);

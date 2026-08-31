@@ -1,5 +1,6 @@
 import { InputHTMLAttributes, ReactNode, Ref, createContext, useContext, useId } from 'react';
 import { useFieldIds } from './form/useFieldIds';
+import { FieldMessages } from './form/FieldMessages';
 import { useControllableState } from './hooks/useControllableState';
 import type { Controllable } from './types';
 import { cn } from './utils';
@@ -177,16 +178,12 @@ export const RadioGroup = ({
                 </div>
             </RadioGroupContext.Provider>
 
-            {error && (
-                <p id={ids.errorId} role="alert" className={cn("mt-1 text-xs text-error", classNames?.error)}>
-                    {error}
-                </p>
-            )}
-            {ids.showHint && (
-                <p id={ids.hintId} className={cn("mt-1 text-xs text-text-muted leading-relaxed", classNames?.hint)}>
-                    {hint}
-                </p>
-            )}
+            {/*
+                The same two paragraphs FormField renders. A group cannot sit in
+                a FormField — it needs a <legend>, not a label — but the message
+                markup is shared rather than copied.
+            */}
+            <FieldMessages ids={ids} hint={hint} error={error} classNames={classNames} />
         </fieldset>
     );
 };

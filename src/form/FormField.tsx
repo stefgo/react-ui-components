@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { useFieldIds, type FieldIds } from './useFieldIds';
+import { FieldMessages } from './FieldMessages';
 import { cn } from '../utils';
 
 export interface FormFieldClassNames {
@@ -98,16 +99,7 @@ export const FormField = ({
                 </>
             )}
 
-            {error && (
-                <p id={ids.errorId} role="alert" className={cn("mt-1 text-xs text-error", classNames?.error)}>
-                    {error}
-                </p>
-            )}
-            {ids.showHint && (
-                <p id={ids.hintId} className={cn("mt-1 text-xs text-text-muted leading-relaxed ml-1", classNames?.hint)}>
-                    {hint}
-                </p>
-            )}
+            <FieldMessages ids={ids} hint={hint} error={error} classNames={classNames} />
         </div>
     );
 };
