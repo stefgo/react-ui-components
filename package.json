@@ -32,8 +32,8 @@
     }
   },
   "scripts": {
-    "dev": "tsup src/*.ts src/*.tsx --format cjs,esm --watch --dts --minify --splitting --treeshake",
-    "build": "tsup src/*.ts src/*.tsx --format cjs,esm --dts --minify --clean --splitting --treeshake",
+    "dev": "tsup src/*.ts src/*.tsx \"!src/**/*.test.*\" --format cjs,esm --watch --dts --minify --splitting --treeshake",
+    "build": "tsup src/*.ts src/*.tsx \"!src/**/*.test.*\" --format cjs,esm --dts --minify --clean --splitting --treeshake",
     "lint": "tsc --noEmit && eslint src",
     "prepublishOnly": "npm run build",
     "test": "vitest run",
@@ -56,6 +56,7 @@
     "@semantic-release/github": "^11.0.1",
     "@semantic-release/npm": "^12.0.1",
     "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.5",
     "eslint": "^10.9.1",
     "eslint-plugin-react-hooks": "^7.1.1",
     "react": "^19.2.0",
