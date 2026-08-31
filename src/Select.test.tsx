@@ -26,4 +26,11 @@ describe('Select', () => {
         render(<Select label="Schedule" options={options} />);
         expect(screen.getAllByRole('option')).toHaveLength(2);
     });
+
+    // Select never had a hint before it shared FormField with Input; the two
+    // copies of the wiring had drifted apart. This pins that they no longer can.
+    it('describes the field with the hint', () => {
+        render(<Select label="Schedule" options={options} hint="Runs in local time" />);
+        expect(screen.getByRole('combobox')).toHaveAccessibleDescription('Runs in local time');
+    });
 });
