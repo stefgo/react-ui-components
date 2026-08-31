@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, Ref } from 'react';
 import { cn } from './utils';
 
 export interface BadgeClassNames {
@@ -11,6 +11,7 @@ interface BadgeProps {
     size?: 'sm' | 'md';
     className?: string;
     classNames?: BadgeClassNames;
+    ref?: Ref<HTMLSpanElement>;
 }
 
 export const Badge = ({
@@ -18,7 +19,8 @@ export const Badge = ({
     variant = 'info',
     size = 'md',
     className = '',
-    classNames
+    classNames,
+    ref
 }: BadgeProps) => {
     const baseStyles = "inline-flex items-center font-medium rounded-full transition-colors";
 
@@ -36,7 +38,7 @@ export const Badge = ({
     };
 
     return (
-        <span className={cn(baseStyles, variants[variant], sizes[size], className, classNames?.root)}>
+        <span ref={ref} className={cn(baseStyles, variants[variant], sizes[size], className, classNames?.root)}>
             {children}
         </span>
     );

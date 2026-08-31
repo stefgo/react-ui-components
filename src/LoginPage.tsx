@@ -75,7 +75,7 @@ export const LoginPage = ({
                                 <p className="text-text-muted dark:text-text-muted-dark text-sm mb-6">Please log in using your identity provider.</p>
                                 <button
                                     onClick={onOidcLogin}
-                                    className="group relative w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all shadow-glow-accent hover:shadow-primary/20 active:scale-[0.98]"
+                                    className="group relative w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg text-sm font-semibold text-button-primary-text bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all shadow-glow-accent hover:shadow-primary/20 active:scale-[0.98]"
                                 >
                                     Login with OIDC
                                     <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -85,7 +85,7 @@ export const LoginPage = ({
                     ) : (
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {error && (
-                                <div className="bg-red-900/20 border border-red-800/50 text-red-200 text-sm p-4 rounded-lg flex items-start gap-3 animate-pulse-soft">
+                                <div className="bg-error-bg-dark border border-error/50 text-error-dark text-sm p-4 rounded-lg flex items-start gap-3 animate-pulse-soft">
                                     <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                                     <span>{error}</span>
                                 </div>
@@ -130,7 +130,7 @@ export const LoginPage = ({
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="group relative w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-glow-accent hover:shadow-primary/20 active:scale-[0.98]"
+                                className="group relative w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg text-sm font-semibold text-button-primary-text bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-glow-accent hover:shadow-primary/20 active:scale-[0.98]"
                             >
                                 {isLoading ? 'Signing in...' : 'Sign in to Dashboard'}
                                 {!isLoading && <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />}

@@ -1,4 +1,5 @@
-import { SelectHTMLAttributes, forwardRef } from 'react';
+import { SelectHTMLAttributes, forwardRef, useId } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { cn } from './utils';
 
 export interface SelectClassNames {
@@ -24,27 +25,43 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
     options,
     className = '',
     classNames,
+    id,
     ...props
 }, ref) => {
+    const generatedId = useId();
+    const selectId = id ?? generatedId;
+    const errorId = `${selectId}-error`;
+
+    const describedBy = [
+        error ? errorId : null,
+        props['aria-describedby']
+    ].filter(Boolean).join(' ') || undefined;
+
     return (
         <div className={cn(fullWidth ? 'w-full' : '', className, classNames?.root)}>
             {label && (
-                <label className={cn("block text-xs font-bold text-text-muted dark:text-text-muted-dark uppercase mb-1.5 ml-1", classNames?.label)}>
-                    {label} {props.required && <span className="text-error">*</span>}
+                <label
+                    htmlFor={selectId}
+                    className={cn("block text-xs font-bold text-text-muted dark:text-text-muted-dark uppercase mb-1.5 ml-1", classNames?.label)}
+                >
+                    {label} {props.required && <span className="text-error" aria-hidden="true">*</span>}
                 </label>
             )}
             <div className={cn("relative", classNames?.selectWrapper)}>
                 <select
                     ref={ref}
+                    id={selectId}
+                    aria-invalid={error ? true : undefined}
                     className={cn(
                         "block w-full bg-input-bg dark:bg-input-bg-dark border",
                         error ? 'border-error' : 'border-input-border dark:border-input-border-dark',
-                        "px-3 py-2.5 rounded-lg text-text-primary dark:text-text-primary-dark",
+                        "pl-3 pr-10 py-2.5 rounded-lg text-text-primary dark:text-text-primary-dark",
                         "focus:outline-none focus:ring-2 focus:ring-primary",
                         "transition-all sm:text-sm appearance-none",
                         classNames?.select
                     )}
                     {...props}
+                    aria-describedby={describedBy}
                 >
                     {options.map((opt) => (
                         <option key={opt.value} value={opt.value} disabled={opt.disabled}>
@@ -52,9 +69,14 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
                         </option>
                     ))}
                 </select>
-                {/* Custom arrow could go here */}
+                {/* `appearance-none` removes the native arrow, so supply one. */}
+                <ChevronDown
+                    size={16}
+                    aria-hidden="true"
+                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-text-muted dark:text-text-muted-dark"
+                />
             </div>
-            {error && <p className={cn("mt-1 text-xs text-error", classNames?.error)}>{error}</p>}
+            {error && <p id={errorId} role="alert" className={cn("mt-1 text-xs text-error", classNames?.error)}>{error}</p>}
         </div>
     );
 });

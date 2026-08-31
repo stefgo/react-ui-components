@@ -152,18 +152,18 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     const viewToggle = !isMobile && visibleButtonCount > 1 ? (
         <div className={cn("bg-table-header-toggle-bg dark:bg-table-header-toggle-bg-dark rounded-lg p-1 flex items-center gap-1", classNames?.toggleRoot)}>
             {hasTreeView && (
-                <button onClick={() => changeViewMode('tree')} className={toggleButtonClass('tree')} title="Tree View">
-                    <Network size={14} />
+                <button type="button" onClick={() => changeViewMode('tree')} className={toggleButtonClass('tree')} title="Tree View" aria-label="Tree View" aria-pressed={effectiveViewMode === 'tree'}>
+                    <Network size={14} aria-hidden="true" />
                 </button>
             )}
             {tableDef && !hasTreeView && (
-                <button onClick={() => changeViewMode('table')} className={toggleButtonClass('table')} title="Table View">
-                    <TableIcon size={14} />
+                <button type="button" onClick={() => changeViewMode('table')} className={toggleButtonClass('table')} title="Table View" aria-label="Table View" aria-pressed={effectiveViewMode === 'table'}>
+                    <TableIcon size={14} aria-hidden="true" />
                 </button>
             )}
             {listColumns && (
-                <button onClick={() => changeViewMode('list')} className={toggleButtonClass('list')} title="List View">
-                    <LayoutList size={14} />
+                <button type="button" onClick={() => changeViewMode('list')} className={toggleButtonClass('list')} title="List View" aria-label="List View" aria-pressed={effectiveViewMode === 'list'}>
+                    <LayoutList size={14} aria-hidden="true" />
                 </button>
             )}
         </div>
@@ -205,6 +205,8 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                         />
                         {searchQuery && (
                             <button
+                                type="button"
+                                aria-label="Clear search"
                                 onClick={() => handleSearchChange('')}
                                 className="text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark shrink-0"
                             >

@@ -16,7 +16,8 @@
   "sideEffects": false,
   "files": [
     "dist",
-    "tailwind-preset.js"
+    "tailwind-preset.js",
+    "tokens.js"
   ],
   "exports": {
     ".": {
@@ -35,6 +36,8 @@
     "dev": "tsup src/*.ts src/*.tsx \"!src/**/*.test.*\" --format cjs,esm --watch --dts --minify --splitting --treeshake",
     "build": "tsup src/*.ts src/*.tsx \"!src/**/*.test.*\" --format cjs,esm --dts --minify --clean --splitting --treeshake",
     "lint": "tsc --noEmit && eslint src",
+    "tokens:build": "node scripts/generate-tokens-css.js",
+    "tokens:check": "node scripts/generate-tokens-css.js && git diff --exit-code -- src/index.css",
     "prepublishOnly": "npm run build",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -55,10 +58,14 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.1",
     "@semantic-release/npm": "^12.0.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.6",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.5",
     "eslint": "^10.9.1",
     "eslint-plugin-react-hooks": "^7.1.1",
+    "jsdom": "^29.1.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "semantic-release": "^24.1.3",

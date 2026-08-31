@@ -55,14 +55,16 @@ export const DashboardHeader = ({
 
     return (
         <header className={cn(
-            "px-5 py-3 border-b border-border dark:border-border-dark bg-browser-header dark:bg-browser-header-dark sticky top-0 z-40 shadow-sm flex items-center justify-between",
+            "px-5 py-3 border-b border-border dark:border-border-dark bg-browser-header dark:bg-browser-header-dark sticky top-0 z-header shadow-sm flex items-center justify-between",
             className,
             classNames?.root
         )}>
             <div className={cn("flex items-center gap-3 overflow-hidden", classNames?.leftSection)}>
                 {showSidebarToggle && onToggleSidebar && (
                     <button
+                        type="button"
                         onClick={onToggleSidebar}
+                        aria-label="Toggle sidebar"
                         className={cn(
                             "p-2 -ml-2 mr-2 text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark transition-colors md:flex hidden",
                             classNames?.sidebarToggle

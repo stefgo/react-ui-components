@@ -9,8 +9,13 @@ export interface ActionButtonClassNames {
     icon?: string;
 }
 
-interface ActionButtonProps {
-    icon: React.ComponentType<{ size?: number; className?: string }>;
+type ActionButtonNativeProps = Omit<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    'onClick' | 'disabled' | 'color' | 'title'
+>;
+
+interface ActionButtonProps extends ActionButtonNativeProps {
+    icon: React.ComponentType<{ size?: number; className?: string; 'aria-hidden'?: boolean }>;
     onClick: (e: React.MouseEvent) => void;
     disabled?: boolean | (() => boolean);
     tooltip?: string | { enabled: string; disabled: string };
@@ -19,6 +24,7 @@ interface ActionButtonProps {
     className?: string;
     classNames?: ActionButtonClassNames;
     size?: number;
+    ref?: React.Ref<HTMLButtonElement>;
 }
 
 export const ActionButton: React.FC<ActionButtonProps> = ({
@@ -31,6 +37,8 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
     className = '',
     classNames,
     size = 16,
+    ref,
+    ...props
 }) => {
     const isDisabled = typeof disabled === 'function' ? disabled() : disabled;
 
@@ -68,8 +76,14 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
         return isDisabled ? tooltip.disabled : tooltip.enabled;
     };
 
+    // The button renders an icon only, so the tooltip has to double as its
+    // accessible name – `title` alone is not reliably announced.
+    const tooltipText = getTooltip();
+
     return (
         <button
+            ref={ref}
+            type="button"
             onClick={(e) => {
                 e.stopPropagation();
                 if (!isDisabled) {
@@ -79,14 +93,17 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
             disabled={isDisabled}
             className={cn(
                 "p-1.5 transition-all rounded-full flex items-center justify-center",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                 colorClasses[color],
                 variantClasses,
                 className,
                 classNames?.root
             )}
-            title={getTooltip()}
+            title={tooltipText}
+            aria-label={props['aria-label'] ?? tooltipText}
+            {...props}
         >
-            <Icon size={size} className={cn(classNames?.icon)} />
+            <Icon size={size} className={cn(classNames?.icon)} aria-hidden />
         </button>
     );
 };

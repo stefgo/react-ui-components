@@ -30,6 +30,7 @@ export * from "./DashboardHeader";
 export * from "./BottomNav";
 export * from "./Collapsible";
 export * from "./hooks/useActionMenu";
+export * from "./hooks/useMenuBehavior";
 export * from "./hooks/usePagination";
 export * from "./DashboardLayout";
 export * from "./Dashboard";

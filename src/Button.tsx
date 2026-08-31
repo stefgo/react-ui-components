@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, ReactNode } from 'react';
+import { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 import { Loader2 } from 'lucide-react';
 import { cn } from './utils';
 
@@ -14,6 +14,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     isLoading?: boolean;
     icon?: ReactNode;
     classNames?: ButtonClassNames;
+    ref?: Ref<HTMLButtonElement>;
 }
 
 export const Button = ({
@@ -25,6 +26,8 @@ export const Button = ({
     className = '',
     classNames,
     disabled,
+    type = 'button',
+    ref,
     ...props
 }: ButtonProps) => {
     const baseStyles = "relative inline-flex items-center justify-center font-semibold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
@@ -32,7 +35,7 @@ export const Button = ({
     const variants = {
         primary: "bg-button-primary hover:bg-button-primary-hover text-button-primary-text focus:ring-primary shadow-lg hover:shadow-primary/20 active:scale-[0.98]",
         secondary: "bg-button-secondary dark:bg-button-secondary-dark hover:bg-button-secondary-hover dark:hover:bg-button-secondary-dark-hover text-text-primary dark:text-text-primary-dark focus:ring-text-secondary",
-        danger: "bg-button-danger hover:bg-button-danger-hover text-white focus:ring-error shadow-sm",
+        danger: "bg-button-danger hover:bg-button-danger-hover text-button-primary-text focus:ring-error shadow-sm",
         ghost: "bg-transparent hover:bg-hover dark:hover:bg-hover-dark text-text-secondary dark:text-text-secondary-dark"
     };
 
@@ -44,12 +47,15 @@ export const Button = ({
 
     return (
         <button
+            ref={ref}
+            type={type}
             className={cn(baseStyles, variants[variant], sizes[size], className, classNames?.root)}
             disabled={disabled || isLoading}
+            aria-busy={isLoading || undefined}
             {...props}
         >
-            {isLoading && <Loader2 className={cn("w-4 h-4 mr-2 animate-spin", classNames?.spinner)} />}
-            {!isLoading && icon && <span className={cn("mr-2", classNames?.icon)}>{icon}</span>}
+            {isLoading && <Loader2 className={cn("w-4 h-4 mr-2 animate-spin", classNames?.spinner)} aria-hidden="true" />}
+            {!isLoading && icon && <span className={cn("mr-2", classNames?.icon)} aria-hidden="true">{icon}</span>}
             {children}
         </button>
     );

@@ -2,133 +2,126 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * GENERATED FILE – do not edit.
+ * Source: tokens.js  ·  Regenerate: npm run tokens:build
+ *
+ * Copy the :root block into your own global stylesheet to re-theme the library.
+ */
 :root {
-  /* ─── Brand ──────────────────────────────────────────────────────────────── */
-  --ruic-primary:       229 77 13; // #e54d0d;
-  --ruic-primary-hover: #ff5f1f;
+  /* ─── Brand ──────────────────────────────────────────────────────────── */
+  --ruic-primary:       229 77 13; /* #e54d0d */
+  --ruic-primary-hover: 255 95 31; /* #ff5f1f */
 
-  /* ─── Semantic State Colors ──────────────────────────────────────────────── */
-  --ruic-error:          #dc2626;
-  --ruic-error-hover:    #b91c1c;
-  --ruic-error-dark:     #f87171;
-  --ruic-error-bg:       #fef2f2;
-  --ruic-error-bg-dark:  rgba(127, 29, 29, 0.3);
+  /* ─── Semantic State Colors ──────────────────────────────────────────── */
+  --ruic-error:           #dc2626;
+  --ruic-error-hover:     #b91c1c;
+  --ruic-error-dark:      #f87171;
+  --ruic-error-bg:        #fef2f2;
+  --ruic-error-bg-dark:   rgba(127, 29, 29, 0.3);
+  --ruic-success:         #16a34a;
+  --ruic-success-hover:   #15803d;
+  --ruic-success-dark:    #4ade80;
+  --ruic-warning:         #ea580c;
+  --ruic-warning-hover:   #c2410c;
+  --ruic-warning-dark:    #fb923c;
+  --ruic-warning-bg:      #ffedd5;
+  --ruic-warning-bg-dark: rgba(124, 45, 18, 0.3);
+  --ruic-info:            #2563eb;
+  --ruic-info-hover:      #1d4ed8;
+  --ruic-info-dark:       #60a5fa;
+  --ruic-info-light:      #93c5fd;
+  --ruic-accent:          #4f46e5;
+  --ruic-accent-hover:    #4338ca;
+  --ruic-accent-dark:     #818cf8;
+  --ruic-accent-bg:       #eef2ff;
+  --ruic-accent-bg-dark:  rgba(49, 46, 129, 0.3);
 
-  --ruic-success:        #16a34a;
-  --ruic-success-hover:  #15803d;
-  --ruic-success-dark:   #4ade80;
+  /* ─── Surfaces & Backgrounds ─────────────────────────────────────────── */
+  --ruic-bg-app:              #f9fafb; /* page / layout background */
+  --ruic-bg-app-dark:         #111111;
+  --ruic-bg-card:             #ffffff; /* panels, dropdowns, modal sheets */
+  --ruic-bg-card-dark:        #141414;
+  --ruic-bg-card-header:      #f3f4f6;
+  --ruic-bg-card-header-dark: #181818;
+  --ruic-overlay:             rgba(0, 0, 0, 0.6); /* scrim behind modals */
 
-  --ruic-warning:        #ea580c;
-  --ruic-warning-hover:  #c2410c;
-  --ruic-warning-dark:   #fb923c;
-  --ruic-warning-bg:     #ffedd5;
-  --ruic-warning-bg-dark:rgba(124, 45, 18, 0.3);
+  /* ─── Typography ─────────────────────────────────────────────────────── */
+  --ruic-text-primary:        #111827;
+  --ruic-text-primary-dark:   #f9fafb;
+  --ruic-text-secondary:      #4b5563;
+  --ruic-text-secondary-dark: #d1d5db;
+  --ruic-text-muted:          #808080;
+  --ruic-text-muted-dark:     #808080;
 
-  --ruic-info:           #2563eb;
-  --ruic-info-hover:     #1d4ed8;
-  --ruic-info-dark:      #60a5fa;
-  --ruic-info-light:     #93c5fd;
-
-  --ruic-accent:         #4f46e5;
-  --ruic-accent-hover:   #4338ca;
-  --ruic-accent-dark:    #818cf8;
-  --ruic-accent-bg:      #eef2ff;
-  --ruic-accent-bg-dark: rgba(49, 46, 129, 0.3);
-
-  /* ─── Surfaces & Backgrounds ──────────────────────────────────────────────── */
-  --ruic-bg-app:      #f9fafb; /* gray-50  – page/layout background */
-  --ruic-bg-app-dark: #111111;
-
-  --ruic-bg-card:      #ffffff; /* white    – panels, dropdowns, modal sheets */
-  --ruic-bg-card-dark: #1e1e1e;
-
-  --ruic-surface:      #f8fafc; /* slate-50 – icon containers, sub-panels */
-  --ruic-surface-dark: #1a1a1a;
-
-  --ruic-form-bg:      #f9fafb; /* gray-50  – form/editor body inside a card */
-  --ruic-form-bg-dark: #1a1a1a;
-
-  /* ─── Borders & Dividers ──────────────────────────────────────────────────── */
-  --ruic-border:      #e2e8f0; /* slate-200 */
+  /* ─── Borders & Interactive States ───────────────────────────────────── */
+  --ruic-border:      #e2e8f0;
   --ruic-border-dark: #2a2a2a;
+  --ruic-hover:       #f3f4f6;
+  --ruic-hover-dark:  #252525;
 
-  /* ─── Interactive Hover Backgrounds ──────────────────────────────────────── */
-  --ruic-hover:      #f3f4f6; /* gray-100 */
-  --ruic-hover-dark: #252525;
-
-  /* ─── Typography ──────────────────────────────────────────────────────────── */
-  --ruic-text-primary:        #111827; /* gray-900 */
-  --ruic-text-primary-dark:   #f9fafb; /* gray-50  */
-  --ruic-text-secondary:      #4b5563; /* gray-600 */
-  --ruic-text-secondary-dark: #d1d5db; /* gray-300 */
-  --ruic-text-muted:          #9ca3af; /* gray-400 */
-  --ruic-text-muted-dark:     #71717a; /* zinc-500 */
-
-  /* ─── Component: Button ───────────────────────────────────────────────────── */
-  --ruic-button-primary-bg:           var(--ruic-primary);
-  --ruic-button-primary-hover-bg:     var(--ruic-primary-hover);
-  --ruic-button-primary-text:         #ffffff;
-  --ruic-button-secondary-bg:         #e5e7eb;
-  --ruic-button-secondary-hover-bg:   #d1d5db;
-  --ruic-button-secondary-bg-dark:    #333333;
+  /* ─── Component: Button ──────────────────────────────────────────────── */
+  --ruic-button-primary-text:            #ffffff;
+  --ruic-button-secondary-bg:            #e5e7eb;
+  --ruic-button-secondary-hover-bg:      #d1d5db;
+  --ruic-button-secondary-bg-dark:       #333333;
   --ruic-button-secondary-hover-bg-dark: #444444;
-  --ruic-button-danger-bg:            var(--ruic-error);
-  --ruic-button-danger-hover-bg:      var(--ruic-error-hover);
+  --ruic-button-danger-bg:               var(--ruic-error, #dc2626);
+  --ruic-button-danger-hover-bg:         var(--ruic-error-hover, #b91c1c);
 
-  /* ─── Component: Badge ────────────────────────────────────────────────────── */
+  /* ─── Component: Badge ───────────────────────────────────────────────── */
   --ruic-badge-success-bg:        #dcfce7;
   --ruic-badge-success-text:      #15803d;
   --ruic-badge-success-bg-dark:   rgba(20, 83, 45, 0.3);
   --ruic-badge-success-text-dark: #4ade80;
-
   --ruic-badge-warning-bg:        #ffedd5;
   --ruic-badge-warning-text:      #c2410c;
   --ruic-badge-warning-bg-dark:   rgba(124, 45, 18, 0.3);
   --ruic-badge-warning-text-dark: #fb923c;
-
   --ruic-badge-error-bg:          #fef2f2;
   --ruic-badge-error-text:        #b91c1c;
   --ruic-badge-error-bg-dark:     rgba(127, 29, 29, 0.3);
   --ruic-badge-error-text-dark:   #f87171;
-
   --ruic-badge-info-bg:           #dbeafe;
   --ruic-badge-info-text:         #1d4ed8;
   --ruic-badge-info-bg-dark:      rgba(30, 58, 138, 0.3);
   --ruic-badge-info-text-dark:    #60a5fa;
 
-  /* ─── Component: Input / Select ──────────────────────────────────────────── */
-  --ruic-input-bg:          var(--ruic-bg-app);
-  --ruic-input-bg-dark:     var(--ruic-bg-app-dark);
-  --ruic-input-border:      var(--ruic-border);
-  --ruic-input-border-dark: var(--ruic-border-dark);
+  /* ─── Component: Input / Select ──────────────────────────────────────── */
+  --ruic-input-bg:          var(--ruic-bg-app, #f9fafb);
+  --ruic-input-bg-dark:     var(--ruic-bg-app-dark, #111111);
+  --ruic-input-border:      var(--ruic-border, #e2e8f0);
+  --ruic-input-border-dark: var(--ruic-border-dark, #2a2a2a);
 
-  /* ─── Component: Sidebar ─────────────────────────────────────────────────── */
-  --ruic-sidebar-bg:                  var(--ruic-bg-app);
-  --ruic-sidebar-bg-dark:             var(--ruic-surface-dark);
-  --ruic-sidebar-item-active-bg:      var(--ruic-bg-card);
-  --ruic-sidebar-item-active-bg-dark: #252525;
-  --ruic-sidebar-badge-active-bg:     var(--ruic-hover);
-  --ruic-sidebar-badge-active-bg-dark:#333333;
+  /* ─── Component: Sidebar ─────────────────────────────────────────────── */
+  --ruic-sidebar-bg:                     var(--ruic-bg-app, #f9fafb);
+  --ruic-sidebar-bg-dark:                #1a1a1a;
+  --ruic-sidebar-item-active-bg:         var(--ruic-bg-card, #ffffff);
+  --ruic-sidebar-item-active-bg-dark:    #252525;
+  --ruic-sidebar-badge-active-bg:        var(--ruic-hover, #f3f4f6);
+  --ruic-sidebar-badge-active-bg-dark:   #333333;
+  --ruic-sidebar-badge-inactive-bg:      var(--ruic-sidebar-badge-active-bg, var(--ruic-hover, #f3f4f6)); /* aliased so the two states can diverge without code changes */
+  --ruic-sidebar-badge-inactive-bg-dark: var(--ruic-sidebar-badge-active-bg-dark, #333333);
 
-  /* ─── Component: Table ───────────────────────────────────────────────────── */
-  --ruic-table-header-bg:                var(--ruic-hover);
-  --ruic-table-header-bg-dark:           #252525;
-  --ruic-table-header-toggle-bg:         #e5e7eb;
-  --ruic-table-header-toggle-bg-dark:    var(--ruic-bg-app-dark);
-  --ruic-table-header-toggle-active-bg:  var(--ruic-bg-card);
+  /* ─── Component: Table ───────────────────────────────────────────────── */
+  --ruic-table-header-bg:                    var(--ruic-bg-card-header, #f3f4f6);
+  --ruic-table-header-bg-dark:               #202020;
+  --ruic-table-header-toggle-bg:             #e5e7eb;
+  --ruic-table-header-toggle-bg-dark:        var(--ruic-bg-app-dark, #111111);
+  --ruic-table-header-toggle-active-bg:      var(--ruic-bg-card, #ffffff);
   --ruic-table-header-toggle-active-bg-dark: #444444;
-  --ruic-table-row-bg:                   var(--ruic-bg-app);
-  --ruic-table-row-bg-dark:              #181818;
-  --ruic-table-row-hover-bg:             var(--ruic-hover);
-  --ruic-table-row-hover-bg-dark:        #252525;
+  --ruic-table-row-bg:                       var(--ruic-bg-app, #f9fafb);
+  --ruic-table-row-bg-dark:                  #181818;
+  --ruic-table-row-hover-bg:                 var(--ruic-hover, #f3f4f6);
+  --ruic-table-row-hover-bg-dark:            #202020;
 
-  /* ─── Component: StatCard ────────────────────────────────────────────────── */
-  --ruic-statcard-bg:         var(--ruic-bg-card);
-  --ruic-statcard-bg-dark:    var(--ruic-bg-card-dark);
-  --ruic-statcard-icon-bg:    var(--ruic-surface);
+  /* ─── Component: StatCard ────────────────────────────────────────────── */
+  --ruic-statcard-bg:           var(--ruic-bg-card-header, #f3f4f6);
+  --ruic-statcard-bg-dark:      #181818;
+  --ruic-statcard-icon-bg:      var(--ruic-bg-app, #f9fafb);
   --ruic-statcard-icon-bg-dark: #252525;
 
-  /* ─── Component: FileBrowser / DashboardHeader ───────────────────────────── */
-  --ruic-browser-header-bg:      var(--ruic-bg-card);
-  --ruic-browser-header-bg-dark: var(--ruic-bg-card-dark);
+  /* ─── Component: DashboardHeader ─────────────────────────────────────── */
+  --ruic-browser-header-bg:      var(--ruic-bg-card, #ffffff);
+  --ruic-browser-header-bg-dark: #1e1e1e;
 }

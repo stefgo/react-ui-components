@@ -49,7 +49,7 @@ export const FileBrowser = ({ currentPath, onNavigate, files, isLoading, onSelec
 
     const header = (
         <>
-            <button onClick={goUp} className={cn("p-1.5 hover:bg-hover dark:hover:bg-hover-dark rounded-full text-text-muted dark:text-text-muted-dark transition-colors", classNames?.backButton)}>
+            <button type="button" aria-label="Go up one level" onClick={goUp} className={cn("p-1.5 hover:bg-hover dark:hover:bg-hover-dark rounded-full text-text-muted dark:text-text-muted-dark transition-colors", classNames?.backButton)}>
                 <ChevronRight className="rotate-180" size={18} />
             </button>
             <div className={cn("font-mono text-sm truncate font-medium", classNames?.pathDisplay)} title={currentPath}>{currentPath || '/'}</div>
@@ -70,6 +70,7 @@ export const FileBrowser = ({ currentPath, onNavigate, files, isLoading, onSelec
                          <div key={file.name} className={cn("flex items-center gap-2 px-2 py-1 hover:bg-hover dark:hover:bg-hover-dark rounded group", classNames?.item)}>
                             {file.isDirectory ? (
                                 <button
+                                    type="button"
                                     onClick={() => onNavigate(file.path)}
                                     className={cn(
                                         "flex items-center gap-2 flex-1 text-left text-info dark:text-info-dark hover:text-info-hover dark:hover:text-info-light truncate",

@@ -1,13 +1,15 @@
 const path = require("path");
+const { themeValue: t } = require("./tokens");
 
 /**
  * Tailwind CSS preset for @stefgo/react-ui-components.
  *
- * Adds the library's dist files to Tailwind's content list and extends the
- * theme with all CSS-variable-backed design tokens used by the components.
+ * Adds the library's dist files to Tailwind's content list and maps the design
+ * tokens from `tokens.js` onto Tailwind colour utilities. Defaults live in
+ * `tokens.js` only – never repeat a colour literal here.
  *
  * Consumers override tokens via CSS variables in their own :root / .dark rules:
- *   :root { --ruic-primary: #your-brand; }
+ *   :root { --ruic-primary: 12 34 56; }
  */
 module.exports = {
   content: [path.join(__dirname, "dist/**/*.{js,mjs}")],
@@ -20,168 +22,168 @@ module.exports = {
       colors: {
         // ─── Brand ────────────────────────────────────────────────────────────
         primary: {
-          DEFAULT: "rgb(var(--ruic-primary, 229 77 13) / <alpha-value>)",
-          hover:   "rgb(var(--ruic-primary-hover, 255 95 31) / <alpha-value>)",
+          DEFAULT: t("primary"),
+          hover: t("primary-hover"),
         },
 
         // ─── Semantic State Colors ────────────────────────────────────────────
-        // Used by ActionButton colors, Input/Select error states, DataAction menus.
         error: {
-          DEFAULT:   "var(--ruic-error, #dc2626)",
-          hover:     "var(--ruic-error-hover, #b91c1c)",
-          dark:      "var(--ruic-error-dark, #f87171)",
-          bg:        "var(--ruic-error-bg, #fef2f2)",
-          "bg-dark": "var(--ruic-error-bg-dark, rgba(127, 29, 29, 0.3))",
+          DEFAULT: t("error"),
+          hover: t("error-hover"),
+          dark: t("error-dark"),
+          bg: t("error-bg"),
+          "bg-dark": t("error-bg-dark"),
         },
         success: {
-          DEFAULT: "var(--ruic-success, #16a34a)",
-          hover:   "var(--ruic-success-hover, #15803d)",
-          dark:    "var(--ruic-success-dark, #4ade80)",
+          DEFAULT: t("success"),
+          hover: t("success-hover"),
+          dark: t("success-dark"),
         },
         warning: {
-          DEFAULT:   "var(--ruic-warning, #ea580c)",
-          hover:     "var(--ruic-warning-hover, #c2410c)",
-          dark:      "var(--ruic-warning-dark, #fb923c)",
-          bg:        "var(--ruic-warning-bg, #ffedd5)",
-          "bg-dark": "var(--ruic-warning-bg-dark, rgba(124, 45, 18, 0.3))",
+          DEFAULT: t("warning"),
+          hover: t("warning-hover"),
+          dark: t("warning-dark"),
+          bg: t("warning-bg"),
+          "bg-dark": t("warning-bg-dark"),
         },
         info: {
-          DEFAULT: "var(--ruic-info, #2563eb)",
-          hover:   "var(--ruic-info-hover, #1d4ed8)",
-          dark:    "var(--ruic-info-dark, #60a5fa)",
-          light:   "var(--ruic-info-light, #93c5fd)",
+          DEFAULT: t("info"),
+          hover: t("info-hover"),
+          dark: t("info-dark"),
+          light: t("info-light"),
         },
         accent: {
-          DEFAULT:   "var(--ruic-accent, #4f46e5)",
-          hover:     "var(--ruic-accent-hover, #4338ca)",
-          dark:      "var(--ruic-accent-dark, #818cf8)",
-          bg:        "var(--ruic-accent-bg, #eef2ff)",
-          "bg-dark": "var(--ruic-accent-bg-dark, rgba(49, 46, 129, 0.3))",
+          DEFAULT: t("accent"),
+          hover: t("accent-hover"),
+          dark: t("accent-dark"),
+          bg: t("accent-bg"),
+          "bg-dark": t("accent-bg-dark"),
         },
 
         // ─── Surfaces & Backgrounds ──────────────────────────────────────────
         card: {
-          // White card surface (dropdowns, panels, modal sheets).
-          DEFAULT: "var(--ruic-bg-card, #ffffff)",
-          dark:    "var(--ruic-bg-card-dark, #141414)",
-          header: "var(--ruic-bg-card-header, #f3f4f6)",
-          "header-dark": "var(--ruic-bg-card-header-dark, #181818)",
+          DEFAULT: t("bg-card"),
+          dark: t("bg-card-dark"),
+          header: t("bg-card-header"),
+          "header-dark": t("bg-card-header-dark"),
         },
         app: {
           bg: {
-            // Page / layout background.
-            DEFAULT: "var(--ruic-bg-app, #f9fafb)",
-            dark:    "var(--ruic-bg-app-dark, #111111)",
+            DEFAULT: t("bg-app"),
+            dark: t("bg-app-dark"),
           },
         },
+        overlay: t("overlay"),
 
         // ─── Typography ──────────────────────────────────────────────────────
         text: {
           primary: {
-            DEFAULT: "var(--ruic-text-primary, #111827)",
-            dark:    "var(--ruic-text-primary-dark, #f9fafb)",
+            DEFAULT: t("text-primary"),
+            dark: t("text-primary-dark"),
           },
           secondary: {
-            DEFAULT: "var(--ruic-text-secondary, #4b5563)",
-            dark:    "var(--ruic-text-secondary-dark, #d1d5db)",
+            DEFAULT: t("text-secondary"),
+            dark: t("text-secondary-dark"),
           },
           muted: {
-            DEFAULT: "var(--ruic-text-muted, #808080)",
-            dark:    "var(--ruic-text-muted-dark, #808080)",
+            DEFAULT: t("text-muted"),
+            dark: t("text-muted-dark"),
           },
         },
 
         // ─── Borders & Dividers ──────────────────────────────────────────────
         // Enables: border-border, dark:border-border-dark,
-        //          divide-border, dark:divide-border-dark,
-        //          ring-border, dark:ring-border-dark
+        //          divide-border, ring-border, …
         border: {
-          DEFAULT: "var(--ruic-border, #e2e8f0)",
-          dark:    "var(--ruic-border-dark, #2a2a2a)",
+          DEFAULT: t("border"),
+          dark: t("border-dark"),
         },
 
         // ─── Interactive Hover Backgrounds ───────────────────────────────────
-        // Enables: bg-hover / dark:bg-hover-dark
         hover: {
-          DEFAULT: "var(--ruic-hover, #f3f4f6)",
-          dark:    "var(--ruic-hover-dark, #252525)",
+          DEFAULT: t("hover"),
+          dark: t("hover-dark"),
         },
 
         // ─── Component: Button ───────────────────────────────────────────────
         button: {
           primary: {
-            DEFAULT: "rgb(var(--ruic-primary, 229 77 13) / <alpha-value>)",
-            hover:   "rgb(var(--ruic-primary-hover, 255 95 31) / <alpha-value>)",
-            text:    "var(--ruic-button-primary-text, #ffffff)",
+            DEFAULT: t("primary"),
+            hover: t("primary-hover"),
+            text: t("button-primary-text"),
           },
           secondary: {
-            DEFAULT:      "var(--ruic-button-secondary-bg, #e5e7eb)",
-            hover:        "var(--ruic-button-secondary-hover-bg, #d1d5db)",
-            dark:         "var(--ruic-button-secondary-bg-dark, #333333)",
-            "dark-hover": "var(--ruic-button-secondary-hover-bg-dark, #444444)",
+            DEFAULT: t("button-secondary-bg"),
+            hover: t("button-secondary-hover-bg"),
+            dark: t("button-secondary-bg-dark"),
+            "dark-hover": t("button-secondary-hover-bg-dark"),
           },
           danger: {
-            DEFAULT: "var(--ruic-button-danger-bg, #dc2626)",
-            hover:   "var(--ruic-button-danger-hover-bg, #b91c1c)",
+            DEFAULT: t("button-danger-bg"),
+            hover: t("button-danger-hover-bg"),
           },
         },
 
         // ─── Component: Badge ────────────────────────────────────────────────
         badge: {
           success: {
-            bg:          "var(--ruic-badge-success-bg, #dcfce7)",
-            text:        "var(--ruic-badge-success-text, #15803d)",
-            "bg-dark":   "var(--ruic-badge-success-bg-dark, rgba(20, 83, 45, 0.3))",
-            "text-dark": "var(--ruic-badge-success-text-dark, #4ade80)",
+            bg: t("badge-success-bg"),
+            text: t("badge-success-text"),
+            "bg-dark": t("badge-success-bg-dark"),
+            "text-dark": t("badge-success-text-dark"),
           },
           warning: {
-            bg:          "var(--ruic-badge-warning-bg, #ffedd5)",
-            text:        "var(--ruic-badge-warning-text, #c2410c)",
-            "bg-dark":   "var(--ruic-badge-warning-bg-dark, rgba(124, 45, 18, 0.3))",
-            "text-dark": "var(--ruic-badge-warning-text-dark, #fb923c)",
+            bg: t("badge-warning-bg"),
+            text: t("badge-warning-text"),
+            "bg-dark": t("badge-warning-bg-dark"),
+            "text-dark": t("badge-warning-text-dark"),
           },
           error: {
-            bg:          "var(--ruic-badge-error-bg, #fef2f2)",
-            text:        "var(--ruic-badge-error-text, #b91c1c)",
-            "bg-dark":   "var(--ruic-badge-error-bg-dark, rgba(127, 29, 29, 0.3))",
-            "text-dark": "var(--ruic-badge-error-text-dark, #f87171)",
+            bg: t("badge-error-bg"),
+            text: t("badge-error-text"),
+            "bg-dark": t("badge-error-bg-dark"),
+            "text-dark": t("badge-error-text-dark"),
           },
           info: {
-            bg:          "var(--ruic-badge-info-bg, #dbeafe)",
-            text:        "var(--ruic-badge-info-text, #1d4ed8)",
-            "bg-dark":   "var(--ruic-badge-info-bg-dark, rgba(30, 58, 138, 0.3))",
-            "text-dark": "var(--ruic-badge-info-text-dark, #60a5fa)",
+            bg: t("badge-info-bg"),
+            text: t("badge-info-text"),
+            "bg-dark": t("badge-info-bg-dark"),
+            "text-dark": t("badge-info-text-dark"),
           },
         },
 
         // ─── Component: Input / Select ───────────────────────────────────────
         input: {
           bg: {
-            DEFAULT: "var(--ruic-input-bg, #f9fafb)",
-            dark:    "var(--ruic-input-bg-dark, #111111)",
+            DEFAULT: t("input-bg"),
+            dark: t("input-bg-dark"),
           },
           border: {
-            DEFAULT: "var(--ruic-input-border, #e2e8f0)",
-            dark:    "var(--ruic-input-border-dark, #2a2a2a)",
+            DEFAULT: t("input-border"),
+            dark: t("input-border-dark"),
           },
         },
 
         // ─── Component: Sidebar ──────────────────────────────────────────────
         sidebar: {
           bg: {
-            DEFAULT: "var(--ruic-sidebar-bg, #f9fafb)",
-            dark:    "var(--ruic-sidebar-bg-dark, #1a1a1a)",
+            DEFAULT: t("sidebar-bg"),
+            dark: t("sidebar-bg-dark"),
           },
           item: {
             active: {
-              DEFAULT: "var(--ruic-sidebar-item-active-bg, #ffffff)",
-              dark:    "var(--ruic-sidebar-item-active-bg-dark, #252525)",
+              DEFAULT: t("sidebar-item-active-bg"),
+              dark: t("sidebar-item-active-bg-dark"),
             },
           },
           badge: {
             active: {
-              DEFAULT: "var(--ruic-sidebar-badge-active-bg, #f3f4f6)",
-              dark:    "var(--ruic-sidebar-badge-active-bg-dark, #333333)",
+              DEFAULT: t("sidebar-badge-active-bg"),
+              dark: t("sidebar-badge-active-bg-dark"),
+            },
+            inactive: {
+              DEFAULT: t("sidebar-badge-inactive-bg"),
+              dark: t("sidebar-badge-inactive-bg-dark"),
             },
           },
         },
@@ -189,81 +191,115 @@ module.exports = {
         // ─── Component: Table ────────────────────────────────────────────────
         table: {
           header: {
-            DEFAULT:                "var(--ruic-table-header-bg, #f3f4f6)",
-            dark:                   "var(--ruic-table-header-bg-dark, #202020)",
-            "toggle-bg":            "var(--ruic-table-header-toggle-bg, #e5e7eb)",
-            "toggle-bg-dark":       "var(--ruic-table-header-toggle-bg-dark, #111111)",
-            "toggle-active-bg":     "var(--ruic-table-header-toggle-active-bg, #ffffff)",
-            "toggle-active-bg-dark":"var(--ruic-table-header-toggle-active-bg-dark, #444444)",
+            DEFAULT: t("table-header-bg"),
+            dark: t("table-header-bg-dark"),
+            "toggle-bg": t("table-header-toggle-bg"),
+            "toggle-bg-dark": t("table-header-toggle-bg-dark"),
+            "toggle-active-bg": t("table-header-toggle-active-bg"),
+            "toggle-active-bg-dark": t("table-header-toggle-active-bg-dark"),
           },
           row: {
-            DEFAULT:    "var(--ruic-table-row-bg, #f9fafb)",
-            dark:       "var(--ruic-table-row-bg-dark, #181818)",
-            hover:      "var(--ruic-table-row-hover-bg, #f3f4f6)",
-            "hover-dark": "var(--ruic-table-row-hover-bg-dark, #202020)",
+            DEFAULT: t("table-row-bg"),
+            dark: t("table-row-bg-dark"),
+            hover: t("table-row-hover-bg"),
+            "hover-dark": t("table-row-hover-bg-dark"),
           },
         },
 
         // ─── Component: StatCard ─────────────────────────────────────────────
         statcard: {
           bg: {
-            DEFAULT: "var(--ruic-statcard-bg, #f3f4f6)",
-            dark:    "var(--ruic-statcard-bg-dark, #181818)",
+            DEFAULT: t("statcard-bg"),
+            dark: t("statcard-bg-dark"),
           },
           "icon-bg": {
-            DEFAULT: "var(--ruic-statcard-icon-bg, #f9fafb)",
-            dark:    "var(--ruic-statcard-icon-bg-dark, #252525)",
+            DEFAULT: t("statcard-icon-bg"),
+            dark: t("statcard-icon-bg-dark"),
           },
         },
 
-        // ─── Component: DashboardHeader ────────────────────────
+        // ─── Component: DashboardHeader ──────────────────────────────────────
         browser: {
           header: {
-            DEFAULT: "var(--ruic-browser-header-bg, #ffffff)",
-            dark:    "var(--ruic-browser-header-bg-dark, #1e1e1e)",
+            DEFAULT: t("browser-header-bg"),
+            dark: t("browser-header-bg-dark"),
           },
         },
       },
 
+      // ─── Layering ─────────────────────────────────────────────────────────
+      // One scale for the whole library, so a dropdown can never end up behind
+      // the bottom nav just because it was declared earlier in the DOM.
+      zIndex: {
+        sticky: "10",
+        header: "30",
+        bottomnav: "40",
+        dropdown: "50",
+        overlay: "60",
+        modal: "70",
+      },
+
       // ─── Shadows ──────────────────────────────────────────────────────────
       boxShadow: {
-        "glow-accent":   "0 0 15px rgb(var(--ruic-primary, 229 77 13) / 0.3)",
-        "glow-success":  "0 0 12px rgba(34, 197, 94, 0.4)",
-        premium:         "0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05)",
-        "premium-hover": "0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)",
+        "glow-accent": `0 0 15px ${t("primary").replace("<alpha-value>", "0.3")}`,
+        "glow-success": "0 0 12px rgba(34, 197, 94, 0.4)",
+        premium:
+          "0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05)",
+        "premium-hover":
+          "0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)",
       },
 
       // ─── Animations ───────────────────────────────────────────────────────
       animation: {
         "pulse-soft": "pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "fade-in":    "fade-in 0.4s ease-out forwards",
+        "fade-in": "fade-in 0.4s ease-out forwards",
         "pulse-glow": "pulse-glow 2s infinite",
+        "slide-in-from-top": "slide-in-from-top 0.2s ease-out forwards",
+        "slide-in-from-bottom": "slide-in-from-bottom 0.3s ease-out forwards",
       },
       keyframes: {
         "pulse-soft": {
           "0%, 100%": { opacity: 1 },
-          "50%":      { opacity: 0.7 },
+          "50%": { opacity: 0.7 },
         },
         "fade-in": {
-          "0%":   { opacity: 0, transform: "translateY(8px)" },
+          "0%": { opacity: 0, transform: "translateY(8px)" },
           "100%": { opacity: 1, transform: "translateY(0)" },
         },
         "pulse-glow": {
           "0%, 100%": { opacity: 1, transform: "scale(1)" },
-          "50%":      { opacity: 0.7, transform: "scale(1.1)" },
+          "50%": { opacity: 0.7, transform: "scale(1.1)" },
+        },
+        "slide-in-from-top": {
+          "0%": { opacity: 0, transform: "translateY(-8px)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
+        },
+        "slide-in-from-bottom": {
+          "0%": { opacity: 0, transform: "translateY(100%)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
         },
       },
     },
   },
   plugins: [
-    function({ addUtilities }) {
+    function ({ addUtilities }) {
       addUtilities({
-        '.scrollbar-none': {
-          '-ms-overflow-style': 'none',
-          'scrollbar-width': 'none',
-          '&::-webkit-scrollbar': {
-            display: 'none',
+        ".scrollbar-none": {
+          "-ms-overflow-style": "none",
+          "scrollbar-width": "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
           },
+        },
+        // Animations are decoration; honour the OS setting in one place instead
+        // of prefixing every usage with motion-safe:.
+        "@media (prefers-reduced-motion: reduce)": {
+          ".animate-pulse-soft, .animate-fade-in, .animate-pulse-glow, .animate-slide-in-from-top, .animate-slide-in-from-bottom":
+            {
+              animation: "none",
+              opacity: "1",
+              transform: "none",
+            },
         },
       });
     },

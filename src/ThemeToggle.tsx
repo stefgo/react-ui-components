@@ -19,19 +19,24 @@ export const ThemeToggle = ({
     className = '',
     classNames
 }: ThemeToggleProps) => {
+    const label = theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+
     return (
         <button
+            type="button"
             onClick={onToggle}
             className={cn(
                 "p-2 flex items-center justify-center rounded-lg text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark hover:bg-hover dark:hover:bg-hover-dark transition-colors",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                 className,
                 classNames?.root
             )}
-            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            title={label}
+            aria-label={label}
         >
-            {theme === 'dark' 
-                ? <Sun size={20} className={cn(classNames?.icon)} /> 
-                : <Moon size={20} className={cn(classNames?.icon)} />
+            {theme === 'dark'
+                ? <Sun size={20} className={cn(classNames?.icon)} aria-hidden="true" />
+                : <Moon size={20} className={cn(classNames?.icon)} aria-hidden="true" />
             }
         </button>
     );

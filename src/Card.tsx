@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, Ref } from 'react';
 import { cn } from './utils';
 
 export interface CardClassNames {
@@ -8,28 +8,39 @@ export interface CardClassNames {
     headerAction?: string;
 }
 
+export type CardTitleLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div';
+
 interface CardProps {
     children?: ReactNode;
     title?: ReactNode;
     action?: ReactNode;
+    /**
+     * Heading level for `title`. Pick the one that fits the surrounding document
+     * outline; `div` opts out of the outline entirely.
+     */
+    titleAs?: CardTitleLevel;
     className?: string;
     classNames?: CardClassNames;
+    ref?: Ref<HTMLDivElement>;
 }
 
-export const Card = ({ children, title, action, className = '', classNames }: CardProps) => {
+export const Card = ({ children, title, action, titleAs: TitleTag = 'h3', className = '', classNames, ref }: CardProps) => {
     const showHeader = title || action;
     return (
-        <div className={cn(
-            "bg-card dark:bg-card-dark overflow-hidden rounded-xl border border-border dark:border-border-dark shadow-lg",
-            className,
-            classNames?.root
-        )}>
+        <div
+            ref={ref}
+            className={cn(
+                "bg-card dark:bg-card-dark overflow-hidden rounded-xl border border-border dark:border-border-dark shadow-lg",
+                className,
+                classNames?.root
+            )}
+        >
             {showHeader && (
                 <div className={cn(
                     "px-5 py-4 border-b border-border dark:border-border-dark flex justify-between items-center bg-card-header dark:bg-card-header-dark rounded-t-xl",
                     classNames?.header
                 )}>
-                    {title && <h3 className={cn("font-semibold text-text-primary dark:text-text-primary-dark flex items-center gap-2", classNames?.headerTitle)}>{title}</h3>}
+                    {title && <TitleTag className={cn("font-semibold text-text-primary dark:text-text-primary-dark flex items-center gap-2", classNames?.headerTitle)}>{title}</TitleTag>}
                     {action && <div className={cn(classNames?.headerAction)}>{action}</div>}
                 </div>
             )}

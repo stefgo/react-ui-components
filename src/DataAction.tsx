@@ -40,6 +40,8 @@ interface DataTableActionProps<TId extends string | number> {
     actions?: DataTableActionItem[];
     /** Entries rendered inside the overflow dropdown menu */
     menuEntries?: DataTableActionMenuEntry[];
+    /** Accessible name of the overflow trigger, which renders an icon only. */
+    menuLabel?: string;
     className?: string;
     classNames?: DataActionClassNames;
 }
@@ -48,10 +50,11 @@ export const DataAction = <TId extends string | number>({
     rowId,
     actions = [],
     menuEntries = [],
+    menuLabel = "More actions",
     className = "",
     classNames
 }: DataTableActionProps<TId>) => {
-    const { menuState, openMenu, closeMenu } = useActionMenu<TId>();
+    const { menuState, triggerRef, openMenu, closeMenu } = useActionMenu<TId>();
 
     const isMenuOpen = menuState?.id === rowId;
 
@@ -78,12 +81,16 @@ export const DataAction = <TId extends string | number>({
                         color="gray"
                         className={cn(isMenuOpen ? 'opacity-100' : '')}
                         classNames={classNames?.menuTrigger}
+                        aria-label={menuLabel}
+                        aria-haspopup="menu"
+                        aria-expanded={isMenuOpen}
                     />
 
                     <ActionMenu
                         isOpen={isMenuOpen}
                         onClose={closeMenu}
-                        position={menuState || { x: 0, y: 0 }}
+                        position={menuState || { x: 0, y: 0, top: 0 }}
+                        triggerRef={triggerRef}
                         classNames={classNames?.menu}
                     >
                         {menuEntries.map((entry, index) => {
@@ -103,6 +110,8 @@ export const DataAction = <TId extends string | number>({
                             return (
                                 <button
                                     key={index}
+                                    type="button"
+                                    role="menuitem"
                                     onClick={() => {
                                         if (!isDisabled) {
                                             entry.onClick();

@@ -58,7 +58,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
         <DataViewFrame containerClassName={containerClassName} classNames={classNames} pagination={pagination}>
             <div className="overflow-x-auto h-full w-full">
                 <table className={cn("w-full text-left border-collapse", classNames?.table)}>
-                    <thead className={cn("sticky top-0 bg-table-header dark:bg-table-header-dark z-10", classNames?.thead)}>
+                    <thead className={cn("sticky top-0 bg-table-header dark:bg-table-header-dark z-sticky", classNames?.thead)}>
                         <tr className={cn("border-b border-border dark:border-border-dark", classNames?.headerRow)}>
                             {itemDef.map((col, idx) => (
                                 <th
