@@ -34,7 +34,7 @@ export interface DataTreeTableProps<T> extends BaseDataViewProps<T> {
 }
 
 export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
-    const { itemDef, getChildren, defaultExpanded, defaultSort, indentSize = 20, onRowClick, classNames, containerClassName, pagination } = props;
+    const { itemDef, getChildren, defaultExpanded, defaultSort, indentSize = 20, onRowClick, classNames, containerClassName } = props;
 
     const { sortColumns, comparator, handleSortClick } = useSortColumns({ itemDef, defaultSort });
 
@@ -42,7 +42,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
     // level, so a page has to be taken from the root level only. That comes with
     // the root-level paging commit; until then the tree behaves as before and
     // renders every row.
-    const { rows, placeholder, getKey, getRowClass, interactionClasses } = useDataView(
+    const { rows, placeholder, getKey, getRowClass, interactionClasses, pagination } = useDataView(
         { ...props, pagination: undefined },
         comparator,
     );

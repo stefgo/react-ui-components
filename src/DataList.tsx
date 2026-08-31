@@ -41,9 +41,9 @@ function resolveContent<T>(col: DataListDef<T>, item: T): ReactNode {
 }
 
 export const DataList = <T,>(props: DataListProps<T>) => {
-    const { columns: columnsProp, onRowClick, classNames, containerClassName, pagination } = props;
+    const { columns: columnsProp, onRowClick, classNames, containerClassName } = props;
     // No comparator — the caller's order is kept.
-    const { rows, placeholder, getKey, getRowClass, interactionClasses } = useDataView(props);
+    const { rows, placeholder, getKey, getRowClass, interactionClasses, pagination } = useDataView(props);
 
     return (
         <DataViewFrame containerClassName={containerClassName} classNames={classNames} pagination={pagination}>

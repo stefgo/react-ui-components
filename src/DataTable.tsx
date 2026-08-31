@@ -36,7 +36,7 @@ export interface DataTableProps<T> extends BaseDataViewProps<T> {
 }
 
 export const DataTable = <T,>(props: DataTableProps<T>) => {
-    const { itemDef, defaultSort, sortStorageKey, onRowClick, classNames, containerClassName, pagination } = props;
+    const { itemDef, defaultSort, sortStorageKey, onRowClick, classNames, containerClassName } = props;
 
     const { sortColumns, comparator, handleSortClick } = useSortColumns({
         itemDef,
@@ -45,7 +45,7 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
     });
     // Sort across everything first, then take the page — the other order sorts
     // only the rows that happen to be on screen.
-    const { rows, placeholder, getKey, getRowClass, interactionClasses } = useDataView(props, comparator);
+    const { rows, placeholder, getKey, getRowClass, interactionClasses, pagination } = useDataView(props, comparator);
 
     return (
         <DataViewFrame containerClassName={containerClassName} classNames={classNames} pagination={pagination}>
