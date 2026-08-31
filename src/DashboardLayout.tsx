@@ -30,7 +30,7 @@ export const DashboardLayout = ({
 }: DashboardLayoutProps) => {
     return (
         <div className={cn(
-            "h-screen overflow-hidden bg-app-bg dark:bg-app-bg-dark text-text-primary dark:text-text-primary-dark font-sans flex flex-col transition-colors duration-300",
+            "h-screen overflow-hidden bg-app-bg text-text-primary font-sans flex flex-col transition-colors duration-slow",
             className,
             classNames?.root
         )}>

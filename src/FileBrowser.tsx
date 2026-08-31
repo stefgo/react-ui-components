@@ -49,7 +49,7 @@ export const FileBrowser = ({ currentPath, onNavigate, files, isLoading, onSelec
 
     const header = (
         <>
-            <button type="button" aria-label="Go up one level" onClick={goUp} className={cn("p-1.5 hover:bg-hover dark:hover:bg-hover-dark rounded-full text-text-muted dark:text-text-muted-dark transition-colors", classNames?.backButton)}>
+            <button type="button" aria-label="Go up one level" onClick={goUp} className={cn("p-1.5 hover:bg-hover rounded-full text-text-muted transition-colors", classNames?.backButton)}>
                 <ChevronRight className="rotate-180" size={18} />
             </button>
             <div className={cn("font-mono text-sm truncate font-medium", classNames?.pathDisplay)} title={currentPath}>{currentPath || '/'}</div>
@@ -64,33 +64,33 @@ export const FileBrowser = ({ currentPath, onNavigate, files, isLoading, onSelec
         >
             <div className={cn("overflow-y-auto p-2 space-y-1 flex-1 min-h-[200px]", classNames?.content)}>
                 {isLoading ? (
-                    <div className={cn("text-text-muted dark:text-text-muted-dark text-xs p-4 text-center", classNames?.loading)}>Loading...</div>
+                    <div className={cn("text-text-muted text-xs p-4 text-center", classNames?.loading)}>Loading...</div>
                 ) : (
                     (files && Array.isArray(files) ? files : []).map((file) => (
-                         <div key={file.name} className={cn("flex items-center gap-2 px-2 py-1 hover:bg-hover dark:hover:bg-hover-dark rounded group", classNames?.item)}>
+                         <div key={file.name} className={cn("flex items-center gap-2 px-2 py-1 hover:bg-hover rounded-sm group", classNames?.item)}>
                             {file.isDirectory ? (
                                 <button
                                     type="button"
                                     onClick={() => onNavigate(file.path)}
                                     className={cn(
-                                        "flex items-center gap-2 flex-1 text-left text-info dark:text-info-dark hover:text-info-hover dark:hover:text-info-light truncate",
+                                        "flex items-center gap-2 flex-1 text-left text-info hover:text-info-hover truncate",
                                         classNames?.itemFolder
                                     )}
                                 >
                                     <Folder size={16} fill="currentColor" className={cn("opacity-20", classNames?.folderIcon)} />
-                                    <span className="text-sm font-medium text-text-primary dark:text-text-secondary-dark">{file.name}</span>
+                                    <span className="text-sm font-medium text-text-primary">{file.name}</span>
                                 </button>
                             ) : (
-                                <div className={cn("flex items-center gap-2 flex-1 text-text-muted dark:text-text-muted-dark truncate", classNames?.itemFile)}>
+                                <div className={cn("flex items-center gap-2 flex-1 text-text-muted truncate", classNames?.itemFile)}>
                                     <File size={16} className={cn(classNames?.fileIcon)} />
-                                    <span className="text-sm font-medium text-text-secondary dark:text-text-secondary-dark">{file.name}</span>
+                                    <span className="text-sm font-medium text-text-secondary">{file.name}</span>
                                 </div>
                             )}
                         </div>
                     ))
                 )}
                 {!isLoading && (files && Array.isArray(files) ? files : []).length === 0 && (
-                    <div className={cn("text-text-muted dark:text-text-muted-dark text-xs p-4 text-center", classNames?.empty)}>Empty directory</div>
+                    <div className={cn("text-text-muted text-xs p-4 text-center", classNames?.empty)}>Empty directory</div>
                 )}
             </div>
         </Card>

@@ -30,17 +30,17 @@ export const Card = ({ children, title, action, titleAs: TitleTag = 'h3', classN
         <div
             ref={ref}
             className={cn(
-                "bg-card dark:bg-card-dark overflow-hidden rounded-xl border border-border dark:border-border-dark shadow-lg",
+                "bg-card overflow-hidden rounded-lg border border-border shadow-lg",
                 className,
                 classNames?.root
             )}
         >
             {showHeader && (
                 <div className={cn(
-                    "px-5 py-4 border-b border-border dark:border-border-dark flex justify-between items-center bg-card-header dark:bg-card-header-dark rounded-t-xl",
+                    "px-5 py-4 border-b border-border flex justify-between items-center bg-card-header rounded-t-lg",
                     classNames?.header
                 )}>
-                    {title && <TitleTag className={cn("font-semibold text-text-primary dark:text-text-primary-dark flex items-center gap-2", classNames?.headerTitle)}>{title}</TitleTag>}
+                    {title && <TitleTag className={cn("font-semibold text-text-primary flex items-center gap-2", classNames?.headerTitle)}>{title}</TitleTag>}
                     {action && <div className={cn(classNames?.headerAction)}>{action}</div>}
                 </div>
             )}

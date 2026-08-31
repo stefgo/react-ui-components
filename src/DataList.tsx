@@ -47,9 +47,9 @@ export const DataList = <T,>(props: DataListProps<T>) => {
 
     return (
         <DataViewFrame containerClassName={containerClassName} classNames={classNames} pagination={pagination}>
-            <div className={cn("divide-y divide-border dark:divide-border-dark", classNames?.listRoot)}>
+            <div className={cn("divide-y divide-border", classNames?.listRoot)}>
                 {placeholder ? (
-                    <div className={cn("px-6 py-8 text-center text-text-muted dark:text-text-muted-dark", classNames?.placeholder)}>
+                    <div className={cn("px-6 py-8 text-center text-text-muted", classNames?.placeholder)}>
                         {placeholder}
                     </div>
                 ) : (
@@ -74,7 +74,7 @@ export const DataList = <T,>(props: DataListProps<T>) => {
                                                     {col.listLabel != null ? (
                                                         <div className={cn("flex items-start gap-2 text-sm", classNames?.labelWrapper)}>
                                                             <span className={cn(
-                                                                "font-semibold text-text-muted dark:text-text-muted-dark min-w-[100px] shrink-0",
+                                                                "font-semibold text-text-muted min-w-[100px] shrink-0",
                                                                 col.listLabelClassName,
                                                                 classNames?.label
                                                             )}>

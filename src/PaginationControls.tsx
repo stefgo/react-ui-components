@@ -49,17 +49,17 @@ export const PaginationControls = ({
 
     return (
         <div className={cn(
-            "flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-3 border-t border-border dark:border-border-dark bg-table-header dark:bg-table-header-dark",
+            "flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-3 border-t border-border bg-table-header",
             classNames?.root
         )}>
-            <div className={cn("flex items-center gap-2 text-sm text-text-secondary dark:text-text-muted-dark", classNames?.infoWrapper)}>
+            <div className={cn("flex items-center gap-2 text-sm text-text-secondary", classNames?.infoWrapper)}>
                 <label htmlFor={selectId}>Rows per page:</label>
                 <select
                     id={selectId}
                     value={pageSize}
                     onChange={(e) => onPageSizeChange(Number(e.target.value))}
                     className={cn(
-                        "bg-input-bg dark:bg-input-bg-dark border border-input-border dark:border-input-border-dark text-text-primary dark:text-text-primary-dark text-sm rounded focus:ring-primary focus:border-primary block p-1",
+                        "bg-input-bg border border-input-border text-text-primary text-sm rounded-sm focus:ring-primary focus:border-primary block p-1",
                         classNames?.select
                     )}
                 >
@@ -79,14 +79,14 @@ export const PaginationControls = ({
                     onClick={() => onPageChange(page - 1)}
                     disabled={page <= 1}
                     className={cn(
-                        "p-1 rounded hover:bg-hover dark:hover:bg-hover-dark disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary dark:text-text-muted-dark transition-colors",
+                        "p-1 rounded-sm hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary transition-colors",
                         classNames?.button
                     )}
                 >
                     <ChevronLeft size={20} />
                 </button>
                 <div className="flex items-center gap-1 px-2">
-                    <span className={cn("text-sm text-text-secondary dark:text-text-muted-dark", classNames?.pageText)}>
+                    <span className={cn("text-sm text-text-secondary", classNames?.pageText)}>
                         Page {page}{totalKnown && ` of ${totalPages}`}
                     </span>
                 </div>
@@ -96,7 +96,7 @@ export const PaginationControls = ({
                     onClick={() => onPageChange(page + 1)}
                     disabled={totalKnown && page >= totalPages}
                     className={cn(
-                        "p-1 rounded hover:bg-hover dark:hover:bg-hover-dark disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary dark:text-text-muted-dark transition-colors",
+                        "p-1 rounded-sm hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary transition-colors",
                         classNames?.button
                     )}
                 >

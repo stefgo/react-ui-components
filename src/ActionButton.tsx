@@ -44,30 +44,30 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
 
     const colorClasses: Record<ActionButtonColor, string> = {
         green: isDisabled
-            ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
-            : "text-text-muted dark:text-text-muted-dark hover:text-success hover:bg-hover dark:hover:text-success-dark dark:hover:bg-hover-dark",
+            ? "text-text-muted opacity-30 cursor-not-allowed"
+            : "text-text-muted hover:text-success hover:bg-hover",
         blue: isDisabled
-            ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
-            : "text-text-muted dark:text-text-muted-dark hover:text-info hover:bg-hover dark:hover:text-info-dark dark:hover:bg-hover-dark",
+            ? "text-text-muted opacity-30 cursor-not-allowed"
+            : "text-text-muted hover:text-info hover:bg-hover",
         red: isDisabled
-            ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
-            : "text-text-muted dark:text-text-muted-dark hover:text-error hover:bg-hover dark:hover:text-error-dark dark:hover:bg-hover-dark",
+            ? "text-text-muted opacity-30 cursor-not-allowed"
+            : "text-text-muted hover:text-error hover:bg-hover",
         orange: isDisabled
-            ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
-            : "text-text-muted dark:text-text-muted-dark hover:text-primary hover:bg-warning-bg dark:hover:text-primary-hover dark:hover:bg-warning-bg-dark",
+            ? "text-text-muted opacity-30 cursor-not-allowed"
+            : "text-text-muted hover:text-primary hover:bg-warning-bg",
         gray: isDisabled
-            ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
-            : "text-text-muted dark:text-text-muted-dark hover:text-text-secondary hover:bg-hover dark:hover:text-text-secondary-dark dark:hover:bg-hover-dark",
+            ? "text-text-muted opacity-30 cursor-not-allowed"
+            : "text-text-muted hover:text-text-secondary hover:bg-hover",
         indigo: isDisabled
-            ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
-            : "text-text-muted dark:text-text-muted-dark hover:text-accent hover:bg-accent-bg dark:hover:text-accent-dark dark:hover:bg-accent-bg-dark",
+            ? "text-text-muted opacity-30 cursor-not-allowed"
+            : "text-text-muted hover:text-accent hover:bg-accent-bg",
         error: isDisabled
-            ? "text-text-muted dark:text-text-muted-dark opacity-30 cursor-not-allowed"
-            : "text-error/60 dark:text-error-dark/50 hover:text-error hover:bg-error-bg dark:hover:text-error-dark dark:hover:bg-error-bg-dark",
+            ? "text-text-muted opacity-30 cursor-not-allowed"
+            : "text-error/60 hover:text-error hover:bg-error-bg",
         };
 
     const variantClasses = variant === 'solid' && !isDisabled
-        ? "bg-hover dark:bg-hover-dark shadow-sm"
+        ? "bg-hover shadow-sm"
         : "";
 
     const getTooltip = () => {

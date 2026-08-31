@@ -26,7 +26,7 @@ export const ThemeToggle = ({
             type="button"
             onClick={onToggle}
             className={cn(
-                "p-2 flex items-center justify-center rounded-lg text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark hover:bg-hover dark:hover:bg-hover-dark transition-colors",
+                "p-2 flex items-center justify-center rounded-md text-text-muted hover:text-text-primary hover:bg-hover transition-colors",
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                 className,
                 classNames?.root

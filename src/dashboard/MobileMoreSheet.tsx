@@ -64,12 +64,12 @@ export const MobileMoreSheet = ({
                 // The backdrop closes the sheet; clicks inside it must not bubble up there.
                 onClick={(e) => e.stopPropagation()}
                 className={cn(
-                    "absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto bg-card dark:bg-card-dark rounded-t-2xl p-6 pb-24 animate-slide-in-from-bottom shadow-2xl focus:outline-none",
+                    "absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto bg-card rounded-t-xl p-6 pb-24 animate-slide-in-from-bottom shadow-2xl focus:outline-none",
                     classNames?.sheet
                 )}
             >
-                <div className={cn("flex justify-between items-center mb-6 sticky top-0 bg-card dark:bg-card-dark z-sticky py-2", classNames?.header)}>
-                    <h2 id={titleId} className={cn("text-xl font-bold text-text-primary dark:text-text-primary-dark flex items-center gap-2", classNames?.title)}>
+                <div className={cn("flex justify-between items-center mb-6 sticky top-0 bg-card z-sticky py-2", classNames?.header)}>
+                    <h2 id={titleId} className={cn("text-xl font-bold text-text-primary flex items-center gap-2", classNames?.title)}>
                         <span aria-hidden="true">{icon ?? <Shield className="text-text-muted" size={24} />}</span>
                         {title}
                     </h2>
@@ -78,7 +78,7 @@ export const MobileMoreSheet = ({
                         onClick={onClose}
                         aria-label={closeLabel}
                         className={cn(
-                            "p-2 rounded-full bg-hover dark:bg-hover-dark text-text-muted hover:bg-border dark:hover:bg-hover-dark transition-colors",
+                            "p-2 rounded-full bg-hover text-text-muted hover:bg-hover transition-colors",
                             "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                             classNames?.close
                         )}
@@ -91,7 +91,7 @@ export const MobileMoreSheet = ({
                     {groups.map((group, groupIdx) => (
                         <div key={groupIdx} className="space-y-3">
                             {group.title && (
-                                <div className={cn("text-text-muted dark:text-text-muted-dark text-xs font-bold uppercase tracking-wider px-2", classNames?.groupTitle)}>
+                                <div className={cn("text-text-muted text-xs font-bold uppercase tracking-wider px-2", classNames?.groupTitle)}>
                                     {group.title}
                                 </div>
                             )}
@@ -103,11 +103,11 @@ export const MobileMoreSheet = ({
                                         onClick={item.onClick}
                                         aria-current={item.active ? 'page' : undefined}
                                         className={cn(
-                                            "flex items-center gap-4 p-4 rounded-xl transition-colors w-full text-left",
+                                            "flex items-center gap-4 p-4 rounded-lg transition-colors w-full text-left",
                                             "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                                             item.active
-                                                ? "bg-hover dark:bg-hover-dark text-text-primary dark:text-text-primary-dark ring-1 ring-border dark:ring-border-dark"
-                                                : "bg-app-bg dark:bg-app-bg-dark text-text-secondary dark:text-text-secondary-dark hover:bg-hover dark:hover:bg-hover-dark",
+                                                ? "bg-hover text-text-primary ring-1 ring-border"
+                                                : "bg-app-bg text-text-secondary hover:bg-hover",
                                             classNames?.item,
                                             item.active ? classNames?.itemActive : ''
                                         )}
@@ -118,10 +118,10 @@ export const MobileMoreSheet = ({
                                         <span className="font-semibold text-lg flex-1">{item.label}</span>
                                         {item.badge && (
                                             <span className={cn(
-                                                "text-xs px-2 py-1 rounded-full bg-border dark:bg-hover-dark",
+                                                "text-xs px-2 py-1 rounded-full bg-hover",
                                                 item.active
-                                                    ? "text-text-primary dark:text-text-primary-dark"
-                                                    : "text-text-muted dark:text-text-muted-dark"
+                                                    ? "text-text-primary"
+                                                    : "text-text-muted"
                                             )}>
                                                 {item.badge}
                                             </span>

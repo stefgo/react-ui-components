@@ -42,7 +42,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
             {label && (
                 <label
                     htmlFor={selectId}
-                    className={cn("block text-xs font-bold text-text-muted dark:text-text-muted-dark uppercase mb-1.5 ml-1", classNames?.label)}
+                    className={cn("block text-xs font-bold text-text-muted uppercase mb-1.5 ml-1", classNames?.label)}
                 >
                     {label} {props.required && <span className="text-error" aria-hidden="true">*</span>}
                 </label>
@@ -53,9 +53,9 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
                     id={selectId}
                     aria-invalid={error ? true : undefined}
                     className={cn(
-                        "block w-full bg-input-bg dark:bg-input-bg-dark border",
-                        error ? 'border-error' : 'border-input-border dark:border-input-border-dark',
-                        "pl-3 pr-10 py-2.5 rounded-lg text-text-primary dark:text-text-primary-dark",
+                        "block w-full bg-input-bg border",
+                        error ? 'border-error' : 'border-input-border',
+                        "pl-3 pr-10 py-2.5 rounded-md text-text-primary",
                         "focus:outline-none focus:ring-2 focus:ring-primary",
                         "transition-all sm:text-sm appearance-none",
                         classNames?.select
@@ -73,7 +73,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
                 <ChevronDown
                     size={16}
                     aria-hidden="true"
-                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-text-muted dark:text-text-muted-dark"
+                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-text-muted"
                 />
             </div>
             {error && <p id={errorId} role="alert" className={cn("mt-1 text-xs text-error", classNames?.error)}>{error}</p>}

@@ -17,7 +17,7 @@ interface DataViewFrameProps {
  */
 export const DataViewFrame = ({ containerClassName = '', classNames, pagination, children }: DataViewFrameProps) => (
     <div className={cn(
-        "bg-table-row dark:bg-table-row-dark border border-card dark:border-card-dark overflow-hidden shadow-lg flex flex-col h-full",
+        "bg-table-row border border-card overflow-hidden shadow-lg flex flex-col h-full",
         containerClassName,
         classNames?.root,
     )}>
@@ -25,7 +25,7 @@ export const DataViewFrame = ({ containerClassName = '', classNames, pagination,
             {children}
         </div>
         {pagination && (
-            <div className={cn("shrink-0 border-t border-card dark:border-card-dark bg-card dark:bg-card-dark", classNames?.paginationWrapper)}>
+            <div className={cn("shrink-0 border-t border-card bg-card", classNames?.paginationWrapper)}>
                 <PaginationControls
                     page={pagination.page}
                     totalPages={pagination.totalPages}

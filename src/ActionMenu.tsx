@@ -84,7 +84,7 @@ export const ActionMenu = ({
             role="menu"
             tabIndex={-1}
             className={cn(
-                "fixed w-48 bg-card dark:bg-card-dark rounded-md shadow-lg border border-border dark:border-border-dark z-dropdown py-1 focus:outline-none",
+                "fixed w-48 bg-card rounded-md shadow-lg border border-border z-dropdown py-1 focus:outline-none",
                 coords ? "visible" : "invisible",
                 className,
                 classNames?.root

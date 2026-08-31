@@ -49,15 +49,15 @@ export const UserMenu = ({
                 aria-controls={isOpen ? menuId : undefined}
                 aria-label={`${signedInAsLabel} ${username}`}
                 className={cn(
-                    "flex items-center gap-2 text-text-secondary dark:text-text-secondary-dark hover:text-text-primary dark:hover:text-text-primary-dark transition-colors p-1 pr-2 rounded-lg hover:bg-hover dark:hover:bg-hover-dark",
+                    "flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors p-1 pr-2 rounded-lg hover:bg-hover",
                     "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                     classNames?.trigger
                 )}
             >
-                <div className={cn("w-8 h-8 rounded-full bg-hover dark:bg-hover-dark flex items-center justify-center text-text-secondary dark:text-text-muted-dark", classNames?.iconWrapper)} aria-hidden="true">
+                <div className={cn("w-8 h-8 rounded-full bg-hover flex items-center justify-center text-text-secondary", classNames?.iconWrapper)} aria-hidden="true">
                     <User size={18} />
                 </div>
-                <ChevronDown size={14} aria-hidden="true" className={cn("transition-transform duration-200", isOpen ? 'rotate-180' : '')} />
+                <ChevronDown size={14} aria-hidden="true" className={cn("transition-transform duration-base", isOpen ? 'rotate-180' : '')} />
             </button>
 
             {isOpen && (
@@ -67,13 +67,13 @@ export const UserMenu = ({
                     role="menu"
                     tabIndex={-1}
                     className={cn(
-                        "absolute right-0 mt-2 w-56 bg-card dark:bg-card-dark rounded-xl shadow-xl border border-border dark:border-border-dark py-2 animate-slide-in-from-top z-dropdown focus:outline-none",
+                        "absolute right-0 mt-2 w-56 bg-card rounded-lg shadow-xl border border-border py-2 animate-slide-in-from-top z-dropdown focus:outline-none",
                         classNames?.dropdown
                     )}
                 >
-                    <div className={cn("px-4 py-3 border-b border-border dark:border-border-dark", classNames?.info)}>
-                        <p className="text-xs text-text-muted dark:text-text-muted-dark font-medium uppercase tracking-wider mb-1">{signedInAsLabel}</p>
-                        <p className="text-sm font-semibold text-text-primary dark:text-text-primary-dark truncate">{username}</p>
+                    <div className={cn("px-4 py-3 border-b border-border", classNames?.info)}>
+                        <p className="text-xs text-text-muted font-medium uppercase tracking-wider mb-1">{signedInAsLabel}</p>
+                        <p className="text-sm font-semibold text-text-primary truncate">{username}</p>
                     </div>
 
                     <div className="py-1">
@@ -85,7 +85,7 @@ export const UserMenu = ({
                                 onLogout();
                             }}
                             className={cn(
-                                "w-full text-left px-4 py-2 text-sm text-error hover:bg-error-bg dark:hover:bg-error-bg-dark flex items-center gap-2 transition-colors focus:outline-none focus-visible:bg-error-bg dark:focus-visible:bg-error-bg-dark",
+                                "w-full text-left px-4 py-2 text-sm text-error hover:bg-error-bg flex items-center gap-2 transition-colors focus:outline-none focus-visible:bg-error-bg",
                                 classNames?.logout
                             )}
                         >

@@ -58,13 +58,13 @@ export const Collapsible = ({
                 aria-expanded={isExpanded}
                 aria-controls={contentId}
                 className={cn(
-                    "w-full flex items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card dark:hover:bg-card-dark",
+                    "w-full flex items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card",
                     headerClassName,
                     classNames?.header
                 )}
             >
                 <div className={cn("flex items-center gap-3 overflow-hidden", classNames?.titleWrapper)}>
-                    <span className={cn("text-text-muted dark:text-text-muted-dark group-hover:text-text-primary dark:group-hover:text-text-primary-dark", classNames?.icon)} aria-hidden="true">
+                    <span className={cn("text-text-muted group-hover:text-text-primary", classNames?.icon)} aria-hidden="true">
                         {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
                     </span>
                     <div className="flex-1 overflow-hidden">{title}</div>
@@ -79,7 +79,7 @@ export const Collapsible = ({
                 id={contentId}
                 inert={!isExpanded}
                 className={cn(
-                    "grid transition-[grid-template-rows,opacity] duration-300 ease-in-out",
+                    "grid transition-[grid-template-rows,opacity] duration-slow ease-in-out",
                     isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
                     contentClassName,
                     classNames?.content

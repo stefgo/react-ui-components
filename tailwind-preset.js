@@ -1,21 +1,29 @@
 const path = require("path");
-const { themeValue: t } = require("./tokens");
+const { themeValue: t, baseDeclarations, RADIUS, DURATION } = require("./tokens");
 
 /**
  * Tailwind CSS preset for @stefgo/react-ui-components.
  *
- * Adds the library's dist files to Tailwind's content list and maps the design
- * tokens from `tokens.js` onto Tailwind colour utilities. Defaults live in
- * `tokens.js` only – never repeat a colour literal here.
+ * It does three things:
+ *   1. adds the library's dist files to Tailwind's `content` scanning,
+ *   2. maps the design tokens from `tokens.js` onto Tailwind utilities,
+ *   3. emits the token declarations themselves (`:root` and `.dark`) as base
+ *      styles, so consumers need no extra stylesheet import.
  *
- * Consumers override tokens via CSS variables in their own :root / .dark rules:
+ * Defaults live in `tokens.js` only — never repeat a colour literal here.
+ *
+ * Every colour is one class, not two: `bg-card` resolves per theme because the
+ * `.dark` block redefines the custom property. Consumers override by redefining
+ * the variables:
+ *
  *   :root { --ruic-primary: 12 34 56; }
+ *   .dark { --ruic-bg-card: #0b0b0b; }
  */
 module.exports = {
+  darkMode: "class",
   content: [path.join(__dirname, "dist/**/*.{js,mjs}")],
   safelist: [
     "group-hover:bg-table-row-hover",
-    "dark:group-hover:bg-table-row-hover-dark",
   ],
   theme: {
     extend: {
@@ -30,80 +38,47 @@ module.exports = {
         error: {
           DEFAULT: t("error"),
           hover: t("error-hover"),
-          dark: t("error-dark"),
           bg: t("error-bg"),
-          "bg-dark": t("error-bg-dark"),
         },
         success: {
           DEFAULT: t("success"),
           hover: t("success-hover"),
-          dark: t("success-dark"),
         },
         warning: {
           DEFAULT: t("warning"),
           hover: t("warning-hover"),
-          dark: t("warning-dark"),
           bg: t("warning-bg"),
-          "bg-dark": t("warning-bg-dark"),
         },
         info: {
           DEFAULT: t("info"),
           hover: t("info-hover"),
-          dark: t("info-dark"),
-          light: t("info-light"),
         },
         accent: {
           DEFAULT: t("accent"),
           hover: t("accent-hover"),
-          dark: t("accent-dark"),
           bg: t("accent-bg"),
-          "bg-dark": t("accent-bg-dark"),
         },
 
         // ─── Surfaces & Backgrounds ──────────────────────────────────────────
         card: {
           DEFAULT: t("bg-card"),
-          dark: t("bg-card-dark"),
           header: t("bg-card-header"),
-          "header-dark": t("bg-card-header-dark"),
         },
         app: {
-          bg: {
-            DEFAULT: t("bg-app"),
-            dark: t("bg-app-dark"),
-          },
+          bg: t("bg-app"),
         },
         overlay: t("overlay"),
 
         // ─── Typography ──────────────────────────────────────────────────────
         text: {
-          primary: {
-            DEFAULT: t("text-primary"),
-            dark: t("text-primary-dark"),
-          },
-          secondary: {
-            DEFAULT: t("text-secondary"),
-            dark: t("text-secondary-dark"),
-          },
-          muted: {
-            DEFAULT: t("text-muted"),
-            dark: t("text-muted-dark"),
-          },
+          primary: t("text-primary"),
+          secondary: t("text-secondary"),
+          muted: t("text-muted"),
         },
 
-        // ─── Borders & Dividers ──────────────────────────────────────────────
-        // Enables: border-border, dark:border-border-dark,
-        //          divide-border, ring-border, …
-        border: {
-          DEFAULT: t("border"),
-          dark: t("border-dark"),
-        },
-
-        // ─── Interactive Hover Backgrounds ───────────────────────────────────
-        hover: {
-          DEFAULT: t("hover"),
-          dark: t("hover-dark"),
-        },
+        // ─── Borders & Interactive Backgrounds ───────────────────────────────
+        border: t("border"),
+        hover: t("hover"),
 
         // ─── Component: Button ───────────────────────────────────────────────
         button: {
@@ -115,8 +90,6 @@ module.exports = {
           secondary: {
             DEFAULT: t("button-secondary-bg"),
             hover: t("button-secondary-hover-bg"),
-            dark: t("button-secondary-bg-dark"),
-            "dark-hover": t("button-secondary-hover-bg-dark"),
           },
           danger: {
             DEFAULT: t("button-danger-bg"),
@@ -126,65 +99,26 @@ module.exports = {
 
         // ─── Component: Badge ────────────────────────────────────────────────
         badge: {
-          success: {
-            bg: t("badge-success-bg"),
-            text: t("badge-success-text"),
-            "bg-dark": t("badge-success-bg-dark"),
-            "text-dark": t("badge-success-text-dark"),
-          },
-          warning: {
-            bg: t("badge-warning-bg"),
-            text: t("badge-warning-text"),
-            "bg-dark": t("badge-warning-bg-dark"),
-            "text-dark": t("badge-warning-text-dark"),
-          },
-          error: {
-            bg: t("badge-error-bg"),
-            text: t("badge-error-text"),
-            "bg-dark": t("badge-error-bg-dark"),
-            "text-dark": t("badge-error-text-dark"),
-          },
-          info: {
-            bg: t("badge-info-bg"),
-            text: t("badge-info-text"),
-            "bg-dark": t("badge-info-bg-dark"),
-            "text-dark": t("badge-info-text-dark"),
-          },
+          success: { bg: t("badge-success-bg"), text: t("badge-success-text") },
+          warning: { bg: t("badge-warning-bg"), text: t("badge-warning-text") },
+          error: { bg: t("badge-error-bg"), text: t("badge-error-text") },
+          info: { bg: t("badge-info-bg"), text: t("badge-info-text") },
+          neutral: { bg: t("badge-neutral-bg"), text: t("badge-neutral-text") },
         },
 
         // ─── Component: Input / Select ───────────────────────────────────────
         input: {
-          bg: {
-            DEFAULT: t("input-bg"),
-            dark: t("input-bg-dark"),
-          },
-          border: {
-            DEFAULT: t("input-border"),
-            dark: t("input-border-dark"),
-          },
+          bg: t("input-bg"),
+          border: t("input-border"),
         },
 
         // ─── Component: Sidebar ──────────────────────────────────────────────
         sidebar: {
-          bg: {
-            DEFAULT: t("sidebar-bg"),
-            dark: t("sidebar-bg-dark"),
-          },
-          item: {
-            active: {
-              DEFAULT: t("sidebar-item-active-bg"),
-              dark: t("sidebar-item-active-bg-dark"),
-            },
-          },
+          bg: t("sidebar-bg"),
+          item: { active: t("sidebar-item-active-bg") },
           badge: {
-            active: {
-              DEFAULT: t("sidebar-badge-active-bg"),
-              dark: t("sidebar-badge-active-bg-dark"),
-            },
-            inactive: {
-              DEFAULT: t("sidebar-badge-inactive-bg"),
-              dark: t("sidebar-badge-inactive-bg-dark"),
-            },
+            active: t("sidebar-badge-active-bg"),
+            inactive: t("sidebar-badge-inactive-bg"),
           },
         },
 
@@ -192,40 +126,34 @@ module.exports = {
         table: {
           header: {
             DEFAULT: t("table-header-bg"),
-            dark: t("table-header-bg-dark"),
             "toggle-bg": t("table-header-toggle-bg"),
-            "toggle-bg-dark": t("table-header-toggle-bg-dark"),
             "toggle-active-bg": t("table-header-toggle-active-bg"),
-            "toggle-active-bg-dark": t("table-header-toggle-active-bg-dark"),
           },
           row: {
             DEFAULT: t("table-row-bg"),
-            dark: t("table-row-bg-dark"),
             hover: t("table-row-hover-bg"),
-            "hover-dark": t("table-row-hover-bg-dark"),
           },
         },
 
         // ─── Component: StatCard ─────────────────────────────────────────────
         statcard: {
-          bg: {
-            DEFAULT: t("statcard-bg"),
-            dark: t("statcard-bg-dark"),
-          },
-          "icon-bg": {
-            DEFAULT: t("statcard-icon-bg"),
-            dark: t("statcard-icon-bg-dark"),
-          },
+          bg: t("statcard-bg"),
+          "icon-bg": t("statcard-icon-bg"),
         },
 
         // ─── Component: DashboardHeader ──────────────────────────────────────
         browser: {
-          header: {
-            DEFAULT: t("browser-header-bg"),
-            dark: t("browser-header-bg-dark"),
-          },
+          header: t("browser-header-bg"),
         },
       },
+
+      // ─── Shape ────────────────────────────────────────────────────────────
+      // Overrides Tailwind's own steps on purpose: containers are `lg`, controls
+      // and overlays `md`, pills `full`. One decision instead of one per file.
+      borderRadius: RADIUS,
+
+      // ─── Motion ───────────────────────────────────────────────────────────
+      transitionDuration: DURATION,
 
       // ─── Layering ─────────────────────────────────────────────────────────
       // One scale for the whole library, so a dropdown can never end up behind
@@ -282,7 +210,12 @@ module.exports = {
     },
   },
   plugins: [
-    function ({ addUtilities }) {
+    function ({ addBase, addUtilities }) {
+      // The token declarations themselves. Emitting them here rather than
+      // shipping a stylesheet keeps the package CSS-free: the consumer's own
+      // Tailwind build produces them, so there is no import step to forget.
+      addBase(baseDeclarations());
+
       addUtilities({
         ".scrollbar-none": {
           "-ms-overflow-style": "none",

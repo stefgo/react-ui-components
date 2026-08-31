@@ -34,7 +34,7 @@ const NavTab = ({ icon, label, active, onClick, classNames }: BottomNavItem & { 
         className={cn(
             "flex-1 flex flex-col items-center justify-center py-3 transition-colors",
             "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset",
-            active ? "text-primary" : "text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark",
+            active ? "text-primary" : "text-text-muted hover:text-text-primary",
             classNames?.item,
             active ? classNames?.itemActive : classNames?.itemInactive
         )}
@@ -48,7 +48,7 @@ export const BottomNav = ({ items, ariaLabel = "Main", className = "", className
         <nav
             aria-label={ariaLabel}
             className={cn(
-                "md:hidden fixed bottom-0 left-0 right-0 bg-card/95 dark:bg-sidebar-bg-dark/95 backdrop-blur-md border-t border-border dark:border-border-dark z-bottomnav flex justify-around items-center px-2 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.05)]",
+                "md:hidden fixed bottom-0 left-0 right-0 bg-sidebar-bg/95 backdrop-blur-md border-t border-border z-bottomnav flex justify-around items-center px-2 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.05)]",
                 className,
                 classNames?.root
             )}

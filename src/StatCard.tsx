@@ -33,9 +33,9 @@ export const StatCard = ({ label, value, sub, icon, onClick, className = '', cla
             type={onClick ? 'button' : undefined}
             onClick={onClick}
             className={cn(
-                "bg-statcard-bg dark:bg-statcard-bg-dark p-6 rounded-xl border border-border dark:border-border-dark shadow-sm hover:shadow-md transition-all h-full",
+                "bg-statcard-bg p-6 rounded-lg border border-border shadow-sm hover:shadow-md transition-all h-full",
                 onClick
-                    ? 'w-full text-left cursor-pointer hover:border-border dark:hover:border-border-dark active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+                    ? 'w-full text-left cursor-pointer hover:border-border active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary'
                     : '',
                 className,
                 classNames?.root
@@ -48,14 +48,14 @@ export const StatCard = ({ label, value, sub, icon, onClick, className = '', cla
                     a document heading — it would only pollute the page outline.
                 */}
                 <div>
-                    <span className={cn("block text-sm font-medium text-text-muted dark:text-text-muted-dark uppercase tracking-wide", classNames?.label)}>{label}</span>
-                    <span className={cn("block text-3xl font-bold text-text-primary dark:text-text-primary-dark mt-1", classNames?.value)}>{value}</span>
+                    <span className={cn("block text-sm font-medium text-text-muted uppercase tracking-wide", classNames?.label)}>{label}</span>
+                    <span className={cn("block text-3xl font-bold text-text-primary mt-1", classNames?.value)}>{value}</span>
                 </div>
-                <div className={cn("p-3 rounded-xl bg-statcard-icon-bg dark:bg-statcard-icon-bg-dark text-text-secondary dark:text-text-muted-dark", classNames?.iconWrapper)} aria-hidden="true">
+                <div className={cn("p-3 rounded-lg bg-statcard-icon-bg text-text-secondary", classNames?.iconWrapper)} aria-hidden="true">
                     {icon}
                 </div>
             </div>
-            {sub && <div className={cn("text-xs font-medium text-text-muted dark:text-text-muted-dark", classNames?.sub)}>{sub}</div>}
+            {sub && <div className={cn("text-xs font-medium text-text-muted", classNames?.sub)}>{sub}</div>}
         </Tag>
     );
 };

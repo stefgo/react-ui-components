@@ -60,12 +60,12 @@ const NavItem = ({
         aria-label={isCollapsed ? label : undefined}
         aria-current={active ? 'page' : undefined}
         className={cn(
-            "w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
+            "w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-base",
             "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
             isCollapsed ? "justify-center" : "justify-between",
             active
-                ? "bg-sidebar-item-active dark:bg-sidebar-item-active-dark text-text-primary dark:text-text-primary-dark shadow-sm ring-1 ring-border dark:ring-border-dark"
-                : "text-text-muted dark:text-text-muted-dark hover:bg-sidebar-item-active dark:hover:bg-sidebar-item-active-dark hover:text-text-primary dark:hover:text-text-primary-dark",
+                ? "bg-sidebar-item-active text-text-primary shadow-sm ring-1 ring-border"
+                : "text-text-muted hover:bg-sidebar-item-active hover:text-text-primary",
             classNames?.item,
             active ? classNames?.itemActive : classNames?.itemInactive
         )}
@@ -84,8 +84,8 @@ const NavItem = ({
                 className={cn(
                     "text-xs px-2 py-0.5 rounded-full",
                     active
-                        ? "bg-sidebar-badge-active dark:bg-sidebar-badge-active-dark"
-                        : "bg-sidebar-badge-inactive dark:bg-sidebar-badge-inactive-dark",
+                        ? "bg-sidebar-badge-active"
+                        : "bg-sidebar-badge-inactive",
                     classNames?.itemBadge,
                     active ? classNames?.itemBadgeActive : classNames?.itemBadgeInactive
                 )}
@@ -106,7 +106,7 @@ export const Sidebar = ({
     return (
         <aside className={cn(
             isCollapsed ? "w-16" : "w-64",
-            "h-full bg-sidebar-bg dark:bg-sidebar-bg-dark border-r border-border dark:border-border-dark hidden md:flex flex-col transition-all duration-300 relative",
+            "h-full bg-sidebar-bg border-r border-border hidden md:flex flex-col transition-all duration-slow relative",
             className,
             classNames?.root
         )}>
@@ -122,7 +122,7 @@ export const Sidebar = ({
                     <div key={groupIdx} className={cn("space-y-1 w-full", groupIdx > 0 && (group.title ? "mt-8" : "mt-6"), classNames?.group)}>
                         {!isCollapsed && group.title && (
                             <div className={cn(
-                                "text-text-muted dark:text-text-muted-dark text-xs font-bold uppercase tracking-wider px-3 mb-2",
+                                "text-text-muted text-xs font-bold uppercase tracking-wider px-3 mb-2",
                                 classNames?.groupTitle
                             )}>
                                 {group.title}

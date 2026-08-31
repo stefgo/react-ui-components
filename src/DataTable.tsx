@@ -51,15 +51,15 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
         <DataViewFrame containerClassName={containerClassName} classNames={classNames} pagination={pagination}>
             <div className="overflow-x-auto h-full w-full">
                 <table className={cn("w-full text-left border-collapse", classNames?.table)}>
-                    <thead className={cn("sticky top-0 bg-table-header dark:bg-table-header-dark z-sticky", classNames?.thead)}>
-                        <tr className={cn("border-b border-border dark:border-border-dark", classNames?.headerRow)}>
+                    <thead className={cn("sticky top-0 bg-table-header z-sticky", classNames?.thead)}>
+                        <tr className={cn("border-b border-border", classNames?.headerRow)}>
                             {itemDef.map((col, idx) => (
                                 <th
                                     key={idx}
                                     onClick={(e) => handleSortClick(col, idx, e)}
                                     className={cn(
-                                        "px-6 py-2 text-xs font-medium text-text-muted dark:text-text-muted-dark uppercase tracking-wider",
-                                        isSortable(col) && "cursor-pointer select-none hover:text-text-primary dark:hover:text-text-primary-dark",
+                                        "px-6 py-2 text-xs font-medium text-text-muted uppercase tracking-wider",
+                                        isSortable(col) && "cursor-pointer select-none hover:text-text-primary",
                                         col.tableHeaderClassName,
                                         classNames?.th
                                     )}
@@ -70,10 +70,10 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
                             ))}
                         </tr>
                     </thead>
-                    <tbody className={cn("divide-y divide-border dark:divide-border-dark", classNames?.tbody)}>
+                    <tbody className={cn("divide-y divide-border", classNames?.tbody)}>
                         {placeholder ? (
                             <tr>
-                                <td colSpan={itemDef.length} className={cn("px-6 py-8 text-center text-text-muted dark:text-text-muted-dark", classNames?.placeholderTd)}>
+                                <td colSpan={itemDef.length} className={cn("px-6 py-8 text-center text-text-muted", classNames?.placeholderTd)}>
                                     {placeholder}
                                 </td>
                             </tr>
@@ -100,7 +100,7 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
                                                 ? col.tableCellClassName(item)
                                                 : (col.tableCellClassName ?? '');
                                             return (
-                                                <td key={idx} className={cn("px-6 py-2 text-text-primary dark:text-text-primary-dark", cellClass, classNames?.td)}>
+                                                <td key={idx} className={cn("px-6 py-2 text-text-primary", cellClass, classNames?.td)}>
                                                     {cellContent(col)}
                                                 </td>
                                             );

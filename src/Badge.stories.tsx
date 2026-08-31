@@ -5,7 +5,7 @@ const meta = {
     title: 'Foundational/Badge',
     component: Badge,
     argTypes: {
-        variant: { control: 'inline-radio', options: ['success', 'warning', 'error', 'info', 'gray'] },
+        variant: { control: 'inline-radio', options: ['success', 'warning', 'error', 'info', 'neutral'] },
         size: { control: 'inline-radio', options: ['sm', 'md'] },
     },
     args: { children: 'online' },
@@ -28,7 +28,7 @@ export const Variants: Story = {
             <Badge variant="warning">degraded</Badge>
             <Badge variant="error">offline</Badge>
             <Badge variant="info">pending</Badge>
-            <Badge variant="gray">unknown</Badge>
+            <Badge variant="neutral">unknown</Badge>
         </div>
     ),
 };

@@ -49,7 +49,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
             {label && (
                 <label
                     htmlFor={inputId}
-                    className={cn("block text-xs font-bold text-text-muted dark:text-text-muted-dark uppercase mb-2 ml-1", classNames?.label)}
+                    className={cn("block text-xs font-bold text-text-muted uppercase mb-2 ml-1", classNames?.label)}
                 >
                     {label} {props.required && <span className="text-error" aria-hidden="true">*</span>}
                 </label>
@@ -65,10 +65,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
                     id={inputId}
                     aria-invalid={error ? true : undefined}
                     className={cn(
-                        "block w-full bg-input-bg dark:bg-input-bg-dark border",
-                        error ? 'border-error' : 'border-input-border dark:border-input-border-dark',
+                        "block w-full bg-input-bg border",
+                        error ? 'border-error' : 'border-input-border',
                         icon ? 'pl-10' : 'pl-3',
-                        "pr-3 py-2.5 rounded-lg text-text-primary dark:text-text-primary-dark placeholder:text-text-muted dark:placeholder:text-text-muted-dark",
+                        "pr-3 py-2.5 rounded-md text-text-primary placeholder:text-text-muted",
                         "focus:outline-none focus:ring-2 focus:ring-primary",
                         "transition-all sm:text-sm",
                         classNames?.input
@@ -78,7 +78,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
                 />
             </div>
             {error && <p id={errorId} role="alert" className={cn("mt-1 text-xs text-error", classNames?.error)}>{error}</p>}
-            {showHint && <p id={hintId} className={cn("mt-1 text-xs text-text-muted dark:text-text-muted-dark leading-relaxed ml-1", classNames?.hint)}>{hint}</p>}
+            {showHint && <p id={hintId} className={cn("mt-1 text-xs text-text-muted leading-relaxed ml-1", classNames?.hint)}>{hint}</p>}
         </div>
     );
 });

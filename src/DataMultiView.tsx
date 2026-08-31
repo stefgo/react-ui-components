@@ -139,10 +139,10 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     const effectiveViewMode: ViewMode = isMobile && listColumns ? 'list' : viewMode;
 
     const toggleButtonClass = (mode: ViewMode) => cn(
-        "p-1 rounded transition-all",
+        "p-1 rounded-sm transition-all",
         effectiveViewMode === mode
-            ? 'bg-table-header-toggle-active-bg dark:bg-table-header-toggle-active-bg-dark shadow text-text-primary dark:text-text-primary-dark'
-            : 'text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark',
+            ? 'bg-table-header-toggle-active-bg shadow text-text-primary'
+            : 'text-text-muted hover:text-text-primary',
         classNames?.toggleButton,
         effectiveViewMode === mode ? classNames?.toggleButtonActive : ''
     );
@@ -150,7 +150,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     const visibleButtonCount = [hasTreeView, !!(tableDef && !hasTreeView), !!listColumns].filter(Boolean).length;
 
     const viewToggle = !isMobile && visibleButtonCount > 1 ? (
-        <div className={cn("bg-table-header-toggle-bg dark:bg-table-header-toggle-bg-dark rounded-lg p-1 flex items-center gap-1", classNames?.toggleRoot)}>
+        <div className={cn("bg-table-header-toggle-bg rounded-md p-1 flex items-center gap-1", classNames?.toggleRoot)}>
             {hasTreeView && (
                 <button type="button" onClick={() => changeViewMode('tree')} className={toggleButtonClass('tree')} title="Tree View" aria-label="Tree View" aria-pressed={effectiveViewMode === 'tree'}>
                     <Network size={14} aria-hidden="true" />
@@ -191,24 +191,24 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         <Card className={cn("overflow-hidden flex flex-col h-full", className, classNames?.root)} classNames={{ ...classNames?.card, ...classNames?.header, header: cn(classNames?.card?.header, classNames?.header?.header, searchable && 'border-b-0 pb-1') }} title={title} action={headerAction}>
             {searchable && (
                 <div className={cn(
-                    "px-4 py-2 border-b border-border dark:border-border-dark bg-card-header dark:bg-card-header-dark",
+                    "px-4 py-2 border-b border-border bg-card-header",
                     classNames?.searchBar
                 )}>
-                    <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-border dark:border-border-dark bg-app-bg dark:bg-app-bg-dark">
-                        <Search size={14} className="text-text-muted dark:text-text-muted-dark shrink-0" />
+                    <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-app-bg">
+                        <Search size={14} className="text-text-muted shrink-0" />
                         <input
                             type="text"
                             value={searchQuery}
                             onChange={e => handleSearchChange(e.target.value)}
                             placeholder={searchPlaceholder}
-                            className="w-full bg-transparent text-sm text-text-primary dark:text-text-primary-dark placeholder:text-text-muted dark:placeholder:text-text-muted-dark outline-none"
+                            className="w-full bg-transparent text-sm text-text-primary placeholder:text-text-muted outline-none"
                         />
                         {searchQuery && (
                             <button
                                 type="button"
                                 aria-label="Clear search"
                                 onClick={() => handleSearchChange('')}
-                                className="text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark shrink-0"
+                                className="text-text-muted hover:text-text-primary shrink-0"
                             >
                                 <X size={14} />
                             </button>
