@@ -1,4 +1,4 @@
-import { ReactNode, useState, useEffect } from 'react';
+import { ReactNode, useState, useEffect, useMemo } from 'react';
 import { LayoutList, Table as TableIcon, Network, Search, X } from 'lucide-react';
 import { Card, CardClassNames } from './Card';
 import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
@@ -91,9 +91,25 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         onSearchChange?.(query);
     };
 
-    const filteredData = searchable && searchFilter && searchQuery
-        ? sharedProps.data.filter(item => searchFilter(item, searchQuery))
-        : sharedProps.data;
+    // Handed down instead of applied here: the view that counts the rows has to
+    // be the one that filters them, or the page numbers describe a different set
+    // than the table shows.
+    const filter = useMemo(() => (
+        searchable && searchFilter && searchQuery
+            ? (item: T) => searchFilter(item, searchQuery)
+            : undefined
+    ), [searchable, searchFilter, searchQuery]);
+
+    const paginationMode = typeof pagination === 'object' ? pagination.mode : undefined;
+    useEffect(() => {
+        if (paginationMode === 'server' && searchFilter) {
+            console.warn(
+                '[DataMultiView] searchFilter filters the rows already on screen, which is '
+                + 'the current page when pagination.mode is "server". Send the query to the '
+                + 'server via onSearchChange instead.',
+            );
+        }
+    }, [paginationMode, searchFilter]);
 
     const hasTreeView = !!(tableDef && getChildren);
     
@@ -163,7 +179,8 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
 
     const containerProps = {
         ...sharedProps,
-        data: filteredData,
+        filter,
+        filterKey: searchQuery,
         containerClassName: "rounded-none border-0 shadow-none flex-1",
         // The view underneath owns the whole pipeline now, pagination bar
         // included — one owner, so the row count and the page numbers cannot
