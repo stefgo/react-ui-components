@@ -1,5 +1,5 @@
-import { ReactNode, useState, useRef, useEffect, useMemo } from "react";
-import { User, LogOut, ChevronDown, X, Shield } from "lucide-react";
+import { ComponentType, ReactNode, useState, useRef, useEffect, useMemo } from "react";
+import { User, LogOut, ChevronDown, X, Shield, LucideProps } from "lucide-react";
 import { DashboardHeader, DashboardHeaderClassNames } from "./DashboardHeader";
 import { Sidebar, SidebarGroup, SidebarClassNames } from "./Sidebar";
 import { BottomNav, BottomNavItem, BottomNavClassNames } from "./BottomNav";
@@ -30,7 +30,8 @@ export interface DashboardNavGroup {
 
 export interface DashboardPageNav {
     label: string;
-    icon: any; // Icon component (e.g. from lucide-react)
+    /** Icon component, e.g. any icon exported by lucide-react. Rendered with a `size` prop. */
+    icon: ComponentType<LucideProps>;
     badge?: string;
     badgeDot?: boolean; // If true, show a dot indicator when sidebar is collapsed
     groupId?: string; // References DashboardNavGroup.id

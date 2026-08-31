@@ -46,7 +46,7 @@ export interface BaseDataViewProps<T> {
     classNames?: DataViewClassNames;
 }
 
-export abstract class AbstractDataView<T, P extends BaseDataViewProps<T>, S = {}> extends Component<P, S> {
+export abstract class AbstractDataView<T, P extends BaseDataViewProps<T>, S = object> extends Component<P, S> {
     protected getKey(item: T): string | number {
         const { keyField } = this.props;
         if (typeof keyField === 'function') {
