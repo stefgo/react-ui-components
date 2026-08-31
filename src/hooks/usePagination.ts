@@ -1,63 +1,33 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { PaginationProps, PaginationState } from '../data/types';
 
-export interface UsePaginationResult<T> {
-    currentPage: number;
-    itemsPerPage: number;
-    totalPages: number;
-    currentItems: T[];
-    goToPage: (page: number) => void;
-    nextPage: () => void;
-    prevPage: () => void;
-    setItemsPerPage: (size: number) => void;
-    totalItems: number;
+export interface UsePaginationResult {
+    value: PaginationState;
+    onChange: (next: PaginationState) => void;
+    setPage: (page: number) => void;
+    /** Also returns to page 1, where the new page size actually starts. */
+    setPageSize: (pageSize: number) => void;
+    /** Spread into a view's `pagination` prop: `pagination={{ ...page.props }}`. */
+    props: Pick<PaginationProps, 'value' | 'onChange'>;
 }
 
-export function usePagination<T>(
-    items: T[],
-    initialPageSize: number = 10,
-): UsePaginationResult<T> {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPageState] = useState(initialPageSize);
+/**
+ * Page state held outside the view — for URL synchronisation, a reset from a
+ * sibling component, or server-side paging.
+ *
+ * Not needed for the common case: `<DataTable data={rows} pagination />` keeps
+ * the state itself. This hook deliberately no longer returns a slice of the
+ * data. Handing a view one page and letting it sort is what produced sorts that
+ * only covered the current page; the view now does both, in that order.
+ */
+export function usePagination(initial?: Partial<PaginationState>): UsePaginationResult {
+    const [value, setValue] = useState<PaginationState>({ page: 1, pageSize: 10, ...initial });
 
-    const totalItems = items.length;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const onChange = useCallback((next: PaginationState) => setValue(next), []);
+    const setPage = useCallback((page: number) => setValue(prev => ({ ...prev, page })), []);
+    const setPageSize = useCallback((pageSize: number) => setValue({ page: 1, pageSize }), []);
 
-    // Ensure current page is valid when items or page size changes
-    if (currentPage > totalPages && totalPages > 0) {
-        setCurrentPage(totalPages);
-    }
+    const props = useMemo(() => ({ value, onChange }), [value, onChange]);
 
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentItems = items.slice(startIndex, endIndex);
-
-    const goToPage = (page: number) => {
-        const pageNumber = Math.max(1, Math.min(page, totalPages));
-        setCurrentPage(pageNumber);
-    };
-
-    const nextPage = () => {
-        goToPage(currentPage + 1);
-    };
-
-    const prevPage = () => {
-        goToPage(currentPage - 1);
-    };
-
-    const setItemsPerPage = (size: number) => {
-        setItemsPerPageState(size);
-        setCurrentPage(1); // Reset to first page on size change to avoid empty views
-    };
-
-    return {
-        currentPage,
-        itemsPerPage,
-        totalPages,
-        currentItems,
-        goToPage,
-        nextPage,
-        prevPage,
-        setItemsPerPage,
-        totalItems,
-    };
+    return { value, onChange, setPage, setPageSize, props };
 }
