@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-`@stefgo/react-ui-components` is a React 19 component library built with TypeScript and Tailwind CSS. It ships as a dual-format (CJS + ESM) npm package published to GitHub Packages. Correctness rests on TypeScript strict mode and ESLint; the pure logic under `src/data/` is covered by vitest, the components are not.
+`@stefgo/react-ui-components` is a React 19 component library built with TypeScript and Tailwind CSS. It ships as a dual-format (CJS + ESM) npm package published to GitHub Packages. Correctness rests on TypeScript strict mode and ESLint; vitest covers both the pure logic under `src/data/` and the accessible behaviour of the components (labels, ARIA state, keyboard interaction) via Testing Library.
 
 ## Commands
 
@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run build   # Production build (tsup: CJS, ESM, .d.ts, minified)
 npm run dev     # Watch mode build
 npm run lint    # tsc --noEmit + eslint (incl. react-hooks/exhaustive-deps)
-npm test        # vitest, pure logic under src/data/
+npm test        # vitest (jsdom), pure logic under src/data/ + component behaviour
 ```
 
 CI runs lint, test and build before `semantic-release`.
@@ -21,7 +21,7 @@ CI runs lint, test and build before `semantic-release`.
 
 ### Output & Exports
 
-All components are exported as named exports from `src/index.ts`. The build produces `dist/index.js` (CJS), `dist/index.mjs` (ESM) and `dist/index.d.ts`. Only files directly under `src/` become entry points — `src/data/**` is bundled into the components that import it. No CSS is bundled — consumers must run Tailwind themselves.
+All components are exported as named exports from `src/index.ts`. The build produces `dist/index.js` (CJS), `dist/index.mjs` (ESM) and `dist/index.d.ts`. Only files directly under `src/` become entry points — `src/data/**` and `src/dashboard/**` are bundled into the components that import them. No CSS is bundled — consumers must run Tailwind themselves.
 
 ### Tailwind Integration
 
@@ -32,7 +32,15 @@ All components are exported as named exports from `src/index.ts`. The build prod
 presets: [require("@stefgo/react-ui-components/tailwind-preset")],
 ```
 
-The preset does two things: adds the library's dist files to Tailwind's `content` scanning, and extends the theme with 40+ CSS-variable-backed color tokens (`primary`, `button-primary`, `badge-success-bg`, etc.). Without this preset, Tailwind will purge library classes and theming won't work.
+The preset does two things: adds the library's dist files to Tailwind's `content` scanning, and extends the theme with the CSS-variable-backed tokens (`primary`, `button-primary`, `badge-success-bg`, …) plus a z-index scale (`z-sticky` … `z-modal`). Without this preset, Tailwind will purge library classes and theming won't work.
+
+**`tokens.js` at the repo root is the single source of truth for every colour default.** The preset builds its colour scale from it, and `scripts/generate-tokens-css.js` generates `src/index.css` from it. Never hard-code a colour literal in the preset or edit `src/index.css` by hand — change `tokens.js` and run `npm run tokens:build`. CI runs `npm run tokens:check`, which fails if the generated file is stale. `tokens.js` must stay in `package.json`'s `files` array, since the published preset requires it.
+
+### Interaction Patterns
+
+`src/hooks/useMenuBehavior.ts` owns open-menu behaviour — outside click, Escape, focus movement, focus restoration, focus trap. `ActionMenu`, `UserMenu` and `MobileMoreSheet` all build on it; do not hand-roll a fourth dropdown.
+
+`Dashboard` renders navigation, not routing. It highlights the entry matching `currentPath` and renders `children` — deciding what is on screen is the consumer router's job.
 
 ### Component Pattern
 

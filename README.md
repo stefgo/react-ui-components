@@ -59,8 +59,10 @@ module.exports = {
 ### 2. Global Styles
 
 The package ships no stylesheet — all styling comes from Tailwind via the preset
-above. The design tokens (`--ruic-*`) live in `src/index.css` of this repository;
-copy the `:root` block into your own global stylesheet to override brand colours.
+above. The design tokens (`--ruic-*`) are generated into `src/index.css` of this
+repository; copy the `:root` block into your own global stylesheet and change the
+values you want. You only need the tokens you actually override — every one has a
+built-in default.
 
 ---
 
@@ -117,46 +119,54 @@ This section provides a comprehensive overview of the components within the libr
 
 ### Centralized Theme Tokens
 
-The library uses component-specific tokens defined in `tailwind-preset.js`, which match CSS variables in `index.css`. This allows for central control of the library's appearance.
+Every colour in the library comes from a token defined in **`tokens.js`** — that
+file is the single source of truth. It feeds two consumers:
 
-#### 1. Atomic Components
+- `tailwind-preset.js` builds its colour scale from it, which is what actually
+  renders.
+- `scripts/generate-tokens-css.js` generates `src/index.css` from it, which
+  documents the defaults for copy-and-paste theming.
 
-| Component  | Variant   | Light Token Class     | HEX (Light) | Dark Token Class           | HEX (Dark)  | Refers to    |
-| :--------- | :-------- | :-------------------- | :---------- | :------------------------- | :---------- | :----------- |
-| **Button** | Primary   | `bg-button-primary`   | `#E54D0D`   | `bg-button-primary`        | `#E54D0D`   | 🔗 `Primary` |
-|            | Secondary | `bg-button-secondary` | `#e5e7eb`   | `bg-button-secondary-dark` | `#333333`   | -            |
-|            | Danger    | `bg-button-danger`    | `#dc2626`   | `bg-button-danger`         | `#dc2626`   | -            |
-| **Badge**  | success   | `bg-badge-success-bg` | `#dcfce7`   | `bg-badge-success-bg-dark` | `#14532d`\* | -            |
-|            | warning   | `bg-badge-warning-bg` | `#ffedd5`   | `bg-badge-warning-bg-dark` | `#7c2d12`\* | -            |
-|            | info      | `bg-badge-info-bg`    | `#dbeafe`   | `bg-badge-info-bg-dark`    | `#1e3a8a`\* | -            |
-| **Input**  | Field     | `bg-input-bg`         | `#f9fafb`   | `bg-input-bg-dark`         | `#111111`   | 🔗 `App Bg`  |
-|            | Border    | `border-input-border` | `#e2e8f0`   | `border-input-border-dark` | `#2a2a2a`   | 🔗 `Border`  |
-| **Select** | Field     | `bg-input-bg`         | `#f9fafb`   | `bg-input-bg-dark`         | `#111111`   | 🔗 `App Bg`  |
+`npm run tokens:check` fails the build if the generated CSS is out of date, so
+the two can no longer disagree.
 
-> \* _Dark Badge backgrounds use 30% opacity of the respective color._
+**For the current values, read [`src/index.css`](./src/index.css)** — it is
+generated, always accurate, and grouped by concern. Overriding is a matter of
+redefining the variables you care about:
 
-#### 2. Layout & Containers
+```css
+:root {
+  /* RGB triple – Tailwind needs it raw for opacity utilities like bg-primary/20 */
+  --ruic-primary: 12 34 56;
+  --ruic-primary-hover: 20 50 80;
 
-| Component      | Part          | Light Token Class        | HEX (Light) | Dark Token Class              | HEX (Dark)  | Refers to         |
-| :------------- | :------------ | :----------------------- | :---------- | :---------------------------- | :---------- | :---------------- |
-| **Card**       | Root          | ``                       | `#ffffff`   | `-dark`                       | `#1e1e1e`   | 🔗 `Card Bg`      |
-| **CardHeader** | Root          | `header`                 | `#f9fafb`\* | `header-dark`                 | `#252525`\* | 🔗 `App Bg`       |
-| **Sidebar**    | Root          | `bg-sidebar-bg`          | `#f9fafb`   | `bg-sidebar-bg-dark`          | `#1a1a1a`   | 🔗 `App Bg`       |
-|                | Item (Active) | `bg-sidebar-item-active` | `#ffffff`   | `bg-sidebar-item-active-dark` | `#252525`   | 🔗 `Hover` (Dark) |
-| **DashHeader** | Root          | `bg-browser-header`      | `#ffffff`   | `bg-browser-header-dark`      | `#1e1e1e`   | 🔗 `Card Bg`      |
+  --ruic-bg-card: #ffffff;
+  --ruic-bg-card-dark: #141414;
+}
+```
 
-> \* _CardHeader backgrounds use 80% opacity._
+Many tokens are *aliases*: `--ruic-input-bg` defaults to
+`var(--ruic-bg-app, #f9fafb)`, so overriding `--ruic-bg-app` also moves every
+input. Override the specific token instead when you want to break that link.
 
-#### 3. Data & Utility Components
+### Layering
 
-| Component       | Part    | Light Token Class     | HEX (Light) | Dark Token Class           | HEX (Dark) | Refers to    |
-| :-------------- | :------ | :-------------------- | :---------- | :------------------------- | :--------- | :----------- |
-| **DataTable**   | Header  | `bg-table-header`     | `#f8fafc`   | `bg-table-header-dark`     | `#252525`  | 🔗 `Surface` |
-| **StatCard**    | Root    | `bg-statcard-bg`      | `#ffffff`   | `bg-statcard-bg-dark`      | `#1e1e1e`  | 🔗 `Card Bg` |
-|                 | Icon Bg | `bg-statcard-icon-bg` | `#f8fafc`   | `bg-statcard-icon-bg-dark` | `#252525`  | 🔗 `Surface` |
-| **FileBrowser** | Content | `bg-input-bg`         | `#f9fafb`   | `bg-input-bg-dark`         | `#111111`  | 🔗 `App Bg`  |
-|                 | Header  | `bg-browser-header`   | `#ffffff`   | `bg-browser-header-dark`   | `#1e1e1e`  | 🔗 `Card Bg` |
-| **Pagination**  | Root    | `bg-table-header`     | `#f8fafc`   | `bg-table-header-dark`     | `#252525`  | 🔗 `Surface` |
+The library ships one z-index scale so overlays cannot end up behind each other:
+
+| Class          | Value | Used by                          |
+| :------------- | :---- | :------------------------------- |
+| `z-sticky`     | 10    | sticky table headers             |
+| `z-header`     | 30    | `DashboardHeader`                |
+| `z-bottomnav`  | 40    | `BottomNav`                      |
+| `z-dropdown`   | 50    | `ActionMenu`, `UserMenu`         |
+| `z-overlay`    | 60    | modal backdrops                  |
+| `z-modal`      | 70    | reserved for consumer dialogs    |
+
+### Reduced motion
+
+All library animations are disabled under
+`@media (prefers-reduced-motion: reduce)` by the preset — no `motion-safe:`
+prefixes needed at the call site.
 
 ---
 
@@ -397,17 +407,37 @@ Navigate remote or local file structures.
 
 #### `Dashboard`
 
-The top-level shell for your application. Handles Sidebar, Header, and Bottom Navigation automatically.
+The top-level shell: header, sidebar, bottom nav and the mobile overflow sheet.
+
+`Dashboard` renders **navigation**, not routing. It highlights the entry matching
+`currentPath` and leaves the question of what is on screen to your router — pass
+the current page as `children`.
 
 **Key Props:**
 
-- `pages`: `DashboardPage[]` (Defines navigation and content)
-- `username`: string
-- `onLogout`: () => void
-- `theme`: 'light' | 'dark'
-- `onToggleTheme`: () => void
-- `isSidebarCollapsed`: boolean
-- `classNames`: `DashboardClassNames` (Exhaustive slots for every part of the dashboard layout)
+- `pages`: `DashboardPage[]` — navigation declaration (`id`, `path`, `active?`, `nav`)
+- `children`: the current page's content, normally your router's outlet
+- `navGroups`: `DashboardNavGroup[]` — optional grouping for the sidebar
+- `currentPath`: string — used only to decide which entry is highlighted
+- `mobileMore`: `{ title?, icon? }` — heading of the mobile overflow sheet
+- `username`, `onLogout`, `theme`, `onToggleTheme`, `isSidebarCollapsed`, `onToggleSidebar`
+- `classNames`: `DashboardClassNames`
+
+```tsx
+<Dashboard pages={pages} navGroups={navGroups} currentPath={location.pathname} /* … */>
+  <Routes>
+    <Route path="/clients" element={<Clients />} />
+    <Route path="*" element={<NotFound />} />
+  </Routes>
+</Dashboard>
+```
+
+> **Migrating from 2.x** — `DashboardPage.content` is gone; move the content into
+> your own routes and pass them as `children`. The legacy `mobileMoreMenu` and
+> `mobileMenuOverlay` props are gone too; use `mobileMore` and
+> `nav.placement: 'mobile-more'`. When no page matches, nothing is highlighted —
+> 2.x silently fell back to the first page, which meant an unknown URL rendered
+> page one. Give your router an explicit catch-all route.
 
 ---
 
@@ -415,8 +445,11 @@ The top-level shell for your application. Handles Sidebar, Header, and Bottom Na
 
 ### Available Scripts
 
-- `npm run build`: Compiles the library using Vite (outputs to `dist/`).
-- `npm run lint`: Runs ESLint for code quality.
+- `npm run build`: Compiles the library with tsup (outputs to `dist/`).
+- `npm run lint`: Type-checks with `tsc` and runs ESLint.
+- `npm test`: Runs vitest (jsdom) over the pure logic and component behaviour.
+- `npm run tokens:build`: Regenerates `src/index.css` from `tokens.js`.
+- `npm run tokens:check`: Fails if the generated CSS is out of date.
 
 ### Code Style
 
