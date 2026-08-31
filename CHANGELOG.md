@@ -1,3 +1,71 @@
+## [2.16.1](https://github.com/stefgo/react-ui-components/compare/v2.16.0...v2.16.1) (2026-08-30)
+
+
+### Bug Fixes
+
+* **data-views:** vor dem Paginieren sortieren statt danach ([87dbe55](https://github.com/stefgo/react-ui-components/commit/87dbe55c7b1cfe9dd43b4a1149b15b086bb84ac8))
+
+# [2.16.0](https://github.com/stefgo/react-ui-components/compare/v2.15.0...v2.16.0) (2026-04-07)
+
+
+### Features
+
+* support object label in DataTableActionMenuEntry ([1e88b63](https://github.com/stefgo/react-ui-components/commit/1e88b6319273b59eda186646010fb82334eaea3c))
+
+# [2.15.0](https://github.com/stefgo/react-ui-components/compare/v2.14.0...v2.15.0) (2026-04-05)
+
+
+### Bug Fixes
+
+* only force list view on mobile when listColumns is defined ([7fcaff4](https://github.com/stefgo/react-ui-components/commit/7fcaff4a960d7604a3eb3e0f1d6943f9a17bebb7))
+
+
+### Features
+
+* add DashboardNavGroup for explicit sidebar grouping with optional titles ([80c3b73](https://github.com/stefgo/react-ui-components/commit/80c3b7324792063689dbfaa73bc178dfd87ec579))
+
+# [2.14.0](https://github.com/stefgo/react-ui-components/compare/v2.13.1...v2.14.0) (2026-04-03)
+
+
+### Features
+
+* render PaginationControls in DataMultiView when pagination prop is set ([93667d8](https://github.com/stefgo/react-ui-components/commit/93667d819c9535c371622801384a235d6558f116))
+
+## [2.13.1](https://github.com/stefgo/react-ui-components/compare/v2.13.0...v2.13.1) (2026-04-03)
+
+
+### Bug Fixes
+
+* normalize red color to ghost style, add error color for permanent red tint ([0bf35e3](https://github.com/stefgo/react-ui-components/commit/0bf35e33a247d6977b2a0be4c45710232ac17709))
+
+# [2.13.0](https://github.com/stefgo/react-ui-components/compare/v2.12.1...v2.13.0) (2026-04-02)
+
+
+### Features
+
+* add defaultSearchValue prop and clear button to DataMultiView search ([adf73e0](https://github.com/stefgo/react-ui-components/commit/adf73e0ff1965d1559d210ff695ad8dbc33ca2a9))
+
+## [2.12.1](https://github.com/stefgo/react-ui-components/compare/v2.12.0...v2.12.1) (2026-04-02)
+
+
+### Bug Fixes
+
+* remove whitespace-nowrap from DataTable td to allow text wrapping ([c169aff](https://github.com/stefgo/react-ui-components/commit/c169aff63e99414e44615b318716c0602da55a71))
+
+# [2.12.0](https://github.com/stefgo/react-ui-components/compare/v2.11.2...v2.12.0) (2026-03-31)
+
+
+### Features
+
+* add usePagination hook ([97e0dcd](https://github.com/stefgo/react-ui-components/commit/97e0dcdb48278aef24f202c7c0978df14e55a0f1))
+
+## [2.11.2](https://github.com/stefgo/react-ui-components/compare/v2.11.1...v2.11.2) (2026-03-30)
+
+
+### Bug Fixes
+
+* prevent layout shift when scrollbar appears/disappears ([1f2866c](https://github.com/stefgo/react-ui-components/commit/1f2866c8b9d5c450c4a5ce51b713e9e48cfac27c))
+
 ## [2.11.1](https://github.com/stefgo/react-ui-components/compare/v2.11.0...v2.11.1) (2026-03-29)
 
 

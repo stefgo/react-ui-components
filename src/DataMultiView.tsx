@@ -1,9 +1,11 @@
 import { ReactNode, useState, useEffect } from 'react';
-import { LayoutList, Table as TableIcon, Network, Search } from 'lucide-react';
+import { LayoutList, Table as TableIcon, Network, Search, X } from 'lucide-react';
 import { Card, CardClassNames } from './Card';
 import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
 import { DataList, DataListDef, DataListColumnDef, DataListClassNames } from './DataList';
 import { DataTreeTable, DataTreeTableClassNames } from './DataTreeTable';
+import { BaseDataViewProps } from './AbstractDataView';
+import { PaginationControls } from './PaginationControls';
 import { cn } from './utils';
 
 export interface DataMultiViewClassNames {
@@ -42,14 +44,8 @@ export interface DataMultiViewProps<T> {
     defaultSort?: { colIndex: number; direction: 'asc' | 'desc' };
     rowClassName?: string | ((item: T) => string);
     onRowClick?: (item: T) => void;
-    pagination?: {
-        currentPage: number;
-        totalPages: number;
-        itemsPerPage: number;
-        totalItems: number;
-        onPageChange: (page: number) => void;
-        onItemsPerPageChange: (limit: number) => void;
-    };
+    /** Derived from the data views so the two shapes cannot drift apart. */
+    pagination?: BaseDataViewProps<T>['pagination'];
     classNames?: DataMultiViewClassNames;
     /** Show search input between header and content */
     searchable?: boolean;
@@ -59,6 +55,8 @@ export interface DataMultiViewProps<T> {
     searchFilter?: (item: T, query: string) => boolean;
     /** Called whenever the search query changes (for external/controlled filtering) */
     onSearchChange?: (query: string) => void;
+    /** Initial value for the search input */
+    defaultSearchValue?: string;
 }
 
 type ViewMode = 'table' | 'list' | 'tree';
@@ -80,10 +78,12 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         searchPlaceholder = 'Suchen…',
         searchFilter,
         onSearchChange,
+        defaultSearchValue,
+        pagination,
         ...sharedProps
     } = props;
 
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(defaultSearchValue ?? '');
 
     const handleSearchChange = (query: string) => {
         setSearchQuery(query);
@@ -119,8 +119,8 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         localStorage.setItem(viewModeStorageKey, mode);
     };
 
-    // Effective view mode is forced to 'list' on mobile
-    const effectiveViewMode: ViewMode = isMobile ? 'list' : viewMode;
+    // Effective view mode is forced to 'list' on mobile (only if listColumns is defined)
+    const effectiveViewMode: ViewMode = isMobile && listColumns ? 'list' : viewMode;
 
     const toggleButtonClass = (mode: ViewMode) => cn(
         "p-1 rounded transition-all",
@@ -164,6 +164,9 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         ...sharedProps,
         data: filteredData,
         containerClassName: "rounded-none border-0 shadow-none flex-1",
+        // The child view needs the page bounds to slice with, but this component
+        // draws the controls itself further down.
+        pagination: pagination && { ...pagination, renderControls: false },
     };
 
     return (
@@ -182,6 +185,14 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                             placeholder={searchPlaceholder}
                             className="w-full bg-transparent text-sm text-text-primary dark:text-text-primary-dark placeholder:text-text-muted dark:placeholder:text-text-muted-dark outline-none"
                         />
+                        {searchQuery && (
+                            <button
+                                onClick={() => handleSearchChange('')}
+                                className="text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark shrink-0"
+                            >
+                                <X size={14} />
+                            </button>
+                        )}
                     </div>
                 </div>
             )}
@@ -208,6 +219,16 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                     defaultSort={defaultSort}
                     sortStorageKey={`${viewModeStorageKey}_sort`}
                     classNames={classNames?.table}
+                />
+            )}
+            {pagination && (
+                <PaginationControls
+                    currentPage={pagination.currentPage}
+                    totalPages={pagination.totalPages}
+                    itemsPerPage={pagination.itemsPerPage}
+                    totalItems={pagination.totalItems}
+                    onPageChange={pagination.onPageChange}
+                    onItemsPerPageChange={pagination.onItemsPerPageChange}
                 />
             )}
         </Card>

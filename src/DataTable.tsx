@@ -129,7 +129,9 @@ export class DataTable<T> extends AbstractDataView<T, DataTableProps<T>, DataTab
         const { itemDef, onRowClick, classNames } = this.props;
         const placeholder = this.getPlaceholder();
         const interactionClasses = this.getInteractionClasses();
-        const sortedData = this.getSortedData();
+        // Sort across everything first, then take the page — the other order sorts
+        // only the rows that happen to be on screen.
+        const sortedData = this.applyPageSlice(this.getSortedData());
 
         return (
             <div className="overflow-x-auto h-full w-full">
@@ -183,7 +185,7 @@ export class DataTable<T> extends AbstractDataView<T, DataTableProps<T>, DataTab
                                                 ? col.tableCellClassName(item)
                                                 : (col.tableCellClassName ?? '');
                                             return (
-                                                <td key={idx} className={cn("px-6 py-2 whitespace-nowrap text-text-primary dark:text-text-primary-dark", cellClass, classNames?.td)}>
+                                                <td key={idx} className={cn("px-6 py-2 text-text-primary dark:text-text-primary-dark", cellClass, classNames?.td)}>
                                                     {cellContent(col)}
                                                 </td>
                                             );
