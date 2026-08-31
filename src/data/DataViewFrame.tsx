@@ -27,12 +27,14 @@ export const DataViewFrame = ({ containerClassName = '', classNames, pagination,
         {pagination && (
             <div className={cn("shrink-0 border-t border-card dark:border-card-dark bg-card dark:bg-card-dark", classNames?.paginationWrapper)}>
                 <PaginationControls
-                    currentPage={pagination.page}
+                    page={pagination.page}
                     totalPages={pagination.totalPages}
-                    itemsPerPage={pagination.pageSize}
+                    pageSize={pagination.pageSize}
                     totalItems={pagination.totalItems}
                     onPageChange={pagination.onPageChange}
-                    onItemsPerPageChange={pagination.onPageSizeChange}
+                    onPageSizeChange={pagination.onPageSizeChange}
+                    pageSizeOptions={pagination.pageSizeOptions}
+                    hideOnSinglePage={pagination.hideOnSinglePage}
                     classNames={classNames?.pagination}
                 />
             </div>
