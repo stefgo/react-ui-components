@@ -10,8 +10,8 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
   "files": [
