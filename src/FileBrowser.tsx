@@ -1,5 +1,5 @@
 import { ChevronRight, Folder, File } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Card } from './Card';
 import { cn } from './utils';
 
@@ -35,9 +35,22 @@ interface FileBrowserProps {
 }
 
 export const FileBrowser = ({ currentPath, onNavigate, files, isLoading, onSelect, className, classNames }: FileBrowserProps) => {
-    // Sync selectedPath with currentPath on invalidation or navigation
+    // Report the new path whenever navigation changes it — and only then.
+    //
+    // `onSelect` is deliberately not a dependency: callers pass an inline arrow,
+    // which is a new value on every render, and the effect would fire on each
+    // one instead of on each navigation. Reading it from a ref keeps the effect
+    // keyed on the path while still calling the callback the caller has now.
+    const latestOnSelect = useRef(onSelect);
+    // Written in an effect rather than during render, so no ref is touched
+    // while rendering. Declared first, so it has run by the time the effect
+    // below fires in the same commit.
     useEffect(() => {
-        onSelect(currentPath);
+        latestOnSelect.current = onSelect;
+    });
+
+    useEffect(() => {
+        latestOnSelect.current(currentPath);
     }, [currentPath]);
 
     const goUp = () => {
@@ -49,7 +62,7 @@ export const FileBrowser = ({ currentPath, onNavigate, files, isLoading, onSelec
     const header = (
         <>
             <button type="button" aria-label="Go up one level" onClick={goUp} className={cn("p-1.5 hover:bg-hover rounded-full text-text-muted transition-colors", classNames?.backButton)}>
-                <ChevronRight className="rotate-180" size={18} />
+                <ChevronRight className="rotate-180" size={18} aria-hidden />
             </button>
             <div className={cn("font-mono text-sm truncate font-medium", classNames?.pathDisplay)} title={currentPath}>{currentPath || '/'}</div>
         </>
