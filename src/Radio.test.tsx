@@ -16,8 +16,11 @@ describe('RadioGroup', () => {
     it('names the group as well as each option', () => {
         group();
         // Without the fieldset's legend, a screen reader announces "Daily, radio
-        // button" and never says what is being chosen.
-        expect(screen.getByRole('group', { name: /schedule/i })).toBeInTheDocument();
+        // button" and never says what is being chosen. The role is radiogroup
+        // rather than the fieldset's native group, so aria-required is legal —
+        // which means the name now rides on an explicit aria-labelledby.
+        expect(screen.getByRole('radiogroup')).toHaveAttribute('aria-labelledby');
+        expect(screen.getByRole('radiogroup', { name: /schedule/i })).toBeInTheDocument();
         expect(screen.getByRole('radio', { name: 'Daily' })).toBeInTheDocument();
     });
 
@@ -79,7 +82,7 @@ describe('RadioGroup', () => {
     it('announces the error on the group, where the question is', () => {
         group({ error: 'Pick a schedule' });
 
-        const fieldset = screen.getByRole('group');
+        const fieldset = screen.getByRole('radiogroup');
         expect(fieldset).toHaveAttribute('aria-invalid', 'true');
         expect(screen.getByRole('alert')).toHaveTextContent('Pick a schedule');
     });
@@ -97,9 +100,17 @@ describe('RadioGroup', () => {
         );
 
         expect(screen.queryByText('Runs at 03:00')).not.toBeInTheDocument();
-        const describedBy = screen.getByRole('group').getAttribute('aria-describedby');
+        const describedBy = screen.getByRole('radiogroup').getAttribute('aria-describedby');
         expect(describedBy).toBeTruthy();
         expect(document.getElementById(describedBy!)).toHaveTextContent('Pick a schedule');
+    });
+
+    it('marks a required group in a way ARIA actually allows', () => {
+        // aria-required is only legal on a widget role. On the fieldset's native
+        // `group` role it was silently ignored, so the asterisk in the legend —
+        // which is aria-hidden — was the only trace of required left.
+        group({ required: true });
+        expect(screen.getByRole('radiogroup')).toHaveAttribute('aria-required', 'true');
     });
 
     it('refuses to render an option outside a group', () => {

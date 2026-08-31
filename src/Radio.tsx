@@ -121,6 +121,12 @@ interface RadioGroupProps extends Controllable<string> {
  * A real `<fieldset>` with a `<legend>`, because that is what associates the
  * group's question with each option's answer — without it a screen reader
  * announces "Daily, radio button" and never says what is being chosen.
+ *
+ * The explicit `role="radiogroup"` is what makes `aria-required` legal: a bare
+ * fieldset maps to role `group`, which does not allow the attribute, so the
+ * required state was being dropped on the floor. The role overrides the native
+ * mapping, and `aria-labelledby` then has to name the group by hand — the
+ * legend no longer gets to do it implicitly.
  */
 export const RadioGroup = ({
     label,
@@ -147,15 +153,19 @@ export const RadioGroup = ({
 
     const ids = useFieldIds({ error, hint });
 
+    const legendId = `${ids.id}-legend`;
+
     return (
         <fieldset
             className={className}
+            role="radiogroup"
+            aria-labelledby={legendId}
             aria-invalid={ids.invalid}
             aria-describedby={ids.describedBy}
             aria-required={required || undefined}
             disabled={disabled}
         >
-            <legend className={cn("text-xs font-bold text-text-muted uppercase mb-1.5", classNames?.legend)}>
+            <legend id={legendId} className={cn("text-xs font-bold text-text-muted uppercase mb-1.5", classNames?.legend)}>
                 {label}
                 {required && <span className="text-error" aria-hidden="true"> *</span>}
             </legend>
