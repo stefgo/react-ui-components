@@ -1,8 +1,8 @@
+import { useId } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from './utils';
 
 export interface PaginationControlsClassNames {
-    root?: string;
     infoWrapper?: string;
     select?: string;
     pageInfo?: string;
@@ -11,44 +11,53 @@ export interface PaginationControlsClassNames {
     pageText?: string;
 }
 
-interface PaginationControlsProps {
-    currentPage: number;
+export interface PaginationControlsProps {
+    /** One-based. */
+    page: number;
+    /** -1 when the total is unknown, in which case paging forward stays possible. */
     totalPages: number;
-    itemsPerPage: number;
+    pageSize: number;
+    /** -1 when unknown. */
     totalItems: number;
     onPageChange: (page: number) => void;
-    onItemsPerPageChange: (size: number) => void;
+    onPageSizeChange: (size: number) => void;
     pageSizeOptions?: number[];
+    /** Hide the bar entirely while everything fits on one page. Default false. */
+    hideOnSinglePage?: boolean;
     classNames?: PaginationControlsClassNames;
 }
 
 export const PaginationControls = ({
-    currentPage,
+    page,
     totalPages,
-    itemsPerPage,
+    pageSize,
     totalItems,
     onPageChange,
-    onItemsPerPageChange,
+    onPageSizeChange,
     pageSizeOptions = [10, 20, 50],
-    classNames
+    hideOnSinglePage = false,
+    classNames,
 }: PaginationControlsProps) => {
-    // Only render if total items exceed the smallest page size option (or just 10 if not checking options)
-    if (totalItems <= pageSizeOptions[0]) {
-        return null;
-    }
+    const selectId = useId();
+
+    const totalKnown = totalItems >= 0 && totalPages >= 0;
+    if (hideOnSinglePage && totalKnown && totalPages <= 1) return null;
+
+    const firstOnPage = totalItems === 0 ? 0 : (page - 1) * pageSize + 1;
+    const lastOnPage = totalKnown ? Math.min(page * pageSize, totalItems) : page * pageSize;
 
     return (
         <div className={cn(
-            "flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-3 border-t border-border dark:border-border-dark bg-table-header dark:bg-table-header-dark",
-            classNames?.root
+            "flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-3 border-t border-border bg-table-header"
         )}>
-            <div className={cn("flex items-center gap-2 text-sm text-text-secondary dark:text-text-muted-dark", classNames?.infoWrapper)}>
-                <span>Rows per page:</span>
+            <div className={cn("flex items-center gap-2 text-sm text-text-secondary", classNames?.infoWrapper)}>
+                <label htmlFor={selectId}>Rows per page:</label>
                 <select
-                    value={itemsPerPage}
-                    onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
+                    id={selectId}
+                    value={pageSize}
+                    onChange={(e) => onPageSizeChange(Number(e.target.value))}
                     className={cn(
-                        "bg-input-bg dark:bg-input-bg-dark border border-input-border dark:border-input-border-dark text-text-primary dark:text-text-primary-dark text-sm rounded focus:ring-primary focus:border-primary block p-1",
+                        "bg-input-bg border border-input-border text-text-primary text-sm rounded-sm focus:ring-primary focus:border-primary block p-1",
                         classNames?.select
                     )}
                 >
@@ -57,31 +66,35 @@ export const PaginationControls = ({
                     ))}
                 </select>
                 <span className={cn("ml-2", classNames?.pageInfo)}>
-                    {Math.min((currentPage - 1) * itemsPerPage + 1, totalItems)} - {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems}
+                    {firstOnPage} - {lastOnPage}{totalKnown && ` of ${totalItems}`}
                 </span>
             </div>
 
             <div className={cn("flex items-center gap-1", classNames?.controlsWrapper)}>
                 <button
-                    onClick={() => onPageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
+                    type="button"
+                    aria-label="Previous page"
+                    onClick={() => onPageChange(page - 1)}
+                    disabled={page <= 1}
                     className={cn(
-                        "p-1 rounded hover:bg-hover dark:hover:bg-hover-dark disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary dark:text-text-muted-dark transition-colors",
+                        "p-1 rounded-sm hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary transition-colors",
                         classNames?.button
                     )}
                 >
                     <ChevronLeft size={20} />
                 </button>
                 <div className="flex items-center gap-1 px-2">
-                    <span className={cn("text-sm text-text-secondary dark:text-text-muted-dark", classNames?.pageText)}>
-                        Page {currentPage} of {totalPages}
+                    <span className={cn("text-sm text-text-secondary", classNames?.pageText)}>
+                        Page {page}{totalKnown && ` of ${totalPages}`}
                     </span>
                 </div>
                 <button
-                    onClick={() => onPageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
+                    type="button"
+                    aria-label="Next page"
+                    onClick={() => onPageChange(page + 1)}
+                    disabled={totalKnown && page >= totalPages}
                     className={cn(
-                        "p-1 rounded hover:bg-hover dark:hover:bg-hover-dark disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary dark:text-text-muted-dark transition-colors",
+                        "p-1 rounded-sm hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary transition-colors",
                         classNames?.button
                     )}
                 >

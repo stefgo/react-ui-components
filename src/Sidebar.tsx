@@ -1,11 +1,13 @@
-import { ReactNode } from 'react';
+import type { IconComponent } from './types';
 import { cn } from './utils';
 
+/** Edge length of a sidebar icon. Fixed by the item layout, not a caller choice. */
+const SIDEBAR_ICON_SIZE = 18;
 
 export interface SidebarItem {
     id: string;
     label: string;
-    icon: ReactNode;
+    icon: IconComponent;
     badge?: string;
     badgeDot?: boolean; // If true, show a dot indicator when sidebar is collapsed
     active?: boolean;
@@ -18,7 +20,6 @@ export interface SidebarGroup {
 }
 
 export interface SidebarClassNames {
-    root?: string;
     content?: string;
     group?: string;
     groupTitle?: string;
@@ -36,12 +37,14 @@ export interface SidebarClassNames {
 interface SidebarProps {
     groups: SidebarGroup[];
     isCollapsed?: boolean;
+    /** Accessible name of the navigation landmark. */
+    ariaLabel?: string;
     className?: string;
     classNames?: SidebarClassNames;
 }
 
 const NavItem = ({
-    icon,
+    icon: Icon,
     label,
     active,
     onClick,
@@ -51,23 +54,28 @@ const NavItem = ({
     classNames
 }: SidebarItem & { isCollapsed?: boolean; classNames?: SidebarClassNames }) => (
     <button
+        type="button"
         onClick={onClick}
         title={isCollapsed ? label : ""}
+        // Collapsed items hide their label, so it has to come through ARIA.
+        aria-label={isCollapsed ? label : undefined}
+        aria-current={active ? 'page' : undefined}
         className={cn(
-            "w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
+            "w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-base",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
             isCollapsed ? "justify-center" : "justify-between",
             active
-                ? "bg-sidebar-item-active dark:bg-sidebar-item-active-dark text-text-primary dark:text-text-primary-dark shadow-sm ring-1 ring-border dark:ring-border-dark"
-                : "text-text-muted dark:text-text-muted-dark hover:bg-sidebar-item-active dark:hover:bg-sidebar-item-active-dark hover:text-text-primary dark:hover:text-text-primary-dark",
+                ? "bg-sidebar-item-active text-text-primary shadow-sm ring-1 ring-border"
+                : "text-text-muted hover:bg-sidebar-item-active hover:text-text-primary",
             classNames?.item,
             active ? classNames?.itemActive : classNames?.itemInactive
         )}
     >
         <div className={cn("flex items-center gap-3", classNames?.itemContent)}>
-            <div className={cn("flex-shrink-0 relative", classNames?.itemIcon)}>
-                {icon}
+            <div className={cn("flex-shrink-0 relative", classNames?.itemIcon)} aria-hidden="true">
+                <Icon size={SIDEBAR_ICON_SIZE} />
                 {isCollapsed && badgeDot && (
-                    <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500" />
+                    <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-error" />
                 )}
             </div>
             {!isCollapsed && <span className={cn("truncate", classNames?.itemLabel)}>{label}</span>}
@@ -77,8 +85,8 @@ const NavItem = ({
                 className={cn(
                     "text-xs px-2 py-0.5 rounded-full",
                     active
-                        ? "bg-sidebar-badge-active dark:bg-sidebar-badge-active-dark"
-                        : "bg-sidebar-badge-active dark:bg-sidebar-badge-active-dark",
+                        ? "bg-sidebar-badge-active"
+                        : "bg-sidebar-badge-inactive",
                     classNames?.itemBadge,
                     active ? classNames?.itemBadgeActive : classNames?.itemBadgeInactive
                 )}
@@ -92,26 +100,29 @@ const NavItem = ({
 export const Sidebar = ({
     groups,
     isCollapsed = false,
+    ariaLabel = "Main",
     className = "",
     classNames,
 }: SidebarProps) => {
     return (
         <aside className={cn(
             isCollapsed ? "w-16" : "w-64",
-            "h-full bg-sidebar-bg dark:bg-sidebar-bg-dark border-r border-border dark:border-border-dark hidden md:flex flex-col transition-all duration-300 relative",
-            className,
-            classNames?.root
+            "h-full bg-sidebar-bg border-r border-border hidden md:flex flex-col transition-all duration-slow relative",
+            className
         )}>
-            <div className={cn(
-                "p-4 flex flex-1 flex-col overflow-y-auto scrollbar-none",
-                isCollapsed ? "pt-8 items-center" : "pt-8",
-                classNames?.content
-            )}>
+            <nav
+                aria-label={ariaLabel}
+                className={cn(
+                    "p-4 flex flex-1 flex-col overflow-y-auto scrollbar-none",
+                    isCollapsed ? "pt-8 items-center" : "pt-8",
+                    classNames?.content
+                )}
+            >
                 {groups.map((group, groupIdx) => (
                     <div key={groupIdx} className={cn("space-y-1 w-full", groupIdx > 0 && (group.title ? "mt-8" : "mt-6"), classNames?.group)}>
                         {!isCollapsed && group.title && (
                             <div className={cn(
-                                "text-text-muted dark:text-text-muted-dark text-xs font-bold uppercase tracking-wider px-3 mb-2",
+                                "text-text-muted text-xs font-bold uppercase tracking-wider px-3 mb-2",
                                 classNames?.groupTitle
                             )}>
                                 {group.title}
@@ -127,7 +138,7 @@ export const Sidebar = ({
                         ))}
                     </div>
                 ))}
-            </div>
+            </nav>
         </aside>
     );
 };

@@ -1,50 +1,62 @@
-import { SelectHTMLAttributes, forwardRef } from 'react';
+import { ReactNode, Ref, SelectHTMLAttributes } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { FormField, type FormFieldClassNames } from './form/FormField';
+import { ICON_SIZE } from './types';
 import { cn } from './utils';
 
-export interface SelectClassNames {
-    root?: string;
-    label?: string;
+export interface SelectClassNames extends FormFieldClassNames {
     select?: string;
-    selectWrapper?: string;
-    error?: string;
 }
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
     label?: string;
+    hint?: ReactNode;
     error?: string;
     fullWidth?: boolean;
     options: { value: string | number; label: string; disabled?: boolean }[];
     classNames?: SelectClassNames;
+    ref?: Ref<HTMLSelectElement>;
 }
 
-export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
+export const Select = ({
     label,
+    hint,
     error,
     fullWidth = true,
     options,
     className = '',
     classNames,
+    id,
+    ref,
     ...props
-}, ref) => {
-    return (
-        <div className={cn(fullWidth ? 'w-full' : '', className, classNames?.root)}>
-            {label && (
-                <label className={cn("block text-xs font-bold text-text-muted dark:text-text-muted-dark uppercase mb-1.5 ml-1", classNames?.label)}>
-                    {label} {props.required && <span className="text-error">*</span>}
-                </label>
-            )}
-            <div className={cn("relative", classNames?.selectWrapper)}>
+}: SelectProps) => (
+    <FormField
+        label={label}
+        hint={hint}
+        error={error}
+        required={props.required}
+        fullWidth={fullWidth}
+        id={id}
+        describedBy={props['aria-describedby']}
+        className={className}
+        classNames={classNames}
+    >
+        {(ids) => (
+            <>
                 <select
                     ref={ref}
+                    id={ids.id}
+                    aria-invalid={ids.invalid}
                     className={cn(
-                        "block w-full bg-input-bg dark:bg-input-bg-dark border",
-                        error ? 'border-error' : 'border-input-border dark:border-input-border-dark',
-                        "px-3 py-2.5 rounded-lg text-text-primary dark:text-text-primary-dark",
+                        "block w-full bg-input-bg border",
+                        error ? 'border-error' : 'border-input-border',
+                        "pl-3 pr-10 py-2.5 rounded-md text-text-primary",
                         "focus:outline-none focus:ring-2 focus:ring-primary",
                         "transition-all sm:text-sm appearance-none",
                         classNames?.select
                     )}
                     {...props}
+                    aria-describedby={ids.describedBy}
                 >
                     {options.map((opt) => (
                         <option key={opt.value} value={opt.value} disabled={opt.disabled}>
@@ -52,11 +64,13 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
                         </option>
                     ))}
                 </select>
-                {/* Custom arrow could go here */}
-            </div>
-            {error && <p className={cn("mt-1 text-xs text-error", classNames?.error)}>{error}</p>}
-        </div>
-    );
-});
-
-Select.displayName = 'Select';
+                {/* `appearance-none` removes the native arrow, so supply one. */}
+                <ChevronDown
+                    size={ICON_SIZE.md}
+                    aria-hidden="true"
+                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-text-muted"
+                />
+            </>
+        )}
+    </FormField>
+);

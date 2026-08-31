@@ -1,0 +1,55 @@
+name: CI
+
+# Alle Pruefungen an einer Stelle. Der Release-Workflow ruft diesen Workflow
+# per workflow_call auf, statt die Schritte ein zweites Mal zu fuehren - sonst
+# driften die beiden Kopien auseinander.
+on:
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # commitlint braucht den Commit-Range des PRs
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Die Commit-Message ist der einzige Input, aus dem semantic-release die
+      # naechste Version ableitet. Ein Tippfehler im Typ erzeugt kein Release,
+      # ohne dass irgendetwas rot wird - deshalb hier.
+      - name: Commit messages
+        if: github.event_name == 'pull_request'
+        run: >
+          npx commitlint
+          --from ${{ github.event.pull_request.base.sha }}
+          --to ${{ github.event.pull_request.head.sha }}
+          --verbose
+
+      - name: Check generated design tokens
+        run: npm run tokens:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      # The stories are the only place several components are exercised at all,
+      # so a broken one has to fail the build rather than the next person to
+      # open Storybook.
+      - name: Build Storybook
+        run: npm run build-storybook

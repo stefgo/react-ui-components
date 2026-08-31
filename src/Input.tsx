@@ -1,66 +1,73 @@
-import { InputHTMLAttributes, ReactNode, forwardRef } from 'react';
+import { InputHTMLAttributes, ReactNode, Ref } from 'react';
+import { FormField, type FormFieldClassNames } from './form/FormField';
+import { ICON_SIZE, type IconComponent } from './types';
 import { cn } from './utils';
 
-export interface InputClassNames {
-    root?: string;
-    label?: string;
+export interface InputClassNames extends FormFieldClassNames {
     input?: string;
-    inputWrapper?: string;
     icon?: string;
-    error?: string;
-    hint?: string;
 }
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     hint?: ReactNode;
     error?: string;
-    icon?: ReactNode;
+    icon?: IconComponent;
     fullWidth?: boolean;
     classNames?: InputClassNames;
+    ref?: Ref<HTMLInputElement>;
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(({
+export const Input = ({
     label,
     hint,
     error,
-    icon,
+    icon: Icon,
     fullWidth = true,
     className = '',
     classNames,
+    id,
+    ref,
     ...props
-}, ref) => {
-    return (
-        <div className={cn(fullWidth ? 'w-full' : '', className, classNames?.root)}>
-            {label && (
-                <label className={cn("block text-xs font-bold text-text-muted dark:text-text-muted-dark uppercase mb-2 ml-1", classNames?.label)}>
-                    {label} {props.required && <span className="text-error">*</span>}
-                </label>
-            )}
-            <div className={cn("relative space-y-1", classNames?.inputWrapper)}>
-                {icon && (
-                    <div className={cn("absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-muted", classNames?.icon)}>
-                        {icon}
+}: InputProps) => (
+    <FormField
+        label={label}
+        hint={hint}
+        error={error}
+        required={props.required}
+        fullWidth={fullWidth}
+        id={id}
+        describedBy={props['aria-describedby']}
+        className={className}
+        classNames={classNames}
+    >
+        {(ids) => (
+            <>
+                {Icon && (
+                    <div
+                        className={cn("absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-muted", classNames?.icon)}
+                        aria-hidden="true"
+                    >
+                        <Icon size={ICON_SIZE.lg} />
                     </div>
                 )}
                 <input
                     ref={ref}
+                    id={ids.id}
+                    aria-invalid={ids.invalid}
                     className={cn(
-                        "block w-full bg-white dark:bg-card-dark border",
-                        error ? 'border-error' : 'border-border dark:border-border-dark',
-                        icon ? 'pl-10' : 'pl-3',
-                        "pr-3 py-2.5 rounded-lg text-text-primary dark:text-text-primary-dark placeholder:text-text-muted dark:placeholder:text-text-muted-dark",
+                        "block w-full bg-input-bg border",
+                        error ? 'border-error' : 'border-input-border',
+                        Icon ? 'pl-10' : 'pl-3',
+                        "pr-3 py-2.5 rounded-md text-text-primary placeholder:text-text-muted",
                         "focus:outline-none focus:ring-2 focus:ring-primary",
                         "transition-all sm:text-sm",
                         classNames?.input
                     )}
                     {...props}
+                    aria-describedby={ids.describedBy}
                 />
-            </div>
-            {error && <p className={cn("mt-1 text-xs text-error", classNames?.error)}>{error}</p>}
-            {hint && !error && <p className={cn("mt-1 text-xs text-text-muted dark:text-text-muted-dark leading-relaxed ml-1", classNames?.hint)}>{hint}</p>}
-        </div>
-    );
-});
-
-Input.displayName = 'Input';
+            </>
+        )}
+    </FormField>
+);

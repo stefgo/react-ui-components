@@ -1,22 +1,21 @@
 import * as React from 'react';
 import { MoreVertical } from 'lucide-react';
 import { ActionButton, ActionButtonColor, ActionButtonClassNames } from './ActionButton';
-import { ActionMenu, ActionMenuClassNames } from './ActionMenu';
+import { ActionMenu } from './ActionMenu';
 import { useActionMenu } from './hooks/useActionMenu';
+import { ICON_SIZE, type IconComponent } from './types';
 import { cn } from './utils';
 
 export interface DataActionClassNames {
-    root?: string;
     actionButton?: ActionButtonClassNames;
     menuTrigger?: ActionButtonClassNames;
-    menu?: ActionMenuClassNames;
     menuItem?: string;
     menuItemActive?: string;
     menuItemDisabled?: string;
 }
 
 export interface DataTableActionItem {
-    icon: React.ComponentType<{ size?: number; className?: string }>;
+    icon: IconComponent;
     onClick: (e: React.MouseEvent) => void;
     color?: ActionButtonColor;
     tooltip?: string | { enabled: string; disabled: string };
@@ -26,20 +25,22 @@ export interface DataTableActionItem {
 
 export interface DataTableActionMenuEntry {
     label: string | { enabled: string; disabled: string };
-    icon: React.ComponentType<{ size?: number; className?: string }>;
+    icon: IconComponent;
     onClick: () => void;
     disabled?: boolean;
     disabledTitle?: string;
     variant?: 'danger' | 'default';
 }
 
-interface DataTableActionProps<TId extends string | number> {
+export interface DataActionProps<TId extends string | number> {
     /** Unique identifier for this row – used to track which overflow menu is open */
     rowId: TId;
     /** Primary action buttons rendered inline (left of the overflow trigger) */
     actions?: DataTableActionItem[];
     /** Entries rendered inside the overflow dropdown menu */
     menuEntries?: DataTableActionMenuEntry[];
+    /** Accessible name of the overflow trigger, which renders an icon only. */
+    menuLabel?: string;
     className?: string;
     classNames?: DataActionClassNames;
 }
@@ -48,15 +49,16 @@ export const DataAction = <TId extends string | number>({
     rowId,
     actions = [],
     menuEntries = [],
+    menuLabel = "More actions",
     className = "",
     classNames
-}: DataTableActionProps<TId>) => {
-    const { menuState, openMenu, closeMenu } = useActionMenu<TId>();
+}: DataActionProps<TId>) => {
+    const { menuState, triggerRef, openMenu, closeMenu } = useActionMenu<TId>();
 
     const isMenuOpen = menuState?.id === rowId;
 
     return (
-        <div className={cn("flex justify-end gap-2 items-center", className, classNames?.root)}>
+        <div className={cn("flex justify-end gap-2 items-center", className)}>
             {actions.map((action, index) => (
                 <ActionButton
                     key={index}
@@ -78,23 +80,26 @@ export const DataAction = <TId extends string | number>({
                         color="gray"
                         className={cn(isMenuOpen ? 'opacity-100' : '')}
                         classNames={classNames?.menuTrigger}
+                        aria-label={menuLabel}
+                        aria-haspopup="menu"
+                        aria-expanded={isMenuOpen}
                     />
 
                     <ActionMenu
                         isOpen={isMenuOpen}
                         onClose={closeMenu}
-                        position={menuState || { x: 0, y: 0 }}
-                        classNames={classNames?.menu}
+                        anchor={menuState?.anchor ?? null}
+                        triggerRef={triggerRef}
                     >
                         {menuEntries.map((entry, index) => {
                             const isDanger = entry.variant === 'danger';
                             const isDisabled = entry.disabled ?? false;
 
                             const enabledClass = isDanger
-                                ? 'text-error hover:bg-error-bg dark:hover:bg-error-bg-dark'
-                                : 'text-text-secondary dark:text-text-secondary-dark hover:bg-hover dark:hover:bg-hover-dark';
+                                ? 'text-error hover:bg-error-bg'
+                                : 'text-text-secondary hover:bg-hover';
 
-                            const disabledClass = 'text-text-muted dark:text-text-muted-dark cursor-not-allowed';
+                            const disabledClass = 'text-text-muted cursor-not-allowed';
 
                             const labelText = typeof entry.label === 'string'
                                 ? entry.label
@@ -103,6 +108,8 @@ export const DataAction = <TId extends string | number>({
                             return (
                                 <button
                                     key={index}
+                                    type="button"
+                                    role="menuitem"
                                     onClick={() => {
                                         if (!isDisabled) {
                                             entry.onClick();
@@ -118,7 +125,7 @@ export const DataAction = <TId extends string | number>({
                                     )}
                                     title={isDisabled ? (entry.disabledTitle ?? labelText) : labelText}
                                 >
-                                    <entry.icon size={14} />
+                                    <entry.icon size={ICON_SIZE.sm} aria-hidden />
                                     {labelText}
                                 </button>
                             );

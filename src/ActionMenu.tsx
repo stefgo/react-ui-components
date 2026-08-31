@@ -1,58 +1,66 @@
-import { useEffect, useRef } from 'react';
+import { ReactNode, RefObject } from 'react';
+import { createPortal } from 'react-dom';
+import { useMenuBehavior } from './hooks/useMenuBehavior';
+import { usePopoverPosition, type AnchorRect } from './hooks/usePopoverPosition';
 import { cn } from './utils';
-
-export interface ActionMenuClassNames {
-    overlay?: string;
-    root?: string;
-}
 
 interface ActionMenuProps {
     isOpen: boolean;
     onClose: () => void;
-    position: { x: number; y: number };
-    children: React.ReactNode;
-    className?: string; // Standard className for root
-    classNames?: ActionMenuClassNames;
+    /** The trigger's bounding rect. `useActionMenu` produces it. */
+    anchor: AnchorRect | null;
+    children: ReactNode;
+    /** Focus returns here when the menu closes. */
+    triggerRef?: RefObject<HTMLElement | null>;
+    className?: string;
 }
 
-export const ActionMenu = ({ isOpen, onClose, position, children, className = '', classNames }: ActionMenuProps) => {
-    const menuRef = useRef<HTMLDivElement>(null);
+export const ActionMenu = ({
+    isOpen,
+    onClose,
+    anchor,
+    children,
+    triggerRef,
+    className = ''
+}: ActionMenuProps) => {
+    const { containerRef } = useMenuBehavior<HTMLDivElement>({
+        isOpen,
+        onClose,
+        mode: 'menu',
+        triggerRef,
+        closeOnViewportChange: true
+    });
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-                onClose();
-            }
-        };
-
-        if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [isOpen, onClose]);
+    // Right-aligned under the trigger, flipping above it when the page bottom
+    // is closer than the menu is tall.
+    const { ref: positionRef, style, isPositioned } = usePopoverPosition<HTMLDivElement>({
+        isOpen,
+        anchor,
+        placement: 'bottom',
+        align: 'end'
+    });
 
     if (!isOpen) return null;
 
-    return (
-        <div className={cn("fixed inset-0 z-40", classNames?.overlay)} onClick={(e) => { e.stopPropagation(); onClose(); }}>
-            <div
-                ref={menuRef}
-                className={cn(
-                    "fixed mt-2 w-48 bg-card dark:bg-card-dark rounded-md shadow-lg border border-border dark:border-border-dark z-50 py-1",
-                    className,
-                    classNames?.root
-                )}
-                style={{
-                    top: position.y,
-                    left: position.x - 192 // Align right edge
-                }}
-                onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside menu
-            >
-                {children}
-            </div>
-        </div>
+    return createPortal(
+        <div
+            ref={(node) => {
+                containerRef.current = node;
+                positionRef.current = node;
+            }}
+            role="menu"
+            tabIndex={-1}
+            className={cn(
+                "w-48 bg-card rounded-md shadow-lg border border-border z-dropdown py-1 focus:outline-none",
+                // In the DOM but not yet measured: it needs a size before it can
+                // be placed, and it has no size until it is rendered.
+                isPositioned ? "visible" : "invisible",
+                className
+            )}
+            style={style}
+        >
+            {children}
+        </div>,
+        document.body
     );
 };

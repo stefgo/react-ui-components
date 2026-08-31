@@ -1,11 +1,22 @@
 import { ReactNode } from 'react';
-import { AbstractDataView, BaseDataViewProps, DataViewClassNames } from './AbstractDataView';
+import { BaseDataViewProps, DataViewClassNames } from './data/types';
+import { isSortable } from './data/sorting';
+import { useDataView } from './data/useDataView';
+import { useSortColumns, type SortOptions } from './data/useSortColumns';
+import { SortIcon } from './data/SortIcon';
+import { DataViewFrame } from './data/DataViewFrame';
 import { cn } from './utils';
 
 export interface DataTableDef<T> {
     accessorKey?: keyof T;
     sortable?: boolean;
     sortValue?: (item: T) => string | number;
+    /**
+     * The column heading. A blank string is not an option: an empty `<th>`
+     * promises a screen reader a column name and then gives it none. A column
+     * whose heading is deliberately invisible — an actions column — passes a
+     * visually hidden node instead: `<span className="sr-only">Actions</span>`.
+     */
     tableHeader: ReactNode;
     tableHeaderClassName?: string;
     tableCellClassName?: string | ((item: T) => string);
@@ -17,6 +28,7 @@ export interface DataTableClassNames extends DataViewClassNames {
     thead?: string;
     headerRow?: string;
     th?: string;
+    sortButton?: string;
     tbody?: string;
     tr?: string;
     td?: string;
@@ -25,145 +37,77 @@ export interface DataTableClassNames extends DataViewClassNames {
 
 export interface DataTableProps<T> extends BaseDataViewProps<T> {
     itemDef: DataTableDef<T>[];
-    defaultSort?: { colIndex: number; direction: 'asc' | 'desc' };
-    sortStorageKey?: string;
+    /** Column sorting. Leave it out and the view owns it. */
+    sort?: SortOptions;
     classNames?: DataTableClassNames;
 }
 
-interface SortEntry {
-    colIndex: number;
-    direction: 'asc' | 'desc';
-}
+export const DataTable = <T,>(props: DataTableProps<T>) => {
+    const { itemDef, sort, classNames, className } = props;
 
-interface DataTableState {
-    sortColumns: SortEntry[];
-}
+    const { sortColumns, comparator, handleSortClick, sortStateOf } = useSortColumns({ itemDef, sort });
+    // Sort across everything first, then take the page — the other order sorts
+    // only the rows that happen to be on screen.
+    const { rows, placeholder, getKey, getRowClass, rowActivationProps, interactionClasses, pagination } = useDataView(props, comparator);
 
-export class DataTable<T> extends AbstractDataView<T, DataTableProps<T>, DataTableState> {
-    private initSortColumns(): SortEntry[] {
-        const { sortStorageKey, defaultSort } = this.props;
-        if (sortStorageKey && typeof localStorage !== 'undefined') {
-            const saved = localStorage.getItem(sortStorageKey);
-            if (saved) {
-                try { return JSON.parse(saved); } catch { /* ignore */ }
-            }
-        }
-        return defaultSort ? [defaultSort] : [];
-    }
-
-    state: DataTableState = {
-        sortColumns: this.initSortColumns(),
-    };
-
-    componentDidUpdate(_prevProps: DataTableProps<T>, prevState: DataTableState): void {
-        const { sortStorageKey } = this.props;
-        if (sortStorageKey && prevState.sortColumns !== this.state.sortColumns) {
-            localStorage.setItem(sortStorageKey, JSON.stringify(this.state.sortColumns));
-        }
-    }
-
-    private isSortable(col: DataTableDef<T>): boolean {
-        return !!col.sortable && (!!col.accessorKey || !!col.sortValue);
-    }
-
-    private handleSortClick(col: DataTableDef<T>, idx: number, event: React.MouseEvent): void {
-        if (!this.isSortable(col)) return;
-        this.setState((prev) => {
-            const existing = prev.sortColumns.find((s) => s.colIndex === idx);
-            if (event.shiftKey) {
-                if (existing) {
-                    if (existing.direction === 'asc') {
-                        return { sortColumns: prev.sortColumns.map((s) => s.colIndex === idx ? { ...s, direction: 'desc' } : s) };
-                    } else {
-                        return { sortColumns: prev.sortColumns.filter((s) => s.colIndex !== idx) };
-                    }
-                }
-                return { sortColumns: [...prev.sortColumns, { colIndex: idx, direction: 'asc' }] };
-            } else {
-                if (existing && prev.sortColumns.length === 1) {
-                    return { sortColumns: [{ colIndex: idx, direction: existing.direction === 'asc' ? 'desc' : 'asc' }] };
-                }
-                return { sortColumns: [{ colIndex: idx, direction: 'asc' }] };
-            }
-        });
-    }
-
-    private getSortedData(): T[] {
-        const { data, itemDef } = this.props;
-        const { sortColumns } = this.state;
-        if (sortColumns.length === 0) return data;
-
-        const resolvers = sortColumns.map(({ colIndex, direction }) => {
-            const col = itemDef[colIndex];
-            const getValue = col.sortValue
-                ? col.sortValue
-                : (item: T) => item[col.accessorKey!] as unknown as string | number;
-            return { getValue, direction };
-        });
-
-        return [...data].sort((a, b) => {
-            for (const { getValue, direction } of resolvers) {
-                const aVal = getValue(a);
-                const bVal = getValue(b);
-                if (aVal == null && bVal == null) continue;
-                if (aVal == null) return 1;
-                if (bVal == null) return -1;
-                const cmp = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-                if (cmp !== 0) return direction === 'asc' ? cmp : -cmp;
-            }
-            return 0;
-        });
-    }
-
-    private renderSortIcon(col: DataTableDef<T>, idx: number): ReactNode {
-        if (!this.isSortable(col)) return null;
-        const { sortColumns } = this.state;
-        const entry = sortColumns.find((s) => s.colIndex === idx);
-        if (!entry) return <span className="ml-1 opacity-40">↕</span>;
-        const arrow = entry.direction === 'asc' ? '↑' : '↓';
-        const priority = sortColumns.length > 1 ? sortColumns.indexOf(entry) + 1 : null;
-        return <span className="ml-1">{arrow}{priority !== null && <sup>{priority}</sup>}</span>;
-    }
-
-    protected renderContent(): ReactNode {
-        const { itemDef, onRowClick, classNames } = this.props;
-        const placeholder = this.getPlaceholder();
-        const interactionClasses = this.getInteractionClasses();
-        // Sort across everything first, then take the page — the other order sorts
-        // only the rows that happen to be on screen.
-        const sortedData = this.applyPageSlice(this.getSortedData());
-
-        return (
+    return (
+        <DataViewFrame className={className} classNames={classNames} pagination={pagination}>
             <div className="overflow-x-auto h-full w-full">
                 <table className={cn("w-full text-left border-collapse", classNames?.table)}>
-                    <thead className={cn("sticky top-0 bg-table-header dark:bg-table-header-dark z-10", classNames?.thead)}>
-                        <tr className={cn("border-b border-border dark:border-border-dark", classNames?.headerRow)}>
-                            {itemDef.map((col, idx) => (
-                                <th
-                                    key={idx}
-                                    onClick={(e) => this.handleSortClick(col, idx, e)}
-                                    className={cn(
-                                        "px-6 py-2 text-xs font-medium text-text-muted dark:text-text-muted-dark uppercase tracking-wider",
-                                        this.isSortable(col) && "cursor-pointer select-none hover:text-text-primary dark:hover:text-text-primary-dark",
-                                        col.tableHeaderClassName,
-                                        classNames?.th
-                                    )}
-                                >
-                                    {col.tableHeader}
-                                    {this.renderSortIcon(col, idx)}
-                                </th>
-                            ))}
+                    <thead className={cn("sticky top-0 bg-table-header z-sticky", classNames?.thead)}>
+                        <tr className={cn("border-b border-border", classNames?.headerRow)}>
+                            {itemDef.map((col, idx) => {
+                                const sortable = isSortable(col);
+                                return (
+                                    <th
+                                        key={idx}
+                                        scope="col"
+                                        // Only a sortable column carries a sort state. On the
+                                        // others the attribute would claim they could be sorted.
+                                        aria-sort={sortable ? sortStateOf(idx) : undefined}
+                                        className={cn(
+                                            "px-6 py-2 text-xs font-medium text-text-muted uppercase tracking-wider",
+                                            col.tableHeaderClassName,
+                                            classNames?.th
+                                        )}
+                                    >
+                                        {/*
+                                            A real button, not a click handler on the <th>: the
+                                            header is a control, and only a button is reachable by
+                                            Tab and activated by Enter or Space. A column that
+                                            cannot be sorted stays plain text — wrapping it too
+                                            would make every header a tab stop for nothing.
+                                        */}
+                                        {sortable ? (
+                                            <button
+                                                type="button"
+                                                onClick={(e) => handleSortClick(col, idx, e)}
+                                                className={cn(
+                                                    "inline-flex items-center gap-1 select-none uppercase hover:text-text-primary",
+                                                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm",
+                                                    classNames?.sortButton
+                                                )}
+                                            >
+                                                {col.tableHeader}
+                                                <SortIcon col={col} colIndex={idx} sortColumns={sortColumns} />
+                                            </button>
+                                        ) : (
+                                            col.tableHeader
+                                        )}
+                                    </th>
+                                );
+                            })}
                         </tr>
                     </thead>
-                    <tbody className={cn("divide-y divide-border dark:divide-border-dark", classNames?.tbody)}>
+                    <tbody className={cn("divide-y divide-border", classNames?.tbody)}>
                         {placeholder ? (
                             <tr>
-                                <td colSpan={itemDef.length} className={cn("px-6 py-8 text-center text-text-muted dark:text-text-muted-dark", classNames?.placeholderTd)}>
+                                <td colSpan={itemDef.length} className={cn("px-6 py-8 text-center text-text-muted", classNames?.placeholderTd)}>
                                     {placeholder}
                                 </td>
                             </tr>
                         ) : (
-                            sortedData.map((item) => {
+                            rows.map((item) => {
                                 const cellContent = (col: DataTableDef<T>) => {
                                     if (col.tableItemRender) return col.tableItemRender(item);
                                     if (col.accessorKey) return item[col.accessorKey] as unknown as ReactNode;
@@ -171,12 +115,12 @@ export class DataTable<T> extends AbstractDataView<T, DataTableProps<T>, DataTab
 
                                 return (
                                     <tr
-                                        key={this.getKey(item)}
-                                        onClick={() => onRowClick?.(item)}
+                                        key={getKey(item)}
+                                        {...rowActivationProps(item)}
                                         className={cn(
                                             "transition-colors group",
                                             interactionClasses,
-                                            this.getRowClass(item),
+                                            getRowClass(item),
                                             classNames?.tr
                                         )}
                                     >
@@ -185,7 +129,7 @@ export class DataTable<T> extends AbstractDataView<T, DataTableProps<T>, DataTab
                                                 ? col.tableCellClassName(item)
                                                 : (col.tableCellClassName ?? '');
                                             return (
-                                                <td key={idx} className={cn("px-6 py-2 text-text-primary dark:text-text-primary-dark", cellClass, classNames?.td)}>
+                                                <td key={idx} className={cn("px-6 py-2 text-text-primary", cellClass, classNames?.td)}>
                                                     {cellContent(col)}
                                                 </td>
                                             );
@@ -197,7 +141,6 @@ export class DataTable<T> extends AbstractDataView<T, DataTableProps<T>, DataTab
                     </tbody>
                 </table>
             </div>
-        );
-    }
-}
-
+        </DataViewFrame>
+    );
+};

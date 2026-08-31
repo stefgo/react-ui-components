@@ -1,9 +1,8 @@
-import { ReactNode } from 'react';
-import { Card, CardClassNames } from './Card';
+import { ReactNode, Ref } from 'react';
+import { Card, CardClassNames, CardTitleLevel } from './Card';
 import { cn } from './utils';
 
 export interface DataCardClassNames {
-    root?: string;
     card?: CardClassNames;
     content?: string;
 }
@@ -14,15 +13,19 @@ interface DataCardProps {
     title?: ReactNode;
     action?: ReactNode;
     noPadding?: boolean;
+    titleAs?: CardTitleLevel;
     classNames?: DataCardClassNames;
+    ref?: Ref<HTMLDivElement>;
 }
 
-export const DataCard = ({ children, className = '', title, action, noPadding = false, classNames }: DataCardProps) => {
+export const DataCard = ({ children, className = '', title, action, noPadding = false, titleAs, classNames, ref }: DataCardProps) => {
     return (
         <Card
-            className={cn(className, classNames?.root)}
+            ref={ref}
+            className={className}
             classNames={classNames?.card}
             title={title}
+            titleAs={titleAs}
             action={action}
         >
             <div className={cn(noPadding ? '' : 'p-6', classNames?.content)}>

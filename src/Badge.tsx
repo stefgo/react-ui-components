@@ -1,16 +1,13 @@
-import { ReactNode } from 'react';
+import { ReactNode, Ref } from 'react';
+import type { ControlSize } from './types';
 import { cn } from './utils';
-
-export interface BadgeClassNames {
-    root?: string;
-}
 
 interface BadgeProps {
     children: ReactNode;
-    variant?: 'success' | 'warning' | 'error' | 'info' | 'gray';
-    size?: 'sm' | 'md';
+    variant?: 'success' | 'warning' | 'error' | 'info' | 'neutral';
+    size?: ControlSize;
     className?: string;
-    classNames?: BadgeClassNames;
+    ref?: Ref<HTMLSpanElement>;
 }
 
 export const Badge = ({
@@ -18,25 +15,26 @@ export const Badge = ({
     variant = 'info',
     size = 'md',
     className = '',
-    classNames
+    ref
 }: BadgeProps) => {
     const baseStyles = "inline-flex items-center font-medium rounded-full transition-colors";
 
     const variants = {
-        success: "bg-badge-success-bg dark:bg-badge-success-bg-dark text-badge-success-text dark:text-badge-success-text-dark",
-        warning: "bg-badge-warning-bg dark:bg-badge-warning-bg-dark text-badge-warning-text dark:text-badge-warning-text-dark",
-        error: "bg-badge-error-bg dark:bg-badge-error-bg-dark text-badge-error-text dark:text-badge-error-text-dark",
-        info: "bg-badge-info-bg dark:bg-badge-info-bg-dark text-badge-info-text dark:text-badge-info-text-dark",
-        gray: "bg-hover dark:bg-button-secondary-dark text-text-secondary dark:text-text-muted-dark"
+        success: "bg-badge-success-bg text-badge-success-text",
+        warning: "bg-badge-warning-bg text-badge-warning-text",
+        error: "bg-badge-error-bg text-badge-error-text",
+        info: "bg-badge-info-bg text-badge-info-text",
+        neutral: "bg-badge-neutral-bg text-badge-neutral-text"
     };
 
     const sizes = {
         sm: "px-2 py-0.5 text-[10px]",
-        md: "px-2.5 py-1 text-xs"
+        md: "px-2.5 py-1 text-xs",
+        lg: "px-3 py-1.5 text-sm"
     };
 
     return (
-        <span className={cn(baseStyles, variants[variant], sizes[size], className, classNames?.root)}>
+        <span ref={ref} className={cn(baseStyles, variants[variant], sizes[size], className)}>
             {children}
         </span>
     );

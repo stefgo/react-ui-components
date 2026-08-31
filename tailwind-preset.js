@@ -1,269 +1,243 @@
 const path = require("path");
+const { themeValue: t, baseDeclarations, RADIUS, DURATION } = require("./tokens");
 
 /**
  * Tailwind CSS preset for @stefgo/react-ui-components.
  *
- * Adds the library's dist files to Tailwind's content list and extends the
- * theme with all CSS-variable-backed design tokens used by the components.
+ * It does three things:
+ *   1. adds the library's dist files to Tailwind's `content` scanning,
+ *   2. maps the design tokens from `tokens.js` onto Tailwind utilities,
+ *   3. emits the token declarations themselves (`:root` and `.dark`) as base
+ *      styles, so consumers need no extra stylesheet import.
  *
- * Consumers override tokens via CSS variables in their own :root / .dark rules:
- *   :root { --ruic-primary: #your-brand; }
+ * Defaults live in `tokens.js` only — never repeat a colour literal here.
+ *
+ * Every colour is one class, not two: `bg-card` resolves per theme because the
+ * `.dark` block redefines the custom property. Consumers override by redefining
+ * the variables:
+ *
+ *   :root { --ruic-primary: 12 34 56; }
+ *   .dark { --ruic-bg-card: #0b0b0b; }
  */
 module.exports = {
+  darkMode: "class",
   content: [path.join(__dirname, "dist/**/*.{js,mjs}")],
   safelist: [
     "group-hover:bg-table-row-hover",
-    "dark:group-hover:bg-table-row-hover-dark",
   ],
   theme: {
     extend: {
       colors: {
         // ─── Brand ────────────────────────────────────────────────────────────
         primary: {
-          DEFAULT: "rgb(var(--ruic-primary, 229 77 13) / <alpha-value>)",
-          hover:   "rgb(var(--ruic-primary-hover, 255 95 31) / <alpha-value>)",
+          DEFAULT: t("primary"),
+          hover: t("primary-hover"),
         },
 
         // ─── Semantic State Colors ────────────────────────────────────────────
-        // Used by ActionButton colors, Input/Select error states, DataAction menus.
         error: {
-          DEFAULT:   "var(--ruic-error, #dc2626)",
-          hover:     "var(--ruic-error-hover, #b91c1c)",
-          dark:      "var(--ruic-error-dark, #f87171)",
-          bg:        "var(--ruic-error-bg, #fef2f2)",
-          "bg-dark": "var(--ruic-error-bg-dark, rgba(127, 29, 29, 0.3))",
+          DEFAULT: t("error"),
+          hover: t("error-hover"),
+          bg: t("error-bg"),
         },
         success: {
-          DEFAULT: "var(--ruic-success, #16a34a)",
-          hover:   "var(--ruic-success-hover, #15803d)",
-          dark:    "var(--ruic-success-dark, #4ade80)",
+          DEFAULT: t("success"),
+          hover: t("success-hover"),
         },
         warning: {
-          DEFAULT:   "var(--ruic-warning, #ea580c)",
-          hover:     "var(--ruic-warning-hover, #c2410c)",
-          dark:      "var(--ruic-warning-dark, #fb923c)",
-          bg:        "var(--ruic-warning-bg, #ffedd5)",
-          "bg-dark": "var(--ruic-warning-bg-dark, rgba(124, 45, 18, 0.3))",
+          DEFAULT: t("warning"),
+          hover: t("warning-hover"),
+          bg: t("warning-bg"),
         },
         info: {
-          DEFAULT: "var(--ruic-info, #2563eb)",
-          hover:   "var(--ruic-info-hover, #1d4ed8)",
-          dark:    "var(--ruic-info-dark, #60a5fa)",
-          light:   "var(--ruic-info-light, #93c5fd)",
+          DEFAULT: t("info"),
+          hover: t("info-hover"),
         },
         accent: {
-          DEFAULT:   "var(--ruic-accent, #4f46e5)",
-          hover:     "var(--ruic-accent-hover, #4338ca)",
-          dark:      "var(--ruic-accent-dark, #818cf8)",
-          bg:        "var(--ruic-accent-bg, #eef2ff)",
-          "bg-dark": "var(--ruic-accent-bg-dark, rgba(49, 46, 129, 0.3))",
+          DEFAULT: t("accent"),
+          hover: t("accent-hover"),
+          bg: t("accent-bg"),
         },
 
         // ─── Surfaces & Backgrounds ──────────────────────────────────────────
         card: {
-          // White card surface (dropdowns, panels, modal sheets).
-          DEFAULT: "var(--ruic-bg-card, #ffffff)",
-          dark:    "var(--ruic-bg-card-dark, #141414)",
-          header: "var(--ruic-bg-card-header, #f3f4f6)",
-          "header-dark": "var(--ruic-bg-card-header-dark, #181818)",
+          DEFAULT: t("bg-card"),
+          header: t("bg-card-header"),
         },
         app: {
-          bg: {
-            // Page / layout background.
-            DEFAULT: "var(--ruic-bg-app, #f9fafb)",
-            dark:    "var(--ruic-bg-app-dark, #111111)",
-          },
+          bg: t("bg-app"),
         },
+        overlay: t("overlay"),
 
         // ─── Typography ──────────────────────────────────────────────────────
         text: {
-          primary: {
-            DEFAULT: "var(--ruic-text-primary, #111827)",
-            dark:    "var(--ruic-text-primary-dark, #f9fafb)",
-          },
-          secondary: {
-            DEFAULT: "var(--ruic-text-secondary, #4b5563)",
-            dark:    "var(--ruic-text-secondary-dark, #d1d5db)",
-          },
-          muted: {
-            DEFAULT: "var(--ruic-text-muted, #808080)",
-            dark:    "var(--ruic-text-muted-dark, #808080)",
-          },
+          primary: t("text-primary"),
+          secondary: t("text-secondary"),
+          muted: t("text-muted"),
         },
 
-        // ─── Borders & Dividers ──────────────────────────────────────────────
-        // Enables: border-border, dark:border-border-dark,
-        //          divide-border, dark:divide-border-dark,
-        //          ring-border, dark:ring-border-dark
-        border: {
-          DEFAULT: "var(--ruic-border, #e2e8f0)",
-          dark:    "var(--ruic-border-dark, #2a2a2a)",
-        },
-
-        // ─── Interactive Hover Backgrounds ───────────────────────────────────
-        // Enables: bg-hover / dark:bg-hover-dark
-        hover: {
-          DEFAULT: "var(--ruic-hover, #f3f4f6)",
-          dark:    "var(--ruic-hover-dark, #252525)",
-        },
+        // ─── Borders & Interactive Backgrounds ───────────────────────────────
+        border: t("border"),
+        hover: t("hover"),
 
         // ─── Component: Button ───────────────────────────────────────────────
         button: {
           primary: {
-            DEFAULT: "rgb(var(--ruic-primary, 229 77 13) / <alpha-value>)",
-            hover:   "rgb(var(--ruic-primary-hover, 255 95 31) / <alpha-value>)",
-            text:    "var(--ruic-button-primary-text, #ffffff)",
+            DEFAULT: t("primary"),
+            hover: t("primary-hover"),
+            text: t("button-primary-text"),
           },
           secondary: {
-            DEFAULT:      "var(--ruic-button-secondary-bg, #e5e7eb)",
-            hover:        "var(--ruic-button-secondary-hover-bg, #d1d5db)",
-            dark:         "var(--ruic-button-secondary-bg-dark, #333333)",
-            "dark-hover": "var(--ruic-button-secondary-hover-bg-dark, #444444)",
+            DEFAULT: t("button-secondary-bg"),
+            hover: t("button-secondary-hover-bg"),
           },
           danger: {
-            DEFAULT: "var(--ruic-button-danger-bg, #dc2626)",
-            hover:   "var(--ruic-button-danger-hover-bg, #b91c1c)",
+            DEFAULT: t("button-danger-bg"),
+            hover: t("button-danger-hover-bg"),
           },
         },
 
         // ─── Component: Badge ────────────────────────────────────────────────
         badge: {
-          success: {
-            bg:          "var(--ruic-badge-success-bg, #dcfce7)",
-            text:        "var(--ruic-badge-success-text, #15803d)",
-            "bg-dark":   "var(--ruic-badge-success-bg-dark, rgba(20, 83, 45, 0.3))",
-            "text-dark": "var(--ruic-badge-success-text-dark, #4ade80)",
-          },
-          warning: {
-            bg:          "var(--ruic-badge-warning-bg, #ffedd5)",
-            text:        "var(--ruic-badge-warning-text, #c2410c)",
-            "bg-dark":   "var(--ruic-badge-warning-bg-dark, rgba(124, 45, 18, 0.3))",
-            "text-dark": "var(--ruic-badge-warning-text-dark, #fb923c)",
-          },
-          error: {
-            bg:          "var(--ruic-badge-error-bg, #fef2f2)",
-            text:        "var(--ruic-badge-error-text, #b91c1c)",
-            "bg-dark":   "var(--ruic-badge-error-bg-dark, rgba(127, 29, 29, 0.3))",
-            "text-dark": "var(--ruic-badge-error-text-dark, #f87171)",
-          },
-          info: {
-            bg:          "var(--ruic-badge-info-bg, #dbeafe)",
-            text:        "var(--ruic-badge-info-text, #1d4ed8)",
-            "bg-dark":   "var(--ruic-badge-info-bg-dark, rgba(30, 58, 138, 0.3))",
-            "text-dark": "var(--ruic-badge-info-text-dark, #60a5fa)",
-          },
+          success: { bg: t("badge-success-bg"), text: t("badge-success-text") },
+          warning: { bg: t("badge-warning-bg"), text: t("badge-warning-text") },
+          error: { bg: t("badge-error-bg"), text: t("badge-error-text") },
+          info: { bg: t("badge-info-bg"), text: t("badge-info-text") },
+          neutral: { bg: t("badge-neutral-bg"), text: t("badge-neutral-text") },
         },
 
         // ─── Component: Input / Select ───────────────────────────────────────
         input: {
-          bg: {
-            DEFAULT: "var(--ruic-input-bg, #f9fafb)",
-            dark:    "var(--ruic-input-bg-dark, #111111)",
-          },
-          border: {
-            DEFAULT: "var(--ruic-input-border, #e2e8f0)",
-            dark:    "var(--ruic-input-border-dark, #2a2a2a)",
-          },
+          bg: t("input-bg"),
+          border: t("input-border"),
         },
 
         // ─── Component: Sidebar ──────────────────────────────────────────────
         sidebar: {
-          bg: {
-            DEFAULT: "var(--ruic-sidebar-bg, #f9fafb)",
-            dark:    "var(--ruic-sidebar-bg-dark, #1a1a1a)",
-          },
-          item: {
-            active: {
-              DEFAULT: "var(--ruic-sidebar-item-active-bg, #ffffff)",
-              dark:    "var(--ruic-sidebar-item-active-bg-dark, #252525)",
-            },
-          },
+          bg: t("sidebar-bg"),
+          item: { active: t("sidebar-item-active-bg") },
           badge: {
-            active: {
-              DEFAULT: "var(--ruic-sidebar-badge-active-bg, #f3f4f6)",
-              dark:    "var(--ruic-sidebar-badge-active-bg-dark, #333333)",
-            },
+            active: t("sidebar-badge-active-bg"),
+            inactive: t("sidebar-badge-inactive-bg"),
           },
         },
 
         // ─── Component: Table ────────────────────────────────────────────────
         table: {
           header: {
-            DEFAULT:                "var(--ruic-table-header-bg, #f3f4f6)",
-            dark:                   "var(--ruic-table-header-bg-dark, #202020)",
-            "toggle-bg":            "var(--ruic-table-header-toggle-bg, #e5e7eb)",
-            "toggle-bg-dark":       "var(--ruic-table-header-toggle-bg-dark, #111111)",
-            "toggle-active-bg":     "var(--ruic-table-header-toggle-active-bg, #ffffff)",
-            "toggle-active-bg-dark":"var(--ruic-table-header-toggle-active-bg-dark, #444444)",
+            DEFAULT: t("table-header-bg"),
+            "toggle-bg": t("table-header-toggle-bg"),
+            "toggle-active-bg": t("table-header-toggle-active-bg"),
           },
           row: {
-            DEFAULT:    "var(--ruic-table-row-bg, #f9fafb)",
-            dark:       "var(--ruic-table-row-bg-dark, #181818)",
-            hover:      "var(--ruic-table-row-hover-bg, #f3f4f6)",
-            "hover-dark": "var(--ruic-table-row-hover-bg-dark, #202020)",
+            DEFAULT: t("table-row-bg"),
+            hover: t("table-row-hover-bg"),
           },
         },
 
         // ─── Component: StatCard ─────────────────────────────────────────────
         statcard: {
-          bg: {
-            DEFAULT: "var(--ruic-statcard-bg, #f3f4f6)",
-            dark:    "var(--ruic-statcard-bg-dark, #181818)",
-          },
-          "icon-bg": {
-            DEFAULT: "var(--ruic-statcard-icon-bg, #f9fafb)",
-            dark:    "var(--ruic-statcard-icon-bg-dark, #252525)",
-          },
+          bg: t("statcard-bg"),
+          "icon-bg": t("statcard-icon-bg"),
         },
 
-        // ─── Component: DashboardHeader ────────────────────────
+        // ─── Component: DashboardHeader ──────────────────────────────────────
         browser: {
-          header: {
-            DEFAULT: "var(--ruic-browser-header-bg, #ffffff)",
-            dark:    "var(--ruic-browser-header-bg-dark, #1e1e1e)",
-          },
+          header: t("browser-header-bg"),
         },
+      },
+
+      // ─── Shape ────────────────────────────────────────────────────────────
+      // Overrides Tailwind's own steps on purpose: containers are `lg`, controls
+      // and overlays `md`, pills `full`. One decision instead of one per file.
+      borderRadius: RADIUS,
+
+      // ─── Motion ───────────────────────────────────────────────────────────
+      transitionDuration: DURATION,
+
+      // ─── Layering ─────────────────────────────────────────────────────────
+      // One scale for the whole library, so a dropdown can never end up behind
+      // the bottom nav just because it was declared earlier in the DOM.
+      zIndex: {
+        sticky: "10",
+        header: "30",
+        bottomnav: "40",
+        dropdown: "50",
+        overlay: "60",
+        modal: "70",
       },
 
       // ─── Shadows ──────────────────────────────────────────────────────────
       boxShadow: {
-        "glow-accent":   "0 0 15px rgb(var(--ruic-primary, 229 77 13) / 0.3)",
-        "glow-success":  "0 0 12px rgba(34, 197, 94, 0.4)",
-        premium:         "0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05)",
-        "premium-hover": "0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)",
+        "glow-accent": `0 0 15px ${t("primary").replace("<alpha-value>", "0.3")}`,
+        // Derived from the token, not a fixed green: the literal it replaced
+        // was not even the success colour, and it stayed the same in dark mode
+        // while everything around it changed.
+        "glow-success": `0 0 12px ${t("success")}`,
+        // The one shadow that points upwards, for a bar docked to the bottom.
+        "nav-top": "0 -4px 12px rgb(0 0 0 / 0.05)",
+        premium:
+          "0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05)",
+        "premium-hover":
+          "0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1)",
       },
 
       // ─── Animations ───────────────────────────────────────────────────────
       animation: {
         "pulse-soft": "pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "fade-in":    "fade-in 0.4s ease-out forwards",
+        "fade-in": "fade-in 0.4s ease-out forwards",
         "pulse-glow": "pulse-glow 2s infinite",
+        "slide-in-from-top": "slide-in-from-top 0.2s ease-out forwards",
+        "slide-in-from-bottom": "slide-in-from-bottom 0.3s ease-out forwards",
       },
       keyframes: {
         "pulse-soft": {
           "0%, 100%": { opacity: 1 },
-          "50%":      { opacity: 0.7 },
+          "50%": { opacity: 0.7 },
         },
         "fade-in": {
-          "0%":   { opacity: 0, transform: "translateY(8px)" },
+          "0%": { opacity: 0, transform: "translateY(8px)" },
           "100%": { opacity: 1, transform: "translateY(0)" },
         },
         "pulse-glow": {
           "0%, 100%": { opacity: 1, transform: "scale(1)" },
-          "50%":      { opacity: 0.7, transform: "scale(1.1)" },
+          "50%": { opacity: 0.7, transform: "scale(1.1)" },
+        },
+        "slide-in-from-top": {
+          "0%": { opacity: 0, transform: "translateY(-8px)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
+        },
+        "slide-in-from-bottom": {
+          "0%": { opacity: 0, transform: "translateY(100%)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
         },
       },
     },
   },
   plugins: [
-    function({ addUtilities }) {
+    function ({ addBase, addUtilities }) {
+      // The token declarations themselves. Emitting them here rather than
+      // shipping a stylesheet keeps the package CSS-free: the consumer's own
+      // Tailwind build produces them, so there is no import step to forget.
+      addBase(baseDeclarations());
+
       addUtilities({
-        '.scrollbar-none': {
-          '-ms-overflow-style': 'none',
-          'scrollbar-width': 'none',
-          '&::-webkit-scrollbar': {
-            display: 'none',
+        ".scrollbar-none": {
+          "-ms-overflow-style": "none",
+          "scrollbar-width": "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
           },
+        },
+        // Animations are decoration; honour the OS setting in one place instead
+        // of prefixing every usage with motion-safe:.
+        "@media (prefers-reduced-motion: reduce)": {
+          ".animate-pulse-soft, .animate-fade-in, .animate-pulse-glow, .animate-slide-in-from-top, .animate-slide-in-from-bottom":
+            {
+              animation: "none",
+              opacity: "1",
+              transform: "none",
+            },
         },
       });
     },
