@@ -17,16 +17,36 @@ export interface UseTreeExpansionOptions<T> {
 
 export interface UseTreeExpansionResult {
     expandedKeys: Set<string | number>;
-    /** True when every expandable node is open — drives the header chevron. */
+    /** True when every expandable node on this page is open — drives the header chevron. */
     allExpanded: boolean;
     toggleRow: (key: string | number) => void;
     toggleAll: () => void;
 }
 
 export function useTreeExpansion<T>({ data, visibleRows, getChildren, getKey, defaultExpanded }: UseTreeExpansionOptions<T>): UseTreeExpansionResult {
+    const initialKeys = () => collectExpandableKeys(data, getChildren, getKey);
+
     const [expandedKeys, setExpandedKeys] = useState<Set<string | number>>(
-        () => defaultExpanded ? new Set(collectExpandableKeys(data, getChildren, getKey)) : new Set(),
+        () => defaultExpanded ? new Set(initialKeys()) : new Set(),
     );
+
+    // Which nodes this hook has already made a decision about. Without it,
+    // defaultExpanded could only act at mount — data arriving later (a websocket
+    // update, a finished request) would stay collapsed.
+    const [knownKeys, setKnownKeys] = useState<Set<string | number>>(() => new Set(initialKeys()));
+    const [seenData, setSeenData] = useState(data);
+
+    if (data !== seenData) {
+        setSeenData(data);
+        const current = collectExpandableKeys(data, getChildren, getKey);
+        const fresh = current.filter((key) => !knownKeys.has(key));
+        setKnownKeys(new Set(current));
+        // Only genuinely new nodes are opened. Re-expanding everything would
+        // undo what the user just collapsed on the next data update.
+        if (defaultExpanded && fresh.length > 0) {
+            setExpandedKeys((prev) => new Set([...prev, ...fresh]));
+        }
+    }
 
     const expandableKeys = useMemo(
         () => collectExpandableKeys(visibleRows ?? data, getChildren, getKey),
@@ -38,7 +58,12 @@ export function useTreeExpansion<T>({ data, visibleRows, getChildren, getKey, de
     const toggleAll = useCallback(() => {
         setExpandedKeys((prev) => {
             const everyOpen = expandableKeys.length > 0 && expandableKeys.every((k) => prev.has(k));
-            return everyOpen ? new Set() : new Set(expandableKeys);
+            if (everyOpen) {
+                const next = new Set(prev);
+                for (const key of expandableKeys) next.delete(key);
+                return next;
+            }
+            return new Set([...prev, ...expandableKeys]);
         });
     }, [expandableKeys]);
 
