@@ -3,6 +3,7 @@ export * from "./data/useDataView";
 export * from "./data/sorting";
 export * from "./data/useSortColumns";
 export * from "./data/SortIcon";
+export * from "./data/pipeline";
 export * from "./data/tree";
 export * from "./data/useTreeExpansion";
 export * from "./data/DataViewFrame";

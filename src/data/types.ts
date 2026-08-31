@@ -51,3 +51,9 @@ export interface SortEntry {
     colIndex: number;
     direction: 'asc' | 'desc';
 }
+
+/** One-based, matching what the pagination bar shows. */
+export interface PaginationState {
+    page: number;
+    pageSize: number;
+}
