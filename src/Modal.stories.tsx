@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Modal, type ModalSize } from './Modal';
-import { ConfirmDialog } from './ConfirmDialog';
 import { Button } from './Button';
 import { Input } from './Input';
 import { Textarea } from './Textarea';
@@ -113,30 +112,3 @@ const InteractiveDemo = () => {
 
 /** Tab through it: focus starts inside, never leaves, and comes back on close. */
 export const Interactive: Story = { render: () => <InteractiveDemo /> };
-
-const ConfirmDemo = () => {
-    const [open, setOpen] = useState(false);
-    const [busy, setBusy] = useState(false);
-
-    return (
-        <>
-            <Button variant="danger" onClick={() => setOpen(true)}>Delete client</Button>
-            <ConfirmDialog
-                isOpen={open}
-                onClose={() => setOpen(false)}
-                onConfirm={() => {
-                    setBusy(true);
-                    setTimeout(() => { setBusy(false); setOpen(false); }, 1200);
-                }}
-                title="Delete pbs-node-01?"
-                description="The client and its 4 jobs are removed. Snapshots are kept."
-                confirmLabel="Delete"
-                variant="danger"
-                isConfirming={busy}
-            />
-        </>
-    );
-};
-
-/** The narrow case, and the one consumers kept rebuilding by hand. */
-export const Confirm: Story = { render: () => <ConfirmDemo /> };
