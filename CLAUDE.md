@@ -131,6 +131,22 @@ view skips all three stages and the caller supplies `totalItems`.
 Counts always come from the stage *after* filtering and *before* slicing, which
 is why filtering belongs inside the view rather than in front of it.
 
+**Everything a mouse can do in a data view, a keyboard can do too.** A sortable
+column header is a `<button>` inside the `<th>`, and the `<th>` carries
+`aria-sort` — a click handler on the `<th>` itself is not reachable by Tab and
+announces nothing. Shift is what makes a sort additive, from `Shift+click` and
+`Shift+Enter` alike, which is why `handleSortClick` takes a `SortActivation`
+(`{ shiftKey }`) rather than a `MouseEvent`. The tree chevrons are buttons with
+`aria-expanded`; a leaf renders an inert span, not a disabled button, so it does
+not appear in the accessibility tree saying nothing.
+
+`onRowClick` comes from `useDataView`'s `rowActivationProps(item)`, spread onto
+the row — once, for all three views. It makes the row focusable and fires on
+Enter or Space, and it ignores both clicks and keystrokes that started on a
+control *inside* the row: a row action, a link, a checkbox in a cell. The row
+deliberately keeps its `row` role instead of taking `role="button"`, which would
+cost the reader the column a cell belongs to.
+
 ### Theming (three tiers)
 
 1. **CSS variables** — override in `:root` / `.dark` for global theme changes
@@ -154,6 +170,14 @@ Three habits worth keeping:
   above. It is not decoration: it has already caught a stale `-dark` class that
   a codemod missed, a `root` slot reintroduced in a new component, and a prop
   that was declared but no longer read. Extend it when you add a rule.
+
+  It also greps for interaction: a `div`, `span`, `th`, `tr`, `td` or `li` with
+  an `onClick` and no keyboard path fails the run. An element is genuinely
+  mouse-only only when the same action is already on the keyboard elsewhere —
+  a backdrop whose dialog closes on Escape. Say so with a
+  `// conventions: mouse-only — <reason>` comment on the element; there are two,
+  in `Modal` and `MobileMoreSheet`. And no colour literal may appear in `src/`
+  or in `tailwind-preset.js`, beyond a neutral black or white shadow.
 
 ### Release
 

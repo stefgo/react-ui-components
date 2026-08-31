@@ -493,6 +493,25 @@ Both follow the state convention. `storageKey` persists the choice **while
 uncontrolled** — it is the default of that variant, not a second mode; a
 controlled caller decides for itself.
 
+#### Keyboard and screen readers
+
+Sorting and expansion are not mouse-only:
+
+| Action | Mouse | Keyboard |
+| --- | --- | --- |
+| Sort by a column | click the header | `Enter` / `Space` on the header button |
+| Add a column to the sort | `Shift`+click | `Shift`+`Enter` |
+| Expand or collapse a tree row | click the chevron | `Enter` on the chevron button |
+| Expand or collapse everything | click the header chevron | `Enter` on it |
+| `onRowClick` | click the row | `Enter` / `Space` on the focused row |
+
+A sortable `<th>` carries `aria-sort`, the chevrons carry `aria-expanded`, and a
+row with `onRowClick` is focusable. Clicks and keystrokes that start on a control
+*inside* a row — a `DataAction` menu, a link, a checkbox in a cell — belong to
+that control and no longer fire `onRowClick` as well.
+
+New `classNames` slot on both tables: `sortButton`, for the header's button.
+
 #### `DataMultiView<T>`
 
 Switches between table, list and tree view.

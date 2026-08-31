@@ -57,6 +57,8 @@ export const MobileMoreSheet = ({
     return (
         <div
             className={cn("md:hidden fixed inset-0 z-overlay bg-overlay backdrop-blur-sm animate-fade-in", classNames?.overlay)}
+            // conventions: mouse-only — tapping the backdrop is a shortcut;
+            // useMenuBehavior closes the sheet on Escape.
             onClick={onClose}
         >
             <div

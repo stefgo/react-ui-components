@@ -89,6 +89,8 @@ export const Modal = ({
                 "fixed inset-0 z-modal bg-overlay backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in",
                 classNames?.overlay
             )}
+            // conventions: mouse-only — the backdrop is a shortcut for the ×
+            // button, and useMenuBehavior closes the dialog on Escape.
             onClick={closeOnOverlayClick ? onClose : undefined}
         >
             <div
