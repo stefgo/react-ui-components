@@ -17,12 +17,17 @@ npm run lint            # tsc --noEmit + eslint
 npm test                # vitest (jsdom), pure logic + component behaviour
 npm run tokens:build    # regenerate src/index.css from tokens.js
 npm run tokens:check    # fails if it is stale
+npx commitlint --from origin/main --to HEAD   # the commit messages CI will check
 ```
+
+Node 22 (`.nvmrc`) — both workflows read that file, so there is one version, not two.
 
 Storybook has a **side-by-side** theme mode that renders a story in light and
 dark at once. Judge colour changes there, never in a consumer.
 
-CI runs lint, test and build before `semantic-release`.
+`.github/workflows/ci.yml` runs commitlint, `tokens:check`, lint, test, build and
+Storybook — on every pull request, and again via `workflow_call` from the release
+workflow. The checks live in one file so the two paths cannot drift apart.
 
 ## Architecture
 
@@ -187,4 +192,26 @@ Three habits worth keeping:
 
 ### Release
 
-`semantic-release` publishes automatically on push to `main`. Commit messages must follow Conventional Commits (`feat:`, `fix:`, `BREAKING CHANGE:`) to trigger version bumps and CHANGELOG updates. The `dev` branch is for development; PRs merge to `dev` → `main`.
+`semantic-release` publishes automatically from two branches: `main` gives a stable
+release, `dev` gives a prerelease on the `beta` dist-tag (`3.0.0-beta.1`, installed
+with `npm i @stefgo/react-ui-components@beta`). Breaking work goes to `dev` first so
+a consumer can migrate against a real published version instead of against `main`.
+PRs merge to `dev` → `main`.
+
+**The commit message is the only input the version comes from,** so it is checked
+like code: commitlint (`@commitlint/config-conventional`) fails a PR whose commits
+are not Conventional Commits. A `Fix:` instead of `fix:` produces no release at all
+and nothing else would go red. `subject-case` is deliberately off — the subjects are
+German and capitalise nouns; the *type* is what decides a release, not the spelling
+behind it.
+
+Two details worth keeping:
+
+- `concurrency: release-${{ github.ref }}` with `cancel-in-progress: false`. Two runs
+  at once would read the same last tag and compute the same next version; and a run
+  cancelled mid-flight leaves a tag without a publish.
+- `fetch-depth: 0` on both checkouts. semantic-release needs the full history and all
+  tags to find the last release, and commitlint needs the PR's commit range.
+
+The release job has no build step of its own — `prepublishOnly` builds the tarball,
+and the `checks` job already built once as a check.

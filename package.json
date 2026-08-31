@@ -10,6 +10,9 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
+  "engines": {
+    "node": ">=22"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -55,6 +58,8 @@
     "tailwindcss": "^3.4.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.2",
     "@eslint/js": "^10.0.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
@@ -88,7 +93,11 @@
   },
   "release": {
     "branches": [
-      "main"
+      "main",
+      {
+        "name": "dev",
+        "prerelease": "beta"
+      }
     ],
     "plugins": [
       "@semantic-release/commit-analyzer",
@@ -105,6 +114,7 @@
         {
           "assets": [
             "package.json",
+            "package-lock.json",
             "CHANGELOG.md"
           ],
           "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
