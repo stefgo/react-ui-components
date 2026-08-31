@@ -58,11 +58,9 @@ module.exports = {
 
 ### 2. Global Styles
 
-Import the library's base styles in your main entry point (e.g., `main.tsx` or `App.tsx`):
-
-```tsx
-import "@stefgo/react-ui-components/dist/index.css";
-```
+The package ships no stylesheet — all styling comes from Tailwind via the preset
+above. The design tokens (`--ruic-*`) live in `src/index.css` of this repository;
+copy the `:root` block into your own global stylesheet to override brand colours.
 
 ---
 
@@ -277,10 +275,16 @@ Animated disclosure component.
 
 Standard pagination bar for data views.
 
+Rendered automatically by every data view that gets a `pagination` prop — you
+rarely need it directly.
+
 **Props:**
 
-- `currentPage`, `totalPages`, `totalItems`
+- `page` (1-based), `totalPages`, `pageSize`, `totalItems` — `-1` for an unknown total
 - `onPageChange`: (page) => void
+- `onPageSizeChange`: (size) => void
+- `pageSizeOptions`: number[] — default `[10, 20, 50]`
+- `hideOnSinglePage`: boolean — default `false`
 - `classNames`: `PaginationControlsClassNames` (`root`, `infoWrapper`, `select`, `pageInfo`, `controlsWrapper`, `button`, `pageText`)
 
 ---
@@ -308,9 +312,72 @@ The standard for dashboard data. It automatically switches between Table and Lis
 **Key Props:**
 
 - `tableDef`: Column definitions for the table.
-- `listDef`: Field definitions for the list.
-- `pagination`: Standard pagination object.
+- `listColumns`: Column definitions for the list view.
+- `pagination`: See [Pagination](#-pagination).
+- `searchable` / `searchFilter`: Built-in search; the filter runs inside the view,
+  so the page count always matches what is on screen.
 - `classNames`: `DataMultiViewClassNames` (includes sub-slots for `card`, `header`, `table`, `list`, `toggleRoot`, `toggleButton`)
+
+---
+
+### 🔢 Pagination
+
+Every data view (`DataTable`, `DataList`, `DataTreeTable`, `DataMultiView`) can
+page itself. **Pass the complete data set** — the view filters, sorts and *then*
+takes the current page, which is the only order that sorts the whole table
+rather than the rows that happen to be on screen.
+
+```tsx
+<DataTable data={rows} itemDef={cols} keyField="id" pagination />
+```
+
+Defaults: page 1, 10 rows per page, options `[10, 20, 50]`.
+
+**Configured:**
+
+```tsx
+pagination={{ defaultValue: { pageSize: 25 }, pageSizeOptions: [25, 50, 100] }}
+```
+
+**State held outside** (URL sync, reset from elsewhere) — `value` + `onChange`:
+
+```tsx
+const page = usePagination({ pageSize: 25 });
+<DataTable data={rows} pagination={{ ...page.props }} />
+```
+
+**Server-side paging** — `data` is already the current page, so the view neither
+sorts nor slices, and the total has to be supplied (`-1` if unknown):
+
+```tsx
+pagination={{
+    mode: 'server',
+    value: { page, pageSize },
+    onChange: fetchPage,
+    totalItems: total,
+}}
+```
+
+**Options**
+
+| Prop | Default | Meaning |
+| --- | --- | --- |
+| `mode` | `'client'` | `'server'` when `data` is already one page |
+| `value` / `onChange` | — | hold the state outside the view |
+| `defaultValue` | `{ page: 1, pageSize: 10 }` | starting values while the view holds it |
+| `pageSizeOptions` | `[10, 20, 50]` | choices in the dropdown |
+| `totalItems` | — | required for `mode: 'server'`; `-1` = unknown |
+| `hideOnSinglePage` | `false` | hide the bar while everything fits on one page |
+| `autoResetPage` | `true` | back to page 1 when `data` or `filterKey` changes |
+
+**Filtering.** Pass `filter` (a predicate) together with `filterKey` (a stable
+value identifying it, typically the search query). The filter runs before the
+count, so the numbers in the bar always describe the rows on screen.
+`DataMultiView` wires both up for you from `searchFilter`.
+
+**Trees.** `DataTreeTable` pages its **root nodes**: `totalItems` counts roots,
+and the children of the roots on a page are shown along with them. Counting
+rendered rows instead would make a page's length depend on what is expanded.
 
 ---
 
