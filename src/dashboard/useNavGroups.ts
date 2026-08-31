@@ -1,4 +1,4 @@
-import { useMemo, createElement } from 'react';
+import { useMemo } from 'react';
 import type { SidebarGroup } from '../Sidebar';
 import type { DashboardNavGroup, DashboardPage } from './types';
 
@@ -13,7 +13,6 @@ export type NavScope = 'all' | 'primary' | 'mobile-more';
 
 interface UseNavGroupsOptions {
     scope: NavScope;
-    iconSize: number;
     activeId: string | null;
     /** Runs after an entry's own onClick, e.g. to close the sheet. */
     onNavigate?: () => void;
@@ -36,7 +35,7 @@ const inScope = (page: DashboardPage, scope: NavScope) => {
 export const useNavGroups = (
     pages: DashboardPage[] | undefined,
     navGroups: DashboardNavGroup[] | undefined,
-    { scope, iconSize, activeId, onNavigate }: UseNavGroupsOptions
+    { scope, activeId, onNavigate }: UseNavGroupsOptions
 ): SidebarGroup[] => useMemo(() => {
     if (!pages) return [];
 
@@ -45,7 +44,7 @@ export const useNavGroups = (
     const toItems = (groupPages: DashboardPage[]) => groupPages.map(p => ({
         id: p.id,
         label: p.nav!.label,
-        icon: createElement(p.nav!.icon, { size: iconSize }),
+        icon: p.nav!.icon,
         active: p.id === activeId,
         badge: p.nav!.badge,
         badgeDot: p.nav!.badgeDot,
@@ -67,4 +66,4 @@ export const useNavGroups = (
     // An empty surface returns no groups at all, so callers can test length.
     if (relevant.length === 0) return [];
     return [{ title: undefined, items: toItems(relevant) }];
-}, [pages, navGroups, scope, iconSize, activeId, onNavigate]);
+}, [pages, navGroups, scope, activeId, onNavigate]);

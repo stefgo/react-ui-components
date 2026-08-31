@@ -2,7 +2,6 @@ import { ReactNode } from "react";
 import { cn } from './utils';
 
 export interface DashboardLayoutClassNames {
-    root?: string;
     main?: string;
     contentContainer?: string;
 }
@@ -31,8 +30,7 @@ export const DashboardLayout = ({
     return (
         <div className={cn(
             "h-screen overflow-hidden bg-app-bg text-text-primary font-sans flex flex-col transition-colors duration-slow",
-            className,
-            classNames?.root
+            className
         )}>
             {header}
 

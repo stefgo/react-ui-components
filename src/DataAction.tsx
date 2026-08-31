@@ -1,22 +1,21 @@
 import * as React from 'react';
 import { MoreVertical } from 'lucide-react';
 import { ActionButton, ActionButtonColor, ActionButtonClassNames } from './ActionButton';
-import { ActionMenu, ActionMenuClassNames } from './ActionMenu';
+import { ActionMenu } from './ActionMenu';
 import { useActionMenu } from './hooks/useActionMenu';
+import { ICON_SIZE, type IconComponent } from './types';
 import { cn } from './utils';
 
 export interface DataActionClassNames {
-    root?: string;
     actionButton?: ActionButtonClassNames;
     menuTrigger?: ActionButtonClassNames;
-    menu?: ActionMenuClassNames;
     menuItem?: string;
     menuItemActive?: string;
     menuItemDisabled?: string;
 }
 
 export interface DataTableActionItem {
-    icon: React.ComponentType<{ size?: number; className?: string }>;
+    icon: IconComponent;
     onClick: (e: React.MouseEvent) => void;
     color?: ActionButtonColor;
     tooltip?: string | { enabled: string; disabled: string };
@@ -26,7 +25,7 @@ export interface DataTableActionItem {
 
 export interface DataTableActionMenuEntry {
     label: string | { enabled: string; disabled: string };
-    icon: React.ComponentType<{ size?: number; className?: string }>;
+    icon: IconComponent;
     onClick: () => void;
     disabled?: boolean;
     disabledTitle?: string;
@@ -59,7 +58,7 @@ export const DataAction = <TId extends string | number>({
     const isMenuOpen = menuState?.id === rowId;
 
     return (
-        <div className={cn("flex justify-end gap-2 items-center", className, classNames?.root)}>
+        <div className={cn("flex justify-end gap-2 items-center", className)}>
             {actions.map((action, index) => (
                 <ActionButton
                     key={index}
@@ -91,7 +90,6 @@ export const DataAction = <TId extends string | number>({
                         onClose={closeMenu}
                         position={menuState || { x: 0, y: 0, top: 0 }}
                         triggerRef={triggerRef}
-                        classNames={classNames?.menu}
                     >
                         {menuEntries.map((entry, index) => {
                             const isDanger = entry.variant === 'danger';
@@ -127,7 +125,7 @@ export const DataAction = <TId extends string | number>({
                                     )}
                                     title={isDisabled ? (entry.disabledTitle ?? labelText) : labelText}
                                 >
-                                    <entry.icon size={14} />
+                                    <entry.icon size={ICON_SIZE.sm} aria-hidden />
                                     {labelText}
                                 </button>
                             );

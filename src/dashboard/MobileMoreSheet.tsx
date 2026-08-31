@@ -1,8 +1,12 @@
 import { ReactNode, useId } from 'react';
 import { X, Shield } from 'lucide-react';
 import type { SidebarGroup } from '../Sidebar';
+import type { IconComponent } from '../types';
 import { useMenuBehavior } from '../hooks/useMenuBehavior';
 import { cn } from '../utils';
+
+/** Edge length of every icon in the sheet — touch-sized, matching the bottom nav. */
+const SHEET_ICON_SIZE = 24;
 
 export interface MobileMoreSheetClassNames {
     overlay?: string;
@@ -20,7 +24,7 @@ interface MobileMoreSheetProps {
     onClose: () => void;
     groups: SidebarGroup[];
     title?: ReactNode;
-    icon?: ReactNode;
+    icon?: IconComponent;
     closeLabel?: string;
     classNames?: MobileMoreSheetClassNames;
 }
@@ -35,7 +39,7 @@ export const MobileMoreSheet = ({
     onClose,
     groups,
     title = 'More',
-    icon,
+    icon: Icon = Shield,
     closeLabel = 'Close menu',
     classNames
 }: MobileMoreSheetProps) => {
@@ -70,7 +74,7 @@ export const MobileMoreSheet = ({
             >
                 <div className={cn("flex justify-between items-center mb-6 sticky top-0 bg-card z-sticky py-2", classNames?.header)}>
                     <h2 id={titleId} className={cn("text-xl font-bold text-text-primary flex items-center gap-2", classNames?.title)}>
-                        <span aria-hidden="true">{icon ?? <Shield className="text-text-muted" size={24} />}</span>
+                        <Icon className="text-text-muted" size={SHEET_ICON_SIZE} aria-hidden />
                         {title}
                     </h2>
                     <button
@@ -96,7 +100,7 @@ export const MobileMoreSheet = ({
                                 </div>
                             )}
                             <div className="grid grid-cols-1 gap-2">
-                                {group.items.map((item) => (
+                                {group.items.map(({ icon: ItemIcon, ...item }) => (
                                     <button
                                         key={item.id}
                                         type="button"
@@ -112,9 +116,11 @@ export const MobileMoreSheet = ({
                                             item.active ? classNames?.itemActive : ''
                                         )}
                                     >
-                                        <span className={cn(item.active ? "text-primary" : "")} aria-hidden="true">
-                                            {item.icon}
-                                        </span>
+                                        <ItemIcon
+                                            size={SHEET_ICON_SIZE}
+                                            className={cn(item.active ? "text-primary" : "")}
+                                            aria-hidden
+                                        />
                                         <span className="font-semibold text-lg flex-1">{item.label}</span>
                                         {item.badge && (
                                             <span className={cn(

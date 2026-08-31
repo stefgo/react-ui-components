@@ -36,7 +36,7 @@ export interface DataTableProps<T> extends BaseDataViewProps<T> {
 }
 
 export const DataTable = <T,>(props: DataTableProps<T>) => {
-    const { itemDef, defaultSort, sortStorageKey, onRowClick, classNames, containerClassName } = props;
+    const { itemDef, defaultSort, sortStorageKey, onRowClick, classNames, className } = props;
 
     const { sortColumns, comparator, handleSortClick } = useSortColumns({
         itemDef,
@@ -48,7 +48,7 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
     const { rows, placeholder, getKey, getRowClass, interactionClasses, pagination } = useDataView(props, comparator);
 
     return (
-        <DataViewFrame containerClassName={containerClassName} classNames={classNames} pagination={pagination}>
+        <DataViewFrame className={className} classNames={classNames} pagination={pagination}>
             <div className="overflow-x-auto h-full w-full">
                 <table className={cn("w-full text-left border-collapse", classNames?.table)}>
                     <thead className={cn("sticky top-0 bg-table-header z-sticky", classNames?.thead)}>

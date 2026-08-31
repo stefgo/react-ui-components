@@ -2,7 +2,6 @@ import { Sun, Moon } from 'lucide-react';
 import { cn } from './utils';
 
 export interface ThemeToggleClassNames {
-    root?: string;
     icon?: string;
 }
 
@@ -28,8 +27,7 @@ export const ThemeToggle = ({
             className={cn(
                 "p-2 flex items-center justify-center rounded-md text-text-muted hover:text-text-primary hover:bg-hover transition-colors",
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
-                className,
-                classNames?.root
+                className
             )}
             title={label}
             aria-label={label}

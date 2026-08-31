@@ -5,7 +5,7 @@ import { PaginationView } from './useDataView';
 import { cn } from '../utils';
 
 interface DataViewFrameProps {
-    containerClassName?: string;
+    className?: string;
     classNames?: DataViewClassNames;
     pagination: PaginationView | null;
     children: ReactNode;
@@ -15,11 +15,10 @@ interface DataViewFrameProps {
  * The shell every data view sits in: bordered card, scrollable content area and
  * the pagination bar pinned underneath it.
  */
-export const DataViewFrame = ({ containerClassName = '', classNames, pagination, children }: DataViewFrameProps) => (
+export const DataViewFrame = ({ className = '', classNames, pagination, children }: DataViewFrameProps) => (
     <div className={cn(
         "bg-table-row border border-card overflow-hidden shadow-lg flex flex-col h-full",
-        containerClassName,
-        classNames?.root,
+        className
     )}>
         <div className={cn("flex-1 overflow-y-auto min-h-0", classNames?.contentWrapper)}>
             {children}

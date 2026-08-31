@@ -6,18 +6,18 @@ const groups: SidebarGroup[] = [
     {
         title: 'Resources',
         items: [
-            { id: 'clients', label: 'Clients', icon: <Monitor size={18} />, badge: '9 / 12', active: true, onClick: () => {} },
-            { id: 'jobs', label: 'Jobs', icon: <HardDrive size={18} />, badge: '24 / 48', onClick: () => {} },
-            { id: 'repos', label: 'Repositories', icon: <Server size={18} />, badgeDot: true, onClick: () => {} },
-            { id: 'history', label: 'History', icon: <Activity size={18} />, onClick: () => {} },
+            { id: 'clients', label: 'Clients', icon: Monitor, badge: '9 / 12', active: true, onClick: () => {} },
+            { id: 'jobs', label: 'Jobs', icon: HardDrive, badge: '24 / 48', onClick: () => {} },
+            { id: 'repos', label: 'Repositories', icon: Server, badgeDot: true, onClick: () => {} },
+            { id: 'history', label: 'History', icon: Activity, onClick: () => {} },
         ],
     },
     {
         title: 'Administration',
         items: [
-            { id: 'users', label: 'Users', icon: <Users size={18} />, onClick: () => {} },
-            { id: 'tokens', label: 'Client Tokens', icon: <Key size={18} />, onClick: () => {} },
-            { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => {} },
+            { id: 'users', label: 'Users', icon: Users, onClick: () => {} },
+            { id: 'tokens', label: 'Client Tokens', icon: Key, onClick: () => {} },
+            { id: 'settings', label: 'Settings', icon: Settings, onClick: () => {} },
         ],
     },
 ];

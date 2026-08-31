@@ -1,16 +1,18 @@
-import { ReactNode } from 'react';
+import type { IconComponent } from './types';
 import { cn } from './utils';
+
+/** Edge length of a bottom-nav icon — larger than the sidebar's, it is a touch target. */
+const BOTTOM_NAV_ICON_SIZE = 24;
 
 export interface BottomNavItem {
     id: string;
-    icon: ReactNode;
+    icon: IconComponent;
     label?: string;
     active: boolean;
     onClick: () => void;
 }
 
 export interface BottomNavClassNames {
-    root?: string;
     item?: string;
     itemActive?: string;
     itemInactive?: string;
@@ -24,7 +26,7 @@ interface BottomNavProps {
     classNames?: BottomNavClassNames;
 }
 
-const NavTab = ({ icon, label, active, onClick, classNames }: BottomNavItem & { classNames?: BottomNavClassNames }) => (
+const NavTab = ({ icon: Icon, label, active, onClick, classNames }: BottomNavItem & { classNames?: BottomNavClassNames }) => (
     <button
         type="button"
         onClick={onClick}
@@ -39,7 +41,7 @@ const NavTab = ({ icon, label, active, onClick, classNames }: BottomNavItem & { 
             active ? classNames?.itemActive : classNames?.itemInactive
         )}
     >
-        <span aria-hidden="true">{icon}</span>
+        <Icon size={BOTTOM_NAV_ICON_SIZE} aria-hidden />
     </button>
 );
 
@@ -49,8 +51,7 @@ export const BottomNav = ({ items, ariaLabel = "Main", className = "", className
             aria-label={ariaLabel}
             className={cn(
                 "md:hidden fixed bottom-0 left-0 right-0 bg-sidebar-bg/95 backdrop-blur-md border-t border-border z-bottomnav flex justify-around items-center px-2 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.05)]",
-                className,
-                classNames?.root
+                className
             )}
         >
             {items.map((item) => (

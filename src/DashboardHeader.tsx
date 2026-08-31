@@ -3,7 +3,6 @@ import { Menu } from 'lucide-react';
 import { cn } from './utils';
 
 export interface DashboardHeaderClassNames {
-    root?: string;
     leftSection?: string;
     rightSection?: string;
     branding?: string;
@@ -56,8 +55,7 @@ export const DashboardHeader = ({
     return (
         <header className={cn(
             "px-5 py-3 border-b border-border bg-browser-header sticky top-0 z-header shadow-sm flex items-center justify-between",
-            className,
-            classNames?.root
+            className
         )}>
             <div className={cn("flex items-center gap-3 overflow-hidden", classNames?.leftSection)}>
                 {showSidebarToggle && onToggleSidebar && (

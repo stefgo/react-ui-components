@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { PaginationControlsClassNames } from '../PaginationControls';
 
 export interface DataViewClassNames {
-    root?: string;
     contentWrapper?: string;
     paginationWrapper?: string;
     pagination?: PaginationControlsClassNames;
@@ -69,7 +68,7 @@ export interface BaseDataViewProps<T> {
     /** Shown when a filter removed everything. Falls back to `emptyMessage`. */
     noResultsMessage?: ReactNode;
     loadingMessage?: ReactNode;
-    containerClassName?: string;
+    className?: string;
     rowClassName?: string | ((item: T) => string);
     onRowClick?: (item: T) => void;
 

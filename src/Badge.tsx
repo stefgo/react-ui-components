@@ -1,16 +1,12 @@
 import { ReactNode, Ref } from 'react';
+import type { ControlSize } from './types';
 import { cn } from './utils';
-
-export interface BadgeClassNames {
-    root?: string;
-}
 
 interface BadgeProps {
     children: ReactNode;
     variant?: 'success' | 'warning' | 'error' | 'info' | 'neutral';
-    size?: 'sm' | 'md';
+    size?: ControlSize;
     className?: string;
-    classNames?: BadgeClassNames;
     ref?: Ref<HTMLSpanElement>;
 }
 
@@ -19,7 +15,6 @@ export const Badge = ({
     variant = 'info',
     size = 'md',
     className = '',
-    classNames,
     ref
 }: BadgeProps) => {
     const baseStyles = "inline-flex items-center font-medium rounded-full transition-colors";
@@ -34,11 +29,12 @@ export const Badge = ({
 
     const sizes = {
         sm: "px-2 py-0.5 text-[10px]",
-        md: "px-2.5 py-1 text-xs"
+        md: "px-2.5 py-1 text-xs",
+        lg: "px-3 py-1.5 text-sm"
     };
 
     return (
-        <span ref={ref} className={cn(baseStyles, variants[variant], sizes[size], className, classNames?.root)}>
+        <span ref={ref} className={cn(baseStyles, variants[variant], sizes[size], className)}>
             {children}
         </span>
     );

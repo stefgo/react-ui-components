@@ -19,9 +19,9 @@ export { useNavGroups } from "./dashboard/useNavGroups";
 export type { NavScope } from "./dashboard/useNavGroups";
 
 import type { DashboardNavGroup, DashboardPage } from "./dashboard/types";
+import type { IconComponent } from "./types";
 
 export interface DashboardClassNames {
-    root?: string;
     layout?: DashboardLayoutClassNames;
     header?: DashboardHeaderClassNames;
     sidebar?: SidebarClassNames;
@@ -33,7 +33,7 @@ export interface DashboardClassNames {
 }
 
 export interface MobileMoreConfig {
-    icon?: ReactNode;
+    icon?: IconComponent;
     title?: ReactNode;
 }
 
@@ -110,20 +110,17 @@ export const Dashboard = ({
 
     const sidebarGroups = useNavGroups(pages, navGroups, {
         scope: 'all',
-        iconSize: 18,
         activeId
     });
 
     const moreGroups = useNavGroups(pages, navGroups, {
         scope: 'mobile-more',
-        iconSize: 18,
         activeId,
         onNavigate: closeSheet
     });
 
     const primaryGroups = useNavGroups(pages, navGroups, {
         scope: 'primary',
-        iconSize: 24,
         activeId
     });
 
@@ -142,7 +139,7 @@ export const Dashboard = ({
             ...items,
             {
                 id: "more-menu-trigger",
-                icon: mobileMore?.icon ?? <Shield size={24} />,
+                icon: mobileMore?.icon ?? Shield,
                 label: typeof mobileMore?.title === 'string' ? mobileMore.title : "More",
                 active: isMoreSheetOpen,
                 onClick: () => setIsMoreSheetOpen(open => !open)
@@ -159,7 +156,7 @@ export const Dashboard = ({
 
     return (
         <DashboardLayout
-            className={cn(className, classNames?.root)}
+            className={className}
             mainClassName={mainClassName}
             contentContainerClassName={contentContainerClassName}
             classNames={classNames?.layout}

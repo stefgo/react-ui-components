@@ -1,3 +1,4 @@
+export * from "./types";
 export * from "./data/types";
 export * from "./data/useDataView";
 export * from "./data/sorting";

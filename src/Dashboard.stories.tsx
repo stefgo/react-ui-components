@@ -69,9 +69,9 @@ const FullShellDemo = (args: React.ComponentProps<typeof Dashboard>) => {
                 currentPath={path}
             >
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <StatCard label="Clients" value="12" sub="3 offline" icon={<Monitor size={20} />} />
-                    <StatCard label="Jobs" value="48" sub="Configurations" icon={<HardDrive size={20} />} />
-                    <StatCard label="Snapshots" value="1204" sub="Available" icon={<Server size={20} />} />
+                    <StatCard label="Clients" value="12" sub="3 offline" icon={Monitor} />
+                    <StatCard label="Jobs" value="48" sub="Configurations" icon={HardDrive} />
+                    <StatCard label="Snapshots" value="1204" sub="Available" icon={Server} />
                 </div>
                 <Card title={`Content for ${path}`}>
                     <div className="p-5 text-sm text-text-secondary dark:text-text-secondary-dark">

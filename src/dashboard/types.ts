@@ -1,5 +1,4 @@
-import { ComponentType } from 'react';
-import type { LucideProps } from 'lucide-react';
+import type { IconComponent } from '../types';
 
 export interface DashboardNavGroup {
     id: string;
@@ -8,8 +7,8 @@ export interface DashboardNavGroup {
 
 export interface DashboardPageNav {
     label: string;
-    /** Icon component, e.g. any icon exported by lucide-react. Rendered with a `size` prop. */
-    icon: ComponentType<LucideProps>;
+    /** Icon component, e.g. any icon exported by lucide-react. The surface picks its size. */
+    icon: IconComponent;
     badge?: string;
     /** Show a dot indicator when the sidebar is collapsed and the label is hidden. */
     badgeDot?: boolean;

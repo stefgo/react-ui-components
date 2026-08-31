@@ -1,8 +1,8 @@
 import { InputHTMLAttributes, ReactNode, forwardRef, useId } from 'react';
+import { ICON_SIZE, type IconComponent } from './types';
 import { cn } from './utils';
 
 export interface InputClassNames {
-    root?: string;
     label?: string;
     input?: string;
     inputWrapper?: string;
@@ -15,7 +15,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     hint?: ReactNode;
     error?: string;
-    icon?: ReactNode;
+    icon?: IconComponent;
     fullWidth?: boolean;
     classNames?: InputClassNames;
 }
@@ -24,7 +24,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
     label,
     hint,
     error,
-    icon,
+    icon: Icon,
     fullWidth = true,
     className = '',
     classNames,
@@ -45,7 +45,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
     ].filter(Boolean).join(' ') || undefined;
 
     return (
-        <div className={cn(fullWidth ? 'w-full' : '', className, classNames?.root)}>
+        <div className={cn(fullWidth ? 'w-full' : '', className)}>
             {label && (
                 <label
                     htmlFor={inputId}
@@ -55,9 +55,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
                 </label>
             )}
             <div className={cn("relative space-y-1", classNames?.inputWrapper)}>
-                {icon && (
+                {Icon && (
                     <div className={cn("absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-muted", classNames?.icon)} aria-hidden="true">
-                        {icon}
+                        <Icon size={ICON_SIZE.lg} />
                     </div>
                 )}
                 <input
@@ -67,7 +67,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
                     className={cn(
                         "block w-full bg-input-bg border",
                         error ? 'border-error' : 'border-input-border',
-                        icon ? 'pl-10' : 'pl-3',
+                        Icon ? 'pl-10' : 'pl-3',
                         "pr-3 py-2.5 rounded-md text-text-primary placeholder:text-text-muted",
                         "focus:outline-none focus:ring-2 focus:ring-primary",
                         "transition-all sm:text-sm",

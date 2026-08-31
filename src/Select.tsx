@@ -3,7 +3,6 @@ import { ChevronDown } from 'lucide-react';
 import { cn } from './utils';
 
 export interface SelectClassNames {
-    root?: string;
     label?: string;
     select?: string;
     selectWrapper?: string;
@@ -38,7 +37,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({
     ].filter(Boolean).join(' ') || undefined;
 
     return (
-        <div className={cn(fullWidth ? 'w-full' : '', className, classNames?.root)}>
+        <div className={cn(fullWidth ? 'w-full' : '', className)}>
             {label && (
                 <label
                     htmlFor={selectId}

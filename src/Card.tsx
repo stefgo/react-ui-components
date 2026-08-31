@@ -2,7 +2,6 @@ import { ReactNode, Ref } from 'react';
 import { cn } from './utils';
 
 export interface CardClassNames {
-    root?: string;
     header?: string;
     headerTitle?: string;
     headerAction?: string;
@@ -31,8 +30,7 @@ export const Card = ({ children, title, action, titleAs: TitleTag = 'h3', classN
             ref={ref}
             className={cn(
                 "bg-card overflow-hidden rounded-lg border border-border shadow-lg",
-                className,
-                classNames?.root
+                className
             )}
         >
             {showHeader && (

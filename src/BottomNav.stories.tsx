@@ -12,11 +12,11 @@ const meta = {
     },
     args: {
         items: [
-            { id: 'clients', label: 'Clients', icon: <Monitor size={24} />, active: true, onClick: () => {} },
-            { id: 'jobs', label: 'Jobs', icon: <HardDrive size={24} />, active: false, onClick: () => {} },
-            { id: 'repos', label: 'Repositories', icon: <Server size={24} />, active: false, onClick: () => {} },
-            { id: 'history', label: 'History', icon: <Activity size={24} />, active: false, onClick: () => {} },
-            { id: 'more', label: 'More', icon: <Shield size={24} />, active: false, onClick: () => {} },
+            { id: 'clients', label: 'Clients', icon: Monitor, active: true, onClick: () => {} },
+            { id: 'jobs', label: 'Jobs', icon: HardDrive, active: false, onClick: () => {} },
+            { id: 'repos', label: 'Repositories', icon: Server, active: false, onClick: () => {} },
+            { id: 'history', label: 'History', icon: Activity, active: false, onClick: () => {} },
+            { id: 'more', label: 'More', icon: Shield, active: false, onClick: () => {} },
         ],
     },
     decorators: [(Story) => <div className="h-64 relative">{Story()}</div>],

@@ -1,11 +1,13 @@
-import { ReactNode } from 'react';
+import type { IconComponent } from './types';
 import { cn } from './utils';
 
+/** Edge length of a sidebar icon. Fixed by the item layout, not a caller choice. */
+const SIDEBAR_ICON_SIZE = 18;
 
 export interface SidebarItem {
     id: string;
     label: string;
-    icon: ReactNode;
+    icon: IconComponent;
     badge?: string;
     badgeDot?: boolean; // If true, show a dot indicator when sidebar is collapsed
     active?: boolean;
@@ -18,7 +20,6 @@ export interface SidebarGroup {
 }
 
 export interface SidebarClassNames {
-    root?: string;
     content?: string;
     group?: string;
     groupTitle?: string;
@@ -43,7 +44,7 @@ interface SidebarProps {
 }
 
 const NavItem = ({
-    icon,
+    icon: Icon,
     label,
     active,
     onClick,
@@ -72,7 +73,7 @@ const NavItem = ({
     >
         <div className={cn("flex items-center gap-3", classNames?.itemContent)}>
             <div className={cn("flex-shrink-0 relative", classNames?.itemIcon)} aria-hidden="true">
-                {icon}
+                <Icon size={SIDEBAR_ICON_SIZE} />
                 {isCollapsed && badgeDot && (
                     <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-error" />
                 )}
@@ -107,8 +108,7 @@ export const Sidebar = ({
         <aside className={cn(
             isCollapsed ? "w-16" : "w-64",
             "h-full bg-sidebar-bg border-r border-border hidden md:flex flex-col transition-all duration-slow relative",
-            className,
-            classNames?.root
+            className
         )}>
             <nav
                 aria-label={ariaLabel}

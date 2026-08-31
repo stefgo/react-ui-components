@@ -8,7 +8,6 @@ import { BaseDataViewProps } from './data/types';
 import { cn } from './utils';
 
 export interface DataMultiViewClassNames {
-    root?: string;
     card?: CardClassNames;
     header?: CardClassNames;
     toggleRoot?: string;
@@ -180,7 +179,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         ...sharedProps,
         filter,
         filterKey: searchQuery,
-        containerClassName: "rounded-none border-0 shadow-none flex-1",
+        className: "rounded-none border-0 shadow-none flex-1",
         // The view underneath owns the whole pipeline now, pagination bar
         // included — one owner, so the row count and the page numbers cannot
         // disagree.
@@ -188,7 +187,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     };
 
     return (
-        <Card className={cn("overflow-hidden flex flex-col h-full", className, classNames?.root)} classNames={{ ...classNames?.card, ...classNames?.header, header: cn(classNames?.card?.header, classNames?.header?.header, searchable && 'border-b-0 pb-1') }} title={title} action={headerAction}>
+        <Card className={cn("overflow-hidden flex flex-col h-full", className)} classNames={{ ...classNames?.card, ...classNames?.header, header: cn(classNames?.card?.header, classNames?.header?.header, searchable && 'border-b-0 pb-1') }} title={title} action={headerAction}>
             {searchable && (
                 <div className={cn(
                     "px-4 py-2 border-b border-border bg-card-header",

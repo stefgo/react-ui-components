@@ -3,7 +3,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from './utils';
 
 export interface PaginationControlsClassNames {
-    root?: string;
     infoWrapper?: string;
     select?: string;
     pageInfo?: string;
@@ -49,8 +48,7 @@ export const PaginationControls = ({
 
     return (
         <div className={cn(
-            "flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-3 border-t border-border bg-table-header",
-            classNames?.root
+            "flex flex-col sm:flex-row items-center justify-between gap-4 px-5 py-3 border-t border-border bg-table-header"
         )}>
             <div className={cn("flex items-center gap-2 text-sm text-text-secondary", classNames?.infoWrapper)}>
                 <label htmlFor={selectId}>Rows per page:</label>

@@ -1,18 +1,18 @@
-import { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
+import { ButtonHTMLAttributes, Ref } from 'react';
 import { Loader2 } from 'lucide-react';
+import { ICON_SIZE, type ControlSize, type IconComponent } from './types';
 import { cn } from './utils';
 
 export interface ButtonClassNames {
-    root?: string;
     icon?: string;
     spinner?: string;
 }
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
-    size?: 'sm' | 'md' | 'lg';
+    size?: ControlSize;
     isLoading?: boolean;
-    icon?: ReactNode;
+    icon?: IconComponent;
     classNames?: ButtonClassNames;
     ref?: Ref<HTMLButtonElement>;
 }
@@ -22,7 +22,7 @@ export const Button = ({
     variant = 'primary',
     size = 'md',
     isLoading = false,
-    icon,
+    icon: Icon,
     className = '',
     classNames,
     disabled,
@@ -49,13 +49,15 @@ export const Button = ({
         <button
             ref={ref}
             type={type}
-            className={cn(baseStyles, variants[variant], sizes[size], className, classNames?.root)}
+            className={cn(baseStyles, variants[variant], sizes[size], className)}
             disabled={disabled || isLoading}
             aria-busy={isLoading || undefined}
             {...props}
         >
             {isLoading && <Loader2 className={cn("w-4 h-4 mr-2 animate-spin", classNames?.spinner)} aria-hidden="true" />}
-            {!isLoading && icon && <span className={cn("mr-2", classNames?.icon)} aria-hidden="true">{icon}</span>}
+            {!isLoading && Icon && (
+                <Icon size={ICON_SIZE[size]} className={cn("mr-2", classNames?.icon)} aria-hidden />
+            )}
             {children}
         </button>
     );

@@ -5,7 +5,7 @@ import { StatCard } from './StatCard';
 const meta = {
     title: 'Foundational/StatCard',
     component: StatCard,
-    args: { label: 'Clients', value: '12', sub: '3 offline', icon: <Monitor size={20} /> },
+    args: { label: 'Clients', value: '12', sub: '3 offline', icon: Monitor },
 } satisfies Meta<typeof StatCard>;
 
 export default meta;
@@ -22,9 +22,9 @@ export const Clickable: Story = { args: { onClick: () => alert('clicked') } };
 export const Row: Story = {
     render: () => (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <StatCard label="Clients" value="12" sub="3 offline" icon={<Monitor size={20} />} onClick={() => {}} />
-            <StatCard label="Jobs" value="48" sub="Configurations" icon={<HardDrive size={20} />} onClick={() => {}} />
-            <StatCard label="Snapshots" value="1204" sub="Available backups" icon={<Server size={20} />} onClick={() => {}} />
+            <StatCard label="Clients" value="12" sub="3 offline" icon={Monitor} onClick={() => {}} />
+            <StatCard label="Jobs" value="48" sub="Configurations" icon={HardDrive} onClick={() => {}} />
+            <StatCard label="Snapshots" value="1204" sub="Available backups" icon={Server} onClick={() => {}} />
         </div>
     ),
 };

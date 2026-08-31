@@ -60,8 +60,8 @@ export const States: Story = {
                 <Button {...args} variant="secondary" isLoading>Saving</Button>
             </Row>
             <Row label="With icon">
-                <Button {...args} variant="primary" icon={<Plus size={16} />}>New client</Button>
-                <Button {...args} variant="danger" icon={<Trash2 size={16} />}>Delete</Button>
+                <Button {...args} variant="primary" icon={Plus}>New client</Button>
+                <Button {...args} variant="danger" icon={Trash2}>Delete</Button>
             </Row>
         </>
     ),

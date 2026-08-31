@@ -1,11 +1,11 @@
 import React from 'react';
+import { ICON_SIZE, type ControlSize, type IconComponent } from './types';
 import { cn } from './utils';
 
 export type ActionButtonColor = 'green' | 'blue' | 'red' | 'orange' | 'gray' | 'indigo' | 'error';
 export type ActionButtonVariant = 'solid' | 'ghost';
 
 export interface ActionButtonClassNames {
-    root?: string;
     icon?: string;
 }
 
@@ -15,7 +15,7 @@ type ActionButtonNativeProps = Omit<
 >;
 
 interface ActionButtonProps extends ActionButtonNativeProps {
-    icon: React.ComponentType<{ size?: number; className?: string; 'aria-hidden'?: boolean }>;
+    icon: IconComponent;
     onClick: (e: React.MouseEvent) => void;
     disabled?: boolean | (() => boolean);
     tooltip?: string | { enabled: string; disabled: string };
@@ -23,11 +23,11 @@ interface ActionButtonProps extends ActionButtonNativeProps {
     variant?: ActionButtonVariant;
     className?: string;
     classNames?: ActionButtonClassNames;
-    size?: number;
+    size?: ControlSize;
     ref?: React.Ref<HTMLButtonElement>;
 }
 
-export const ActionButton: React.FC<ActionButtonProps> = ({
+export const ActionButton = ({
     icon: Icon,
     onClick,
     disabled = false,
@@ -36,10 +36,10 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
     variant = 'ghost',
     className = '',
     classNames,
-    size = 16,
+    size = 'md',
     ref,
     ...props
-}) => {
+}: ActionButtonProps) => {
     const isDisabled = typeof disabled === 'function' ? disabled() : disabled;
 
     const colorClasses: Record<ActionButtonColor, string> = {
@@ -70,6 +70,9 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
         ? "bg-hover shadow-sm"
         : "";
 
+    // The padding grows with the icon so the hit area keeps its proportions.
+    const paddings: Record<ControlSize, string> = { sm: "p-1", md: "p-1.5", lg: "p-2" };
+
     const getTooltip = () => {
         if (!tooltip) return undefined;
         if (typeof tooltip === 'string') return tooltip;
@@ -92,18 +95,18 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
             }}
             disabled={isDisabled}
             className={cn(
-                "p-1.5 transition-all rounded-full flex items-center justify-center",
+                "transition-all rounded-full flex items-center justify-center",
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                paddings[size],
                 colorClasses[color],
                 variantClasses,
-                className,
-                classNames?.root
+                className
             )}
             title={tooltipText}
             aria-label={props['aria-label'] ?? tooltipText}
             {...props}
         >
-            <Icon size={size} className={cn(classNames?.icon)} aria-hidden />
+            <Icon size={ICON_SIZE[size]} className={cn(classNames?.icon)} aria-hidden />
         </button>
     );
 };

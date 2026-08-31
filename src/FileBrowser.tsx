@@ -11,7 +11,6 @@ export interface FsFile {
 }
 
 export interface FileBrowserClassNames {
-    root?: string;
     header?: string;
     backButton?: string;
     pathDisplay?: string;
@@ -59,7 +58,7 @@ export const FileBrowser = ({ currentPath, onNavigate, files, isLoading, onSelec
     return (
         <Card
             title={header}
-            className={cn("flex flex-col", className, classNames?.root)}
+            className={cn("flex flex-col", className)}
             classNames={{ header: classNames?.header }}
         >
             <div className={cn("overflow-y-auto p-2 space-y-1 flex-1 min-h-[200px]", classNames?.content)}>

@@ -3,7 +3,6 @@ import { Card, CardClassNames, CardTitleLevel } from './Card';
 import { cn } from './utils';
 
 export interface DataCardClassNames {
-    root?: string;
     card?: CardClassNames;
     content?: string;
 }
@@ -23,7 +22,7 @@ export const DataCard = ({ children, className = '', title, action, noPadding = 
     return (
         <Card
             ref={ref}
-            className={cn(className, classNames?.root)}
+            className={className}
             classNames={classNames?.card}
             title={title}
             titleAs={titleAs}

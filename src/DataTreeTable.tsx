@@ -34,7 +34,7 @@ export interface DataTreeTableProps<T> extends BaseDataViewProps<T> {
 }
 
 export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
-    const { itemDef, getChildren, defaultExpanded, defaultSort, indentSize = 20, onRowClick, classNames, containerClassName } = props;
+    const { itemDef, getChildren, defaultExpanded, defaultSort, indentSize = 20, onRowClick, classNames, className } = props;
 
     const { sortColumns, comparator, handleSortClick } = useSortColumns({ itemDef, defaultSort });
 
@@ -55,7 +55,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
     const flatRows = placeholder ? [] : flattenTree(rows, { getChildren, getKey, expandedKeys, comparator });
 
     return (
-        <DataViewFrame containerClassName={containerClassName} classNames={classNames} pagination={pagination}>
+        <DataViewFrame className={className} classNames={classNames} pagination={pagination}>
             <div className="overflow-x-auto h-full w-full">
                 <table className={cn("w-full text-left border-collapse", classNames?.table)}>
                     <thead className={cn("sticky top-0 bg-table-header z-sticky", classNames?.thead)}>

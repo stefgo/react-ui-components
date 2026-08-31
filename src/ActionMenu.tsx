@@ -3,12 +3,6 @@ import { createPortal } from 'react-dom';
 import { useMenuBehavior } from './hooks/useMenuBehavior';
 import { cn } from './utils';
 
-export interface ActionMenuClassNames {
-    /** @deprecated The menu no longer renders a full-screen overlay. */
-    overlay?: string;
-    root?: string;
-}
-
 export interface ActionMenuPosition {
     /** Right edge of the trigger – the menu is right-aligned to it. */
     x: number;
@@ -26,7 +20,6 @@ interface ActionMenuProps {
     /** Focus returns here when the menu closes. */
     triggerRef?: RefObject<HTMLElement | null>;
     className?: string;
-    classNames?: ActionMenuClassNames;
 }
 
 const VIEWPORT_MARGIN = 8;
@@ -37,8 +30,7 @@ export const ActionMenu = ({
     position,
     children,
     triggerRef,
-    className = '',
-    classNames
+    className = ''
 }: ActionMenuProps) => {
     const { containerRef } = useMenuBehavior<HTMLDivElement>({
         isOpen,
@@ -86,8 +78,7 @@ export const ActionMenu = ({
             className={cn(
                 "fixed w-48 bg-card rounded-md shadow-lg border border-border z-dropdown py-1 focus:outline-none",
                 coords ? "visible" : "invisible",
-                className,
-                classNames?.root
+                className
             )}
             style={coords ?? { top: position.y, left: position.x }}
         >

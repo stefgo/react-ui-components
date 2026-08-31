@@ -41,12 +41,12 @@ function resolveContent<T>(col: DataListDef<T>, item: T): ReactNode {
 }
 
 export const DataList = <T,>(props: DataListProps<T>) => {
-    const { columns: columnsProp, onRowClick, classNames, containerClassName } = props;
+    const { columns: columnsProp, onRowClick, classNames, className } = props;
     // No comparator — the caller's order is kept.
     const { rows, placeholder, getKey, getRowClass, interactionClasses, pagination } = useDataView(props);
 
     return (
-        <DataViewFrame containerClassName={containerClassName} classNames={classNames} pagination={pagination}>
+        <DataViewFrame className={className} classNames={classNames} pagination={pagination}>
             <div className={cn("divide-y divide-border", classNames?.listRoot)}>
                 {placeholder ? (
                     <div className={cn("px-6 py-8 text-center text-text-muted", classNames?.placeholder)}>

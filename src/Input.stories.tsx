@@ -22,7 +22,7 @@ export const States: Story = {
             <Input label="With hint" placeholder="8007" hint="Leave empty to use the default port." />
             <Input label="With error" defaultValue="not-a-port" error="Must be a number between 1 and 65535." />
             <Input label="Required" required placeholder="Cannot be empty" />
-            <Input label="With icon" icon={<Search size={16} />} placeholder="Search clients" />
+            <Input label="With icon" icon={Search} placeholder="Search clients" />
             <Input label="Disabled" disabled defaultValue="Read only" />
         </div>
     ),
@@ -35,7 +35,7 @@ export const States: Story = {
 export const NextToSelect: Story = {
     render: () => (
         <div className="max-w-md grid grid-cols-2 gap-4">
-            <Input label="Host" icon={<Server size={16} />} placeholder="pbs.example.com" />
+            <Input label="Host" icon={Server} placeholder="pbs.example.com" />
             <Select
                 label="Schedule"
                 options={[

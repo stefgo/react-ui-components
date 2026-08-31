@@ -3,7 +3,6 @@ import { ChevronDown, ChevronRight } from 'lucide-react';
 import { cn } from './utils';
 
 export interface CollapsibleClassNames {
-    root?: string;
     header?: string;
     titleWrapper?: string;
     icon?: string;
@@ -51,7 +50,7 @@ export const Collapsible = ({
     };
 
     return (
-        <div ref={ref} className={cn("overflow-hidden transition-all", className, classNames?.root)}>
+        <div ref={ref} className={cn("overflow-hidden transition-all", className)}>
             <button
                 type="button"
                 onClick={toggle}
