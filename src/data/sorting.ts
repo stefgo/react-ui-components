@@ -71,9 +71,9 @@ export function nextSortColumns(prev: SortEntry[], colIndex: number, additive: b
 export function readStoredSort<T>(
     itemDef: DataTableDef<T>[],
     storageKey?: string,
-    defaultSort?: SortEntry | SortEntry[],
+    seed?: SortEntry | SortEntry[],
 ): SortEntry[] {
-    const fallback = defaultSort ? (Array.isArray(defaultSort) ? defaultSort : [defaultSort]) : [];
+    const fallback = seed ? (Array.isArray(seed) ? seed : [seed]) : [];
     if (!storageKey || typeof localStorage === 'undefined') return fallback;
 
     let raw: string | null;

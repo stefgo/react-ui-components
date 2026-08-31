@@ -35,6 +35,12 @@ jobs:
       - name: Build
         run: npm run build
 
+      # The stories are the only place several components are exercised at all,
+      # so a broken one has to fail the build rather than the next person to
+      # open Storybook.
+      - name: Build Storybook
+        run: npm run build-storybook
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

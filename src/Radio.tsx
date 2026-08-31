@@ -15,7 +15,6 @@ interface RadioGroupContextValue {
 const RadioGroupContext = createContext<RadioGroupContextValue | null>(null);
 
 export interface RadioClassNames {
-    root?: string;
     input?: string;
     dot?: string;
     label?: string;
@@ -44,7 +43,7 @@ export const Radio = ({ value, label, className = '', classNames, id, ref, disab
     const isDisabled = disabled || group.disabled;
 
     return (
-        <div className={cn("flex items-center gap-2.5", className, classNames?.root)}>
+        <div className={cn("flex items-center gap-2.5", className)}>
             <span className="relative inline-flex">
                 <input
                     ref={ref}
@@ -94,7 +93,6 @@ export const Radio = ({ value, label, className = '', classNames, id, ref, disab
 };
 
 export interface RadioGroupClassNames {
-    root?: string;
     legend?: string;
     options?: string;
     error?: string;
@@ -150,7 +148,7 @@ export const RadioGroup = ({
 
     return (
         <fieldset
-            className={cn(className, classNames?.root)}
+            className={className}
             aria-invalid={ids.invalid}
             aria-describedby={ids.describedBy}
             aria-required={required || undefined}

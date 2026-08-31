@@ -26,7 +26,6 @@ export interface DataTreeTableClassNames extends DataViewClassNames {
 export interface DataTreeTableProps<T> extends BaseDataViewProps<T> {
     itemDef: DataTableDef<T>[];
     getChildren: (item: T) => T[] | undefined | null;
-    defaultExpanded?: boolean;
     /** Column sorting. Leave it out and the view owns it. */
     sort?: SortOptions;
     /** Row expansion. Leave it out and the view owns it. */

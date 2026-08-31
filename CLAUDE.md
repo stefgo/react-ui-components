@@ -9,11 +9,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run build   # Production build (tsup: CJS, ESM, .d.ts, minified)
-npm run dev     # Watch mode build
-npm run lint    # tsc --noEmit + eslint (incl. react-hooks/exhaustive-deps)
-npm test        # vitest (jsdom), pure logic under src/data/ + component behaviour
+npm run storybook       # the workbench — every visual judgement is made here
+npm run build-storybook # static docs
+npm run build           # Production build (tsup: CJS, ESM, .d.ts, minified)
+npm run dev             # Watch mode build
+npm run lint            # tsc --noEmit + eslint
+npm test                # vitest (jsdom), pure logic + component behaviour
+npm run tokens:build    # regenerate src/index.css from tokens.js
+npm run tokens:check    # fails if it is stale
 ```
+
+Storybook has a **side-by-side** theme mode that renders a story in light and
+dark at once. Judge colour changes there, never in a consumer.
 
 CI runs lint, test and build before `semantic-release`.
 
@@ -32,40 +39,73 @@ All components are exported as named exports from `src/index.ts`. The build prod
 presets: [require("@stefgo/react-ui-components/tailwind-preset")],
 ```
 
-The preset does two things: adds the library's dist files to Tailwind's `content` scanning, and extends the theme with the CSS-variable-backed tokens (`primary`, `button-primary`, `badge-success-bg`, …) plus a z-index scale (`z-sticky` … `z-modal`). Without this preset, Tailwind will purge library classes and theming won't work.
+The preset does three things: adds the library's dist files to Tailwind's `content` scanning; extends the theme with the CSS-variable-backed tokens (`primary`, `button-primary`, `badge-success-bg`, …) plus the radius, duration and z-index scales; and emits the token declarations themselves (`:root` and `.dark`) via `addBase`, so consumers need no stylesheet import. It also sets `darkMode: "class"`, matching the `.dark` selector it emits. Without this preset, Tailwind will purge library classes and theming won't work.
 
 **`tokens.js` at the repo root is the single source of truth for every colour default.** The preset builds its colour scale from it, and `scripts/generate-tokens-css.js` generates `src/index.css` from it. Never hard-code a colour literal in the preset or edit `src/index.css` by hand — change `tokens.js` and run `npm run tokens:build`. CI runs `npm run tokens:check`, which fails if the generated file is stale. `tokens.js` must stay in `package.json`'s `files` array, since the published preset requires it.
 
-### Interaction Patterns
+### Shared behaviour — do not hand-roll a second copy
 
-`src/hooks/useMenuBehavior.ts` owns open-menu behaviour — outside click, Escape, focus movement, focus restoration, focus trap. `ActionMenu`, `UserMenu` and `MobileMoreSheet` all build on it; do not hand-roll a fourth dropdown.
+| Module | Owns |
+| --- | --- |
+| `hooks/useMenuBehavior.ts` | outside click, Escape, focus movement, focus trap, focus restoration, scroll lock. Used by `ActionMenu`, `UserMenu`, `MobileMoreSheet` and `Modal`. |
+| `hooks/usePopoverPosition.ts` | measuring a floating element and keeping it in the viewport, before paint. Used by `ActionMenu` and `Tooltip`. |
+| `hooks/useControllableState.ts` | controlled vs. uncontrolled, for every such state. |
+| `form/FormField.tsx` + `form/useFieldIds.ts` | label, hint, error and the ARIA wiring between them. Every control sits in one. |
+
+`FormField` encodes one rule worth knowing: an error replaces the hint on screen
+**and** in `aria-describedby`, so nothing is announced that is not visible. It
+has two layouts — `stacked` for text inputs, `inline` for checkbox, radio and
+switch.
+
+Form controls are **restyled native elements**, not divs with ARIA. Arrow-key
+navigation in a radio group, the roving tab stop, the checkbox's third state:
+all of it is browser behaviour that a reimplementation gets subtly wrong while
+still looking fine to a mouse.
 
 `Dashboard` renders navigation, not routing. It highlights the entry matching `currentPath` and renders `children` — deciding what is on screen is the consumer router's job.
 
-### Component Pattern
+### The four conventions
 
-Every component follows this structure:
+These are the point of the library. A change that breaks one of them is a
+regression even if it compiles and the tests pass.
+
+**1. One token per role.** A colour is one class: `bg-card`, not
+`bg-card dark:bg-card-dark`. The `.dark` block redefines the variable, so the
+class resolves per theme by itself. There should be no `dark:` prefix in `src/`
+except for a decoration that genuinely has no light counterpart — there is
+exactly one, in `LoginPage`.
+
+**2. Icons are components.** `icon: IconComponent`, never `ReactNode`. Only then
+can the surface set the size and `aria-hidden` itself. Sizes on controls are
+`'sm' | 'md' | 'lg'`, never a pixel number; `ICON_SIZE` maps the step to the
+edge length.
+
+**3. `className` for the root, `classNames` for the slots.** There is no `root`
+slot and no `containerClassName` — both were removed because they duplicated
+`className`.
+
+**4. Controllable state is `value` / `defaultValue` / `onChange`,** built on
+`useControllableState`. Flat on the props when a component has one such state,
+grouped under the state's name when it has several. Persistence (localStorage)
+is the *default of the uncontrolled variant*, never the only mode.
 
 ```typescript
 interface ComponentClassNames {
-    root?: string;
-    // named slots...
+    label?: string;   // named slots only
 }
 
-interface ComponentProps extends HTMLAttributes<HTMLElement> {
+interface ComponentProps extends HTMLAttributes<HTMLElement>, Controllable<boolean> {
     variant?: 'primary' | 'secondary';
+    icon?: IconComponent;
+    size?: ControlSize;
+    className?: string;
     classNames?: ComponentClassNames;
 }
-
-export const Component = ({ classNames, ...props }: ComponentProps) => {
-    return <div className={cn(baseStyles, classNames?.root)} />;
-};
 ```
 
-Key points:
-- **`classNames` prop** — slot-based customization on every component; slot names correspond to meaningful sub-elements (e.g. `root`, `icon`, `label`, `header`)
-- **`cn()` utility** from `src/utils.ts` — wraps `clsx` + `tailwind-merge`; always use it to compose class strings to avoid Tailwind conflicts
-- **CSS variables** control theming (`--color-primary`, etc.); dark mode is handled via `dark:` Tailwind prefix automatically
+Always compose classes with **`cn()`** from `src/utils.ts` (`clsx` +
+`tailwind-merge`), so a caller's class can override a default instead of
+colliding with it.
 
 ### Data Views
 
@@ -91,11 +131,29 @@ view skips all three stages and the caller supplies `totalItems`.
 Counts always come from the stage *after* filtering and *before* slicing, which
 is why filtering belongs inside the view rather than in front of it.
 
-### Theming (Three-Tier System)
+### Theming (three tiers)
 
 1. **CSS variables** — override in `:root` / `.dark` for global theme changes
 2. **Tailwind preset** — extends theme tokens consumed by all components
-3. **`classNames` prop** — per-instance slot overrides via arbitrary Tailwind classes
+3. **`className` / `classNames`** — per-instance overrides
+
+### Testing
+
+Tests check **behaviour, not structure**: an accessible name, an ARIA state, a
+keyboard interaction, a focus destination. That is what let the 3.0 refactors
+rename props across the whole library while touching only the prop names inside
+the tests — never an assertion.
+
+Three habits worth keeping:
+
+- When a test guards something subtle, **break the implementation once** to
+  confirm the test actually fails. A test never seen red proves nothing.
+- Prefer a test on the shared module (`FormField`, `useControllableState`) over
+  the same test repeated per component.
+- `src/conventions.test.ts` greps the source for violations of the four rules
+  above. It is not decoration: it has already caught a stale `-dark` class that
+  a codemod missed, a `root` slot reintroduced in a new component, and a prop
+  that was declared but no longer read. Extend it when you add a rule.
 
 ### Release
 

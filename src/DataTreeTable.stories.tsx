@@ -30,12 +30,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Collapsed: Story = {};
-export const Expanded: Story = { args: { defaultExpanded: true } };
-export const DeepIndent: Story = { args: { defaultExpanded: true, indentSize: 40 } };
+export const Expanded: Story = { args: { expanded: { all: true } } };
+export const DeepIndent: Story = { args: { expanded: { all: true }, indentSize: 40 } };
 
 /** Paging applies to root nodes; the children of a visible root come along with it. */
 export const Paginated: Story = {
-    args: { defaultExpanded: true, pagination: { defaultValue: { pageSize: 2 } } },
+    args: { expanded: { all: true }, pagination: { defaultValue: { pageSize: 2 } } },
 };
 
 export const Empty: Story = { args: { data: [], emptyMessage: 'No archives configured.' } };

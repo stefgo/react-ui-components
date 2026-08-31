@@ -74,7 +74,7 @@ export function useDataView<T>(
     ), [rowClassName]);
 
     const interactionClasses = onRowClick
-        ? 'cursor-pointer hover:bg-table-row-hover dark:hover:bg-table-row-hover-dark'
+        ? 'cursor-pointer hover:bg-table-row-hover'
         : '';
 
     const placeholder = isLoading ? loadingMessage
