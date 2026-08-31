@@ -73,7 +73,12 @@ export interface BaseDataViewProps<T> {
     rowClassName?: string | ((item: T) => string);
     onRowClick?: (item: T) => void;
 
-    /** `true` turns on paging with the defaults; an object configures it. */
+    /**
+     * `true` turns on paging with the defaults; an object configures it.
+     *
+     * DataTreeTable pages its root nodes: `totalItems` counts roots, and the
+     * children of the roots on a page are shown with them.
+     */
     pagination?: boolean | PaginationProps;
 
     /** Runs before sorting and paging, so the page count matches what is shown. */

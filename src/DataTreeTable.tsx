@@ -38,17 +38,15 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
 
     const { sortColumns, comparator, handleSortClick } = useSortColumns({ itemDef, defaultSort });
 
-    // Paging is deliberately not applied here yet: the tree sorts and expands per
-    // level, so a page has to be taken from the root level only. That comes with
-    // the root-level paging commit; until then the tree behaves as before and
-    // renders every row.
-    const { rows, placeholder, getKey, getRowClass, interactionClasses, pagination } = useDataView(
-        { ...props, pagination: undefined },
-        comparator,
-    );
+    // A page is taken from the root level only — `rows` are the roots on this
+    // page, and their children are expanded underneath regardless of the page
+    // size. Counting rendered rows instead would make a page's length depend on
+    // what happens to be expanded.
+    const { rows, placeholder, getKey, getRowClass, interactionClasses, pagination } = useDataView(props, comparator);
 
     const { expandedKeys, allExpanded, toggleRow, toggleAll } = useTreeExpansion({
         data: props.data,
+        visibleRows: rows,
         getChildren,
         getKey,
         defaultExpanded,
