@@ -50,7 +50,7 @@ export const BottomNav = ({ items, ariaLabel = "Main", className = "", className
         <nav
             aria-label={ariaLabel}
             className={cn(
-                "md:hidden fixed bottom-0 left-0 right-0 bg-sidebar-bg/95 backdrop-blur-md border-t border-border z-bottomnav flex justify-around items-center px-2 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.05)]",
+                "md:hidden fixed bottom-0 left-0 right-0 bg-sidebar-bg/95 backdrop-blur-md border-t border-border z-bottomnav flex justify-around items-center px-2 pb-safe shadow-nav-top",
                 className
             )}
         >

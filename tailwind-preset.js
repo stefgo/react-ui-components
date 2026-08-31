@@ -170,7 +170,12 @@ module.exports = {
       // ─── Shadows ──────────────────────────────────────────────────────────
       boxShadow: {
         "glow-accent": `0 0 15px ${t("primary").replace("<alpha-value>", "0.3")}`,
-        "glow-success": "0 0 12px rgba(34, 197, 94, 0.4)",
+        // Derived from the token, not a fixed green: the literal it replaced
+        // was not even the success colour, and it stayed the same in dark mode
+        // while everything around it changed.
+        "glow-success": `0 0 12px ${t("success")}`,
+        // The one shadow that points upwards, for a bar docked to the bottom.
+        "nav-top": "0 -4px 12px rgb(0 0 0 / 0.05)",
         premium:
           "0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05)",
         "premium-hover":
