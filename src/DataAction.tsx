@@ -33,7 +33,7 @@ export interface DataTableActionMenuEntry {
     variant?: 'danger' | 'default';
 }
 
-interface DataTableActionProps<TId extends string | number> {
+export interface DataActionProps<TId extends string | number> {
     /** Unique identifier for this row – used to track which overflow menu is open */
     rowId: TId;
     /** Primary action buttons rendered inline (left of the overflow trigger) */
@@ -53,7 +53,7 @@ export const DataAction = <TId extends string | number>({
     menuLabel = "More actions",
     className = "",
     classNames
-}: DataTableActionProps<TId>) => {
+}: DataActionProps<TId>) => {
     const { menuState, triggerRef, openMenu, closeMenu } = useActionMenu<TId>();
 
     const isMenuOpen = menuState?.id === rowId;
