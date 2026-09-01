@@ -64,7 +64,8 @@ export const DashboardHeader = ({
                         onClick={onToggleSidebar}
                         aria-label="Toggle sidebar"
                         className={cn(
-                            "p-2 -ml-2 mr-2 text-text-muted hover:text-text-primary transition-colors md:flex hidden",
+                            "p-2 -ml-2 mr-2 rounded-md text-text-muted hover:text-text-primary transition-colors md:flex hidden",
+                            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary",
                             classNames?.sidebarToggle
                         )}
                         title="Toggle Sidebar"
