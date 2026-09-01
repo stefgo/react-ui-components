@@ -19,10 +19,10 @@ const ToggleDemo = () => {
     const [theme, setTheme] = useState('light');
     return (
         <div className={theme === 'dark' ? 'dark' : undefined}>
-            <div className="bg-card dark:bg-card-dark border border-border dark:border-border-dark rounded-xl p-6 flex items-center gap-4">
+            <div className="bg-card border border-border rounded-xl p-6 flex items-center gap-4">
                 <ThemeToggle theme={theme} onToggle={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))} />
-                <span className="text-sm text-text-secondary dark:text-text-secondary-dark">
-                    Current theme: <strong className="text-text-primary dark:text-text-primary-dark">{theme}</strong>
+                <span className="text-sm text-text-secondary">
+                    Current theme: <strong className="text-text-primary">{theme}</strong>
                 </span>
             </div>
         </div>

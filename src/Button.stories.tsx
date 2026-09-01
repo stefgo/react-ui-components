@@ -17,7 +17,7 @@ type Story = StoryObj<typeof meta>;
 
 const Row = ({ label, children }: { label: string; children: React.ReactNode }) => (
     <div className="mb-6 last:mb-0">
-        <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-text-muted dark:text-text-muted-dark">
+        <div className="mb-2 text-[10px] font-bold uppercase tracking-wider text-text-muted">
             {label}
         </div>
         <div className="flex flex-wrap items-center gap-3">{children}</div>

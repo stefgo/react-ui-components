@@ -4,7 +4,7 @@ import { Collapsible } from './Collapsible';
 import { Badge } from './Badge';
 
 const Body = ({ lines = 3 }: { lines?: number }) => (
-    <div className="px-4 pb-4 space-y-2 text-sm text-text-secondary dark:text-text-secondary-dark">
+    <div className="px-4 pb-4 space-y-2 text-sm text-text-secondary">
         {Array.from({ length: lines }, (_, i) => (
             <p key={i}>Line {i + 1} of the collapsed content.</p>
         ))}
@@ -45,7 +45,7 @@ export const WithRichTitle: Story = {
 const AccordionDemo = (args: React.ComponentProps<typeof Collapsible>) => {
     const [open, setOpen] = useState<string | null>('a');
     return (
-        <div className="divide-y divide-border dark:divide-border-dark border border-border dark:border-border-dark rounded-xl overflow-hidden">
+        <div className="divide-y divide-border border border-border rounded-xl overflow-hidden">
             {(['a', 'b', 'c'] as const).map((id) => (
                 <Collapsible
                     {...args}

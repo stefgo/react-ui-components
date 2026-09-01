@@ -50,7 +50,7 @@ export const WithDisabledEntries: Story = {
 export const NearTheViewportEdge: Story = {
     render: (args) => (
         <div className="h-[80vh] flex flex-col justify-end">
-            <div className="flex justify-end border-t border-border dark:border-border-dark pt-3">
+            <div className="flex justify-end border-t border-border pt-3">
                 <RowActions {...args} />
             </div>
         </div>
