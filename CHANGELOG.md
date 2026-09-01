@@ -1,3 +1,22 @@
+# [3.0.0-beta.2](https://github.com/stefgo/react-ui-components/compare/v3.0.0-beta.1...v3.0.0-beta.2) (2026-09-01)
+
+
+* fix(api)!: jede Props-Schnittstelle exportieren ([b2dd537](https://github.com/stefgo/react-ui-components/commit/b2dd537ca500752366f062d94dba31017cc3d178))
+
+
+### Features
+
+* **card:** Padding-Prop statt eigener DataCard-Komponente ([e2fc57a](https://github.com/stefgo/react-ui-components/commit/e2fc57a0ad57528afa1599494912731638331bab))
+
+
+### BREAKING CHANGES
+
+* Nur additiv fuer Konsumenten, aber die Typen sind ab jetzt
+Teil der oeffentlichen Oberflaeche und koennen nicht mehr unbemerkt geaendert
+werden.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+
 # [3.0.0-beta.1](https://github.com/stefgo/react-ui-components/compare/v2.16.1...v3.0.0-beta.1) (2026-09-01)
 
 
