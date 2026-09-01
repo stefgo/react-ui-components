@@ -11,7 +11,7 @@ export interface UserMenuClassNames {
     logout?: string;
 }
 
-interface UserMenuProps {
+export interface UserMenuProps {
     username: string;
     onLogout: () => void;
     /** Label above the username, e.g. for localisation. */

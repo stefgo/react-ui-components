@@ -14,7 +14,7 @@ export interface StatCardClassNames {
     sub?: string;
 }
 
-interface StatCardProps {
+export interface StatCardProps {
     label: string;
     value: string;
     sub?: string;

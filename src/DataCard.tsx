@@ -7,7 +7,7 @@ export interface DataCardClassNames {
     content?: string;
 }
 
-interface DataCardProps {
+export interface DataCardProps {
     children: ReactNode;
     className?: string;
     title?: ReactNode;

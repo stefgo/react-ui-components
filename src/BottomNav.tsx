@@ -18,7 +18,7 @@ export interface BottomNavClassNames {
     itemInactive?: string;
 }
 
-interface BottomNavProps {
+export interface BottomNavProps {
     items: BottomNavItem[];
     /** Accessible name of the landmark, e.g. when several navs coexist. */
     ariaLabel?: string;

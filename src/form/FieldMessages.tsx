@@ -7,7 +7,7 @@ export interface FieldMessagesClassNames {
     hint?: string;
 }
 
-interface FieldMessagesProps {
+export interface FieldMessagesProps {
     ids: FieldIds;
     hint?: ReactNode;
     error?: string;

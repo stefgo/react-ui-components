@@ -18,7 +18,7 @@ export interface ToastViewportClassNames {
     close?: string;
 }
 
-interface ToastViewportProps {
+export interface ToastViewportProps {
     toasts: Toast[];
     onDismiss: (id: string) => void;
     placement: ToastPlacement;
@@ -42,7 +42,7 @@ const VARIANTS: Record<ToastVariant, { icon: IconComponent; accent: string }> = 
     error: { icon: AlertCircle, accent: 'text-error' }
 };
 
-interface ToastItemProps {
+export interface ToastItemProps {
     toast: Toast;
     /** Stable across renders — the auto-dismiss timer depends on it. */
     onDismiss: (id: string) => void;

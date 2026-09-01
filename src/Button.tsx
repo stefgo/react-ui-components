@@ -8,7 +8,7 @@ export interface ButtonClassNames {
     spinner?: string;
 }
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
     size?: ControlSize;
     isLoading?: boolean;

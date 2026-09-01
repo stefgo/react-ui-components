@@ -4,7 +4,7 @@ import { useMenuBehavior } from './hooks/useMenuBehavior';
 import { usePopoverPosition, type AnchorRect } from './hooks/usePopoverPosition';
 import { cn } from './utils';
 
-interface ActionMenuProps {
+export interface ActionMenuProps {
     isOpen: boolean;
     onClose: () => void;
     /** The trigger's bounding rect. `useActionMenu` produces it. */

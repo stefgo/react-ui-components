@@ -10,7 +10,7 @@ export interface DashboardHeaderClassNames {
     sidebarToggle?: string;
 }
 
-interface DashboardHeaderProps {
+export interface DashboardHeaderProps {
     branding?: ReactNode;
     logo?: ReactNode;
     title?: ReactNode;

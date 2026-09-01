@@ -21,7 +21,7 @@ export interface RadioClassNames {
     label?: string;
 }
 
-interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'value' | 'onChange'> {
+export interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'value' | 'onChange'> {
     /** The value this option contributes when selected. */
     value: string;
     label?: ReactNode;
@@ -100,7 +100,7 @@ export interface RadioGroupClassNames {
     hint?: string;
 }
 
-interface RadioGroupProps extends Controllable<string> {
+export interface RadioGroupProps extends Controllable<string> {
     /** Names the group. Rendered as the `<legend>` of a `<fieldset>`. */
     label: ReactNode;
     children: ReactNode;

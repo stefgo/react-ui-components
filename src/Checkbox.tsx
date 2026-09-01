@@ -8,7 +8,7 @@ export interface CheckboxClassNames extends FormFieldClassNames {
     box?: string;
 }
 
-interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
+export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
     label?: ReactNode;
     hint?: ReactNode;
     error?: string;

@@ -9,7 +9,7 @@ export interface CardClassNames {
 
 export type CardTitleLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div';
 
-interface CardProps {
+export interface CardProps {
     children?: ReactNode;
     title?: ReactNode;
     action?: ReactNode;

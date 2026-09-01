@@ -8,7 +8,7 @@ export interface SelectClassNames extends FormFieldClassNames {
     select?: string;
 }
 
-interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
     label?: string;
     hint?: ReactNode;
     error?: string;

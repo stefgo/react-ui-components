@@ -19,7 +19,7 @@ export interface MobileMoreSheetClassNames {
     itemActive?: string;
 }
 
-interface MobileMoreSheetProps {
+export interface MobileMoreSheetProps {
     isOpen: boolean;
     onClose: () => void;
     groups: SidebarGroup[];

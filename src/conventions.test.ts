@@ -118,6 +118,14 @@ describe('conventions', () => {
         expect(matches(/classNames\?\.root\b|^\s*root\?: string;/)).toEqual([]);
     });
 
+    it('exports every Props interface', () => {
+        // A consumer that needs to name a prop's type -- to key a lookup table
+        // by Badge's variant, say -- has no way to reach an unexported one, and
+        // ends up re-declaring the union by hand. It then drifts silently the
+        // next time a variant is added here.
+        expect(matches(/^interface [A-Za-z]+Props\b/)).toEqual([]);
+    });
+
     it('has no containerClassName', () => {
         expect(matches(/\bcontainerClassName\b/)).toEqual([]);
     });

@@ -8,7 +8,7 @@ export interface InputClassNames extends FormFieldClassNames {
     icon?: string;
 }
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     hint?: ReactNode;
     error?: string;

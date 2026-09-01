@@ -15,7 +15,7 @@ type ActionButtonNativeProps = Omit<
     'onClick' | 'disabled' | 'color' | 'title'
 >;
 
-interface ActionButtonProps extends ActionButtonNativeProps {
+export interface ActionButtonProps extends ActionButtonNativeProps {
     icon: IconComponent;
     onClick: (e: React.MouseEvent) => void;
     disabled?: boolean | (() => boolean);

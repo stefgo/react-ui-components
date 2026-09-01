@@ -4,7 +4,7 @@ import { ICON_SIZE } from '../types';
 import { SortEntry } from './types';
 import { isSortable } from './sorting';
 
-interface SortIconProps<T> {
+export interface SortIconProps<T> {
     col: DataTableDef<T>;
     colIndex: number;
     sortColumns: SortEntry[];

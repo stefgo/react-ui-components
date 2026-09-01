@@ -9,7 +9,7 @@ export interface SwitchClassNames extends FormFieldClassNames {
     thumb?: string;
 }
 
-interface SwitchProps
+export interface SwitchProps
     extends Controllable<boolean>,
     Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onChange' | 'value' | 'defaultValue' | 'type'> {
     label?: ReactNode;

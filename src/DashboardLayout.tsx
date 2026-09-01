@@ -6,7 +6,7 @@ export interface DashboardLayoutClassNames {
     contentContainer?: string;
 }
 
-interface DashboardLayoutProps {
+export interface DashboardLayoutProps {
     header: ReactNode;
     sidebar: ReactNode;
     bottomNav?: ReactNode;

@@ -34,7 +34,7 @@ export interface SidebarClassNames {
     itemBadgeInactive?: string;
 }
 
-interface SidebarProps {
+export interface SidebarProps {
     groups: SidebarGroup[];
     isCollapsed?: boolean;
     /** Accessible name of the navigation landmark. */

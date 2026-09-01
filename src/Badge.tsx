@@ -2,7 +2,7 @@ import { ReactNode, Ref } from 'react';
 import type { ControlSize } from './types';
 import { cn } from './utils';
 
-interface BadgeProps {
+export interface BadgeProps {
     children: ReactNode;
     variant?: 'success' | 'warning' | 'error' | 'info' | 'neutral';
     size?: ControlSize;

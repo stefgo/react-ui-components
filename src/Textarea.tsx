@@ -6,7 +6,7 @@ export interface TextareaClassNames extends FormFieldClassNames {
     textarea?: string;
 }
 
-interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
     label?: string;
     hint?: ReactNode;
     error?: string;

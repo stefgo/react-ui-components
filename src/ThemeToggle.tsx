@@ -5,7 +5,7 @@ export interface ThemeToggleClassNames {
     icon?: string;
 }
 
-interface ThemeToggleProps {
+export interface ThemeToggleProps {
     theme: string;
     onToggle: () => void;
     className?: string; // Standard root className

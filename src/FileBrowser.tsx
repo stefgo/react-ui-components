@@ -24,7 +24,7 @@ export interface FileBrowserClassNames {
     empty?: string;
 }
 
-interface FileBrowserProps {
+export interface FileBrowserProps {
     currentPath: string;
     onNavigate: (path: string) => void;
     files: FsFile[];
