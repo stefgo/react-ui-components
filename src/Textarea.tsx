@@ -48,7 +48,7 @@ export const Textarea = ({
                     "block w-full bg-input-bg border",
                     error ? 'border-error' : 'border-input-border',
                     "px-3 py-2.5 rounded-md text-text-primary placeholder:text-text-muted",
-                    "focus:outline-none focus:ring-2 focus:ring-primary",
+                    "focus:outline focus:outline-2 focus:outline-offset-0 focus:outline-primary",
                     // Vertical only: horizontal resizing breaks the form layout
                     // it sits in, and there is nothing to gain from it.
                     "transition-colors sm:text-sm resize-y",

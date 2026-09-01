@@ -69,7 +69,7 @@ export const Radio = ({ value, label, className = '', classNames, id, ref, disab
                         "bg-input-bg text-transparent",
                         group.invalid ? "border-error" : "border-input-border",
                         "peer-checked:border-primary peer-checked:text-primary",
-                        "peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-focus-visible:ring-offset-1",
+                        "peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1 peer-focus-visible:outline-primary",
                         "peer-disabled:opacity-50",
                         classNames?.dot
                     )}

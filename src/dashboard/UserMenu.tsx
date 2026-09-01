@@ -50,7 +50,7 @@ export const UserMenu = ({
                 aria-label={`${signedInAsLabel} ${username}`}
                 className={cn(
                     "flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors p-1 pr-2 rounded-lg hover:bg-hover",
-                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
                     classNames?.trigger
                 )}
             >

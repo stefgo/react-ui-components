@@ -51,7 +51,7 @@ export const Select = ({
                         "block w-full bg-input-bg border",
                         error ? 'border-error' : 'border-input-border',
                         "pl-3 pr-10 py-2.5 rounded-md text-text-primary",
-                        "focus:outline-none focus:ring-2 focus:ring-primary",
+                        "focus:outline focus:outline-2 focus:outline-offset-0 focus:outline-primary",
                         "transition-all sm:text-sm appearance-none",
                         classNames?.select
                     )}

@@ -85,7 +85,7 @@ export const MobileMoreSheet = ({
                         aria-label={closeLabel}
                         className={cn(
                             "p-2 rounded-full bg-hover text-text-muted hover:bg-hover transition-colors",
-                            "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
                             classNames?.close
                         )}
                     >
@@ -110,7 +110,7 @@ export const MobileMoreSheet = ({
                                         aria-current={item.active ? 'page' : undefined}
                                         className={cn(
                                             "flex items-center gap-4 p-4 rounded-lg transition-colors w-full text-left",
-                                            "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                                            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
                                             item.active
                                                 ? "bg-hover text-text-primary ring-1 ring-border"
                                                 : "bg-app-bg text-text-secondary hover:bg-hover",

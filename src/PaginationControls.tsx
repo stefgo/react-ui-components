@@ -57,7 +57,7 @@ export const PaginationControls = ({
                     value={pageSize}
                     onChange={(e) => onPageSizeChange(Number(e.target.value))}
                     className={cn(
-                        "bg-input-bg border border-input-border text-text-primary text-sm rounded-sm focus:ring-primary focus:border-primary block p-1",
+                        "bg-input-bg border border-input-border text-text-primary text-sm rounded-sm focus:outline focus:outline-2 focus:outline-offset-0 focus:outline-primary focus:border-primary block p-1",
                         classNames?.select
                     )}
                 >

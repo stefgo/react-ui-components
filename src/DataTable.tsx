@@ -84,7 +84,7 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
                                                 onClick={(e) => handleSortClick(col, idx, e)}
                                                 className={cn(
                                                     "inline-flex items-center gap-1 select-none uppercase hover:text-text-primary",
-                                                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm",
+                                                    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded-sm",
                                                     classNames?.sortButton
                                                 )}
                                             >

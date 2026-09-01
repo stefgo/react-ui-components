@@ -128,7 +128,7 @@ export const Modal = ({
                             aria-label={closeLabel}
                             className={cn(
                                 "shrink-0 p-1.5 rounded-full text-text-muted hover:bg-hover hover:text-text-primary transition-colors",
-                                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                                "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
                                 classNames?.close
                             )}
                         >

@@ -126,7 +126,7 @@ export function useDataView<T>(
     // reader announce the column a cell belongs to. Focusable and operable is
     // what the row is missing, not a different role.
     const interactionClasses = onRowClick
-        ? 'cursor-pointer hover:bg-table-row-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary'
+        ? 'cursor-pointer hover:bg-table-row-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary'
         : '';
 
     const placeholder = isLoading ? loadingMessage

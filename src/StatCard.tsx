@@ -38,7 +38,7 @@ export const StatCard = ({ label, value, sub, icon: Icon, onClick, className = '
             className={cn(
                 "bg-statcard-bg p-6 rounded-lg border border-border shadow-sm hover:shadow-md transition-all h-full",
                 onClick
-                    ? 'w-full text-left cursor-pointer hover:border-border active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+                    ? 'w-full text-left cursor-pointer hover:border-border active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
                     : '',
                 className
             )}

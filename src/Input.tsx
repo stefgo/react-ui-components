@@ -60,7 +60,7 @@ export const Input = ({
                         error ? 'border-error' : 'border-input-border',
                         Icon ? 'pl-10' : 'pl-3',
                         "pr-3 py-2.5 rounded-md text-text-primary placeholder:text-text-muted",
-                        "focus:outline-none focus:ring-2 focus:ring-primary",
+                        "focus:outline focus:outline-2 focus:outline-offset-0 focus:outline-primary",
                         "transition-all sm:text-sm",
                         classNames?.input
                     )}

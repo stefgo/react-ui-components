@@ -118,7 +118,7 @@ const ToastItem = ({ toast, onDismiss, duration, classNames }: ToastItemProps) =
                         }}
                         className={cn(
                             "mt-2 text-sm font-semibold text-primary hover:text-primary-hover",
-                            "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm",
+                            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded-sm",
                             classNames?.action
                         )}
                     >
@@ -133,7 +133,7 @@ const ToastItem = ({ toast, onDismiss, duration, classNames }: ToastItemProps) =
                 aria-label="Dismiss notification"
                 className={cn(
                     "shrink-0 p-1 -m-1 rounded-full text-text-muted hover:text-text-primary hover:bg-hover transition-colors",
-                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
                     classNames?.close
                 )}
             >
