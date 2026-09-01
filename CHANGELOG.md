@@ -1,3 +1,132 @@
+# [3.0.0-beta.1](https://github.com/stefgo/react-ui-components/compare/v2.16.1...v3.0.0-beta.1) (2026-09-01)
+
+
+* feat(dashboard)!: Routing an den Consumer zurueckgeben ([8a9918f](https://github.com/stefgo/react-ui-components/commit/8a9918f9f5c22a2b74569338b518455d585de685))
+* feat(data-views)!: neue Pagination-API, Pipeline in useDataView ([1ecee8e](https://github.com/stefgo/react-ui-components/commit/1ecee8ec25cd16bb75da2144738261dff08aa0d5))
+* feat(hooks)!: usePagination liefert nur noch den Seitenzustand ([7a8b9e3](https://github.com/stefgo/react-ui-components/commit/7a8b9e384a3e3626b3977226ffe5c10b5617a7b2))
+* feat(pagination)!: hideOnSinglePage, pageSizeOptions, unbekannte Gesamtzahl, a11y ([7e37f45](https://github.com/stefgo/react-ui-components/commit/7e37f45e282df4c29f8f2580baf6dcb8e237293c))
+* refactor(api)!: Icons, Groessen und className auf je eine Konvention ([ac2dcf4](https://github.com/stefgo/react-ui-components/commit/ac2dcf450f07399113971f2e49552d53fe4c6ee5))
+* refactor(data-views)!: AbstractDataView-Klasse entfernen ([ee5f11a](https://github.com/stefgo/react-ui-components/commit/ee5f11a85d0d0769c5f28fc0ba393e592a2e6e62))
+* refactor(multi-view)!: Suchfilter an die View durchreichen ([5d49a5c](https://github.com/stefgo/react-ui-components/commit/5d49a5cfc22aafe692777d8c9ce46de5780c1d43))
+* refactor(multi-view)!: totes listDef-Prop entfernen ([d2f231e](https://github.com/stefgo/react-ui-components/commit/d2f231e267ec7063e2b1b3ab04e265d3a75b73df))
+* refactor(state)!: eine Konvention fuer kontrollierten und unkontrollierten Zustand ([2460722](https://github.com/stefgo/react-ui-components/commit/2460722ba1c357e136d328c177581f1af635dcbb))
+* refactor(tokens)!: ein Token pro Rolle statt zwei, plus Radien- und Motion-Skala ([8f680c8](https://github.com/stefgo/react-ui-components/commit/8f680c8fb9f767b60985d1d63451fa17e720185c)), closes [#f9fafb](https://github.com/stefgo/react-ui-components/issues/f9fafb)
+
+
+### Bug Fixes
+
+* **build:** main und module auf die tatsaechlich gebauten Dateien zeigen ([7ee38b9](https://github.com/stefgo/react-ui-components/commit/7ee38b9e6158d413649c521f15cb5f01990a4128))
+* **data-table:** Aktionsspalte fuer Screenreader benennen ([6b3782a](https://github.com/stefgo/react-ui-components/commit/6b3782ab5f11201f273343dab43490839d89305f))
+* **data-views:** Datenansichten per Tastatur bedienbar machen ([5dcaddf](https://github.com/stefgo/react-ui-components/commit/5dcaddf6c7390b5b90393858c0255a2c606ea7ec))
+* **file-browser:** Effekt meldet den Pfad ohne veralteten Callback ([84d463e](https://github.com/stefgo/react-ui-components/commit/84d463e08b941a3f48657ce940b4ff35f087341b))
+* pin npm version to ensure compatibility between CI workflows ([c7a25ce](https://github.com/stefgo/react-ui-components/commit/c7a25ced8e0a0a2662887b0f23e8cfc937e65bf3))
+* **radio:** required-Zustand ARIA-konform auszeichnen ([5a13e99](https://github.com/stefgo/react-ui-components/commit/5a13e99d139213abcf2c879e7203653998ced7d3))
+* **tokens:** Farbliterale aus Preset und BottomNav entfernen ([702396e](https://github.com/stefgo/react-ui-components/commit/702396ef03d7098f3f23277fe448085e78cf60cc))
+* **tree:** defaultExpanded auch fuer nachgeladene Daten ([7d489fc](https://github.com/stefgo/react-ui-components/commit/7d489fcc4f2ceec3293588aaf66071ce13c4465a))
+
+
+### Code Refactoring
+
+* **forms:** Label-, Hint- und Fehlerlogik in FormField zusammenfuehren ([91f435d](https://github.com/stefgo/react-ui-components/commit/91f435d551c4f248998b2079d6531f7efb2cc6d2))
+
+
+### Features
+
+* **a11y:** Tastatur- und Screenreader-Unterstuetzung, Tokens aus einer Quelle ([0a68009](https://github.com/stefgo/react-ui-components/commit/0a6800989819f05944588f469e0a38a48bad92c1))
+* **data:** Pipeline fuer Filter, Sortierung und Paging ([80fab1a](https://github.com/stefgo/react-ui-components/commit/80fab1a42571af926ab859638b50ceabc4b8fa74))
+* Modal, Toast, Tooltip, Checkbox, Radio, Switch und Textarea ([9dfba0c](https://github.com/stefgo/react-ui-components/commit/9dfba0cb30e02c9640ad5821154c4a58d68a2d58))
+* **release:** add workflow for publishing package with checks and builds ([0cdb8b6](https://github.com/stefgo/react-ui-components/commit/0cdb8b651af453120464cfa9e5ce08e24ebd1282))
+
+
+### BREAKING CHANGES
+
+* ActionMenu nimmt `anchor` (ein Rechteck) statt `position`
+({x, y, top}); useActionMenu liefert entsprechend `menuState.anchor`.
+ActionButton setzt kein `title` mehr – der sichtbare Hinweis kommt aus
+einem echten Tooltip, der zugaengliche Name weiterhin aus aria-label.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+* Collapsible nutzt value/defaultValue/onChange statt
+expanded/initiallyExpanded/onExpandedChange. DataMultiView nutzt
+search={{...}} und viewMode={{..., storageKey}} statt defaultSearchValue,
+onSearchChange und viewModeStorageKey; treeTableDefaultExpanded heisst
+treeExpanded={{ all }}. DataTable und DataTreeTable nutzen sort={{
+defaultValue, storageKey }} statt defaultSort und sortStorageKey;
+DataTreeTable zusaetzlich expanded={{...}} statt defaultExpanded.
+useSortColumns und useTreeExpansion nehmen ihre Optionen entsprechend.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+* **forms:** `InputClassNames.inputWrapper` und
+`SelectClassNames.selectWrapper` heissen einheitlich `control`.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+* `icon` erwartet die Komponente statt des Elements
+(`icon={Save}` statt `icon={<Save size={16} />}`) bei Button, Input,
+Sidebar, BottomNav, StatCard, Dashboard.mobileMore und MobileMoreSheet.
+`ActionButton.size` ist 'sm' | 'md' | 'lg' statt einer Zahl.
+`classNames.root` und `containerClassName` entfallen zugunsten von
+`className`. `ActionMenuClassNames` und `DataActionClassNames.menu`
+entfallen. `BadgeClassNames` entfaellt, da `root` sein einziger Slot war.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+* Die -dark-Tokens und -Klassen entfallen ersatzlos. Wer
+--ruic-bg-card-dark gesetzt hat, setzt jetzt --ruic-bg-card im .dark-Block; wer
+bg-card-dark als Klasse nutzt, nutzt bg-card. Das Preset setzt darkMode selbst
+auf "class". Badge variant "gray" heisst "neutral". --ruic-info-light entfaellt
+zugunsten des Dark-Werts von --ruic-info-hover. Die Radien-Stufen sm bis xl
+haben andere Werte als Tailwinds Standard.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+* DashboardPage.content entfaellt - Seiteninhalte gehoeren in
+die Routen des Consumers und werden Dashboard als children uebergeben. Die
+Legacy-Props mobileMoreMenu und mobileMenuOverlay entfallen ersatzlos; Titel
+und Icon des Mobile-Sheets kommen ueber die neue Prop mobileMore, die
+Einordnung ueber nav.placement: 'mobile-more'. Passt keine Seite auf den
+aktuellen Pfad, wird nichts mehr hervorgehoben statt auf die erste Seite
+zurueckzufallen - Consumer brauchen eine eigene Catch-all-Route.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+* DataMultiViewProps.listDef entfaellt. Die Feldkonfiguration
+der Listenansicht steht in listColumns; der Typ DataListDef bleibt
+unveraendert exportiert.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+* usePagination hat eine neue Signatur und Rueckgabe.
+usePagination(items, size) wird zu usePagination({ pageSize: size }) ohne
+das Datenargument; currentItems, totalPages, totalItems, goToPage, nextPage
+und prevPage entfallen. Die Zeilen kommen nicht mehr aus dem Hook, sondern
+bleiben vollstaendig bei der View.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+* Die Props von PaginationControls heissen wie im Rest der
+neuen API -- currentPage -> page, itemsPerPage -> pageSize,
+onItemsPerPageChange -> onPageSizeChange. Die Komponente blendet sich nicht
+mehr automatisch bei bis zu 10 Eintraegen aus; wer das will, setzt
+hideOnSinglePage.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+* searchFilter wird nicht mehr auf die Daten angewandt, bevor
+sie an die View gehen. Wer sich darauf verlassen hat, dass data bereits
+gefiltert ankommt -- etwa in einem eigenen rowClassName oder onRowClick --
+bekommt jetzt die ungefilterte Menge zu sehen. Extern gefilterte Aufrufer
+(onSearchChange) sind nicht betroffen.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+* Die pagination-Prop hat eine neue Form. currentPage,
+totalPages, itemsPerPage, totalItems, onPageChange, onItemsPerPageChange,
+sliceInternally und renderControls entfallen ersatzlos. data ist im
+Client-Modus immer die Gesamtmenge, nicht mehr die aktuelle Seite. Die
+Umstellung ist nicht stillschweigend moeglich: die alte und die neue Form
+haben kein gemeinsames Pflichtfeld, TypeScript meldet jede Aufrufstelle.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+* AbstractDataView wird nicht mehr exportiert. Wer davon
+abgeleitet hat, baut die View als Funktionskomponente mit useDataView und
+DataViewFrame. Die Typen BaseDataViewProps und DataViewClassNames bleiben
+unter demselben Namen importierbar.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+
 ## [2.16.1](https://github.com/stefgo/react-ui-components/compare/v2.16.0...v2.16.1) (2026-08-30)
 
 
