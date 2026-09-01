@@ -20,12 +20,18 @@ export interface StatCardProps {
     sub?: string;
     icon: IconComponent;
     onClick?: () => void;
+    /**
+     * Marks a clickable card as the active choice. It draws the selection ring
+     * and, more importantly, is the only thing that tells assistive technology
+     * which card of a row is the current one -- a ring alone says nothing.
+     */
+    selected?: boolean;
     className?: string;
     classNames?: StatCardClassNames;
     ref?: React.Ref<HTMLDivElement & HTMLButtonElement>;
 }
 
-export const StatCard = ({ label, value, sub, icon: Icon, onClick, className = '', classNames, ref }: StatCardProps) => {
+export const StatCard = ({ label, value, sub, icon: Icon, onClick, selected, className = '', classNames, ref }: StatCardProps) => {
     // A clickable card has to be a real button, or it is unreachable by keyboard
     // and invisible to assistive technology.
     const Tag = onClick ? 'button' : 'div';
@@ -35,11 +41,17 @@ export const StatCard = ({ label, value, sub, icon: Icon, onClick, className = '
             ref={ref}
             type={onClick ? 'button' : undefined}
             onClick={onClick}
+            // Only a button can be pressed; on a plain card the state would be
+            // announced without any way to change it.
+            aria-pressed={onClick && selected !== undefined ? selected : undefined}
             className={cn(
                 "bg-statcard-bg p-6 rounded-lg border border-border shadow-sm hover:shadow-md transition-all h-full",
                 onClick
                     ? 'w-full text-left cursor-pointer hover:border-border active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
                     : '',
+                // The ring sits on the card itself, so it always follows the
+                // card's own corner radius. A wrapper would have to repeat it.
+                selected ? 'ring-2 ring-primary' : '',
                 className
             )}
         >
