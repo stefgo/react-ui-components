@@ -11,8 +11,10 @@
     "registry": "https://npm.pkg.github.com"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=22",
+    "npm": ">=11"
   },
+  "packageManager": "npm@11.12.1",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

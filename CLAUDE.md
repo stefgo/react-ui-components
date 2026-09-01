@@ -20,7 +20,11 @@ npm run tokens:check    # fails if it is stale
 npx commitlint --from origin/main --to HEAD   # the commit messages CI will check
 ```
 
-Node 22 (`.nvmrc`) — both workflows read that file, so there is one version, not two.
+Node 22 (`.nvmrc`) and npm 11 (`packageManager` in `package.json`) — both workflows
+read those two fields, so the toolchain is declared once. **The npm major matters:**
+npm 10 writes the optional peers of `@commitlint/read` into `package-lock.json` and
+npm 11 leaves them out, so a lockfile written by one makes `npm ci` fail under the
+other. CI installs the pinned npm before `npm ci` for exactly that reason.
 
 Storybook has a **side-by-side** theme mode that renders a story in light and
 dark at once. Judge colour changes there, never in a consumer.
