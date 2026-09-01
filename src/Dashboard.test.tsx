@@ -57,6 +57,17 @@ describe('Dashboard', () => {
         expect(screen.getAllByRole('button', { name: 'Settings' }).length).toBeGreaterThan(0);
     });
 
+    // Regression: the focus-restore effect in `useMenuBehavior` also runs on
+    // mount, where the menu is closed because it was never opened. It used to
+    // focus the trigger there, and a programmatic focus without a preceding
+    // pointer event matches :focus-visible — so the user menu came up with a
+    // focus ring on every page load.
+    it('leaves focus alone on mount', () => {
+        renderDashboard('/clients');
+        expect(screen.getByRole('button', { name: /stefan/ })).not.toHaveFocus();
+        expect(document.body).toHaveFocus();
+    });
+
     describe('mobile more sheet', () => {
         const openSheet = async () => {
             await userEvent.click(screen.getByRole('button', { name: 'More' }));

@@ -71,6 +71,16 @@ describe('ActionMenu', () => {
         expect(menu).toHaveStyle({ position: 'fixed', top: '128px', left: '90px' });
     });
 
+    // The counterpart to the test below: focus goes back to the trigger on
+    // close, but a menu that was never open must not touch focus at all. The
+    // shared hook's restore effect runs on mount too, and the programmatic
+    // focus it did there showed up as a :focus-visible ring on the trigger.
+    it('leaves focus alone while it has never been opened', () => {
+        render(<Harness />);
+        expect(screen.getByRole('button', { name: 'Open' })).not.toHaveFocus();
+        expect(document.body).toHaveFocus();
+    });
+
     it('gives focus back to the trigger when it closes', async () => {
         render(<Harness />);
         const trigger = screen.getByRole('button', { name: 'Open' });

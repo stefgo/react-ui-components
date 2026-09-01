@@ -42,6 +42,7 @@ export const useMenuBehavior = <T extends HTMLElement = HTMLDivElement>({
 }: UseMenuBehaviorOptions) => {
     const containerRef = useRef<T>(null);
     const previouslyFocused = useRef<HTMLElement | null>(null);
+    const hasBeenOpen = useRef(false);
 
     const getItems = useCallback((): HTMLElement[] => {
         const container = containerRef.current;
@@ -67,7 +68,18 @@ export const useMenuBehavior = <T extends HTMLElement = HTMLDivElement>({
     // Restore focus when the menu closes, but never steal it back on unmount of
     // a component that was already gone from the page.
     useEffect(() => {
-        if (isOpen) return;
+        if (isOpen) {
+            hasBeenOpen.current = true;
+            return;
+        }
+        // A closed menu is also the state every trigger mounts in, and this
+        // effect runs on mount like any other. Without the flag it would focus
+        // the trigger of a menu that was never opened — programmatic focus with
+        // no preceding pointer interaction, which browsers match as
+        // :focus-visible, so the trigger comes up wearing a focus ring.
+        if (!hasBeenOpen.current) return;
+        hasBeenOpen.current = false;
+
         const target = triggerRef?.current ?? previouslyFocused.current;
         if (target?.isConnected) target.focus();
         // Only react to the open→closed transition.
