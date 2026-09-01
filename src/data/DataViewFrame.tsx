@@ -4,7 +4,7 @@ import { DataViewClassNames } from './types';
 import { PaginationView } from './useDataView';
 import { cn } from '../utils';
 
-interface DataViewFrameProps {
+export interface DataViewFrameProps {
     className?: string;
     classNames?: DataViewClassNames;
     pagination: PaginationView | null;

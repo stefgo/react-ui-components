@@ -91,7 +91,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                                     aria-label={allExpanded ? 'Collapse all rows' : 'Expand all rows'}
                                                     className={cn(
                                                         "shrink-0 hover:text-text-primary rounded-sm",
-                                                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                                                        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
                                                         classNames?.chevronIcon,
                                                     )}
                                                 >
@@ -107,7 +107,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                                     onClick={(e) => handleSortClick(col, idx, e)}
                                                     className={cn(
                                                         "inline-flex items-center gap-1 select-none uppercase hover:text-text-primary",
-                                                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-sm",
+                                                        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded-sm",
                                                         classNames?.sortButton,
                                                     )}
                                                 >
@@ -185,7 +185,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                                                     onClick={(e) => { e.stopPropagation(); toggleRow(key); }}
                                                                     className={cn(
                                                                         "shrink-0 w-4 text-text-muted hover:text-text-primary rounded-sm",
-                                                                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                                                                        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
                                                                         classNames?.chevronIcon,
                                                                     )}
                                                                 >

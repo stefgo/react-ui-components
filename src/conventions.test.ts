@@ -13,23 +13,37 @@ import { join, relative } from 'node:path';
 
 const SRC = join(__dirname);
 
-const sourceFiles = (): string[] => {
+const walkFrom = (predicate: (name: string) => boolean): string[] => {
     const found: string[] = [];
     const walk = (dir: string) => {
         for (const entry of readdirSync(dir, { withFileTypes: true })) {
             const path = join(dir, entry.name);
             if (entry.isDirectory()) walk(path);
-            else if (/\.tsx?$/.test(entry.name) && !/\.(test|stories)\./.test(entry.name)) {
-                found.push(path);
-            }
+            else if (predicate(entry.name)) found.push(path);
         }
     };
     walk(SRC);
     return found;
 };
 
-const matches = (pattern: RegExp) =>
-    sourceFiles().flatMap((file) => {
+/** The components themselves. Most rules are about their API and apply here only. */
+const sourceFiles = (): string[] =>
+    walkFrom((name) => /\.tsx?$/.test(name) && !/\.(test|stories)\./.test(name));
+
+/**
+ * The components *and* their stories.
+ *
+ * Only the two colour rules use this, and they have to: a story writes the same
+ * classes a consumer would, and Storybook is where colour is judged. Excluding
+ * stories is how 31 dead `-dark` twins survived the 3.0 token migration in eight
+ * story files — every one of them naming a token that no longer exists, so
+ * Tailwind emitted nothing and nothing looked wrong.
+ */
+const styledFiles = (): string[] =>
+    walkFrom((name) => /\.tsx?$/.test(name) && !/\.test\./.test(name));
+
+const matches = (pattern: RegExp, files: string[] = sourceFiles()) =>
+    files.flatMap((file) => {
         const lines = readFileSync(file, 'utf8').split('\n');
         return lines
             .map((line, i) => ({ line, i }))
@@ -101,13 +115,13 @@ describe('conventions', () => {
     });
 
     it('uses one token per role, not a -dark twin', () => {
-        // `bg-card`, never `bg-card dark:bg-card-dark`. The `.dark` block
-        // redefines the variable, so one class covers both themes.
-        expect(matches(/\b(?:bg|text|border|ring|from|to|via)-[\w-]+-dark\b/)).toEqual([]);
+        // `bg-card`, never the same class paired with a hand-written dark twin.
+        // The `.dark` block redefines the variable, so one class covers both.
+        expect(matches(/\b(?:bg|text|border|ring|divide|from|to|via)-[\w-]+-dark\b/, styledFiles())).toEqual([]);
     });
 
     it('carries exactly one dark: prefix, and it is the one with no light counterpart', () => {
-        const found = matches(/\bdark:/);
+        const found = matches(/\bdark:/, styledFiles());
         expect(found).toHaveLength(1);
         expect(found[0]).toContain('LoginPage.tsx');
     });
@@ -116,6 +130,14 @@ describe('conventions', () => {
         // `className` already addresses the root element; a `root` slot was a
         // second name for the same thing.
         expect(matches(/classNames\?\.root\b|^\s*root\?: string;/)).toEqual([]);
+    });
+
+    it('exports every Props interface', () => {
+        // A consumer that needs to name a prop's type -- to key a lookup table
+        // by Badge's variant, say -- has no way to reach an unexported one, and
+        // ends up re-declaring the union by hand. It then drifts silently the
+        // next time a variant is added here.
+        expect(matches(/^interface [A-Za-z]+Props\b/)).toEqual([]);
     });
 
     it('has no containerClassName', () => {

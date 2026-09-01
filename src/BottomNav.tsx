@@ -18,7 +18,7 @@ export interface BottomNavClassNames {
     itemInactive?: string;
 }
 
-interface BottomNavProps {
+export interface BottomNavProps {
     items: BottomNavItem[];
     /** Accessible name of the landmark, e.g. when several navs coexist. */
     ariaLabel?: string;
@@ -35,7 +35,7 @@ const NavTab = ({ icon: Icon, label, active, onClick, classNames }: BottomNavIte
         aria-current={active ? 'page' : undefined}
         className={cn(
             "flex-1 flex flex-col items-center justify-center py-3 transition-colors",
-            "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset",
+            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary",
             active ? "text-primary" : "text-text-muted hover:text-text-primary",
             classNames?.item,
             active ? classNames?.itemActive : classNames?.itemInactive

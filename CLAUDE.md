@@ -79,7 +79,7 @@ still looking fine to a mouse.
 
 `Dashboard` renders navigation, not routing. It highlights the entry matching `currentPath` and renders `children` — deciding what is on screen is the consumer router's job.
 
-### The four conventions
+### The five conventions
 
 These are the point of the library. A change that breaks one of them is a
 regression even if it compiles and the tests pass.
@@ -99,7 +99,22 @@ edge length.
 slot and no `containerClassName` — both were removed because they duplicated
 `className`.
 
-**4. Controllable state is `value` / `defaultValue` / `onChange`,** built on
+**4. Focus is an `outline`, never a `ring`.** `focus-visible:outline
+focus-visible:outline-2 focus-visible:outline-offset-2
+focus-visible:outline-primary`, and no `outline-none` alongside it — that
+utility draws a transparent 2px outline and would race the colour on variant
+order. `outline-2` alone sets only the width; without the bare `outline`
+(`outline-style: solid`) nothing is drawn. Two reasons this is not the same as
+a ring: `ring` is a `box-shadow`, so a surface that also carries a *selection*
+ring cannot show both, and `box-shadow` is discarded in forced-colours mode
+while an outline survives. Only `focus:outline-none` on a container that takes
+focus programmatically and must not show it (`Modal`, `ActionMenu`, `UserMenu`,
+`MobileMoreSheet`) is legitimate. Form controls keep the `focus:` trigger
+rather than `focus-visible:` and sit at `outline-offset-0`; everything
+clickable uses `focus-visible:` at offset 2, or a negative offset where the
+contour must stay inside its row (`BottomNav`, `useDataView`).
+
+**5. Controllable state is `value` / `defaultValue` / `onChange`,** built on
 `useControllableState`. Flat on the props when a component has one such state,
 grouped under the state's name when it has several. Persistence (localStorage)
 is the *default of the uncontrolled variant*, never the only mode.

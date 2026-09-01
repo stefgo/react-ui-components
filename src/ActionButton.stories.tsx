@@ -35,7 +35,7 @@ export const States: Story = {
                 <ActionButton {...args} icon={Pencil} tooltip="Enabled" variant="solid" />
                 <ActionButton {...args} icon={Trash2} color="error" disabled tooltip={{ enabled: 'Delete', disabled: 'Cannot delete while running' }} />
             </div>
-            <p className="text-xs text-text-muted dark:text-text-muted-dark">
+            <p className="text-xs text-text-muted">
                 The tooltip doubles as the accessible name — tab through them with a screen reader on.
             </p>
         </div>

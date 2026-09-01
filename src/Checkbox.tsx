@@ -8,7 +8,7 @@ export interface CheckboxClassNames extends FormFieldClassNames {
     box?: string;
 }
 
-interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
+export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
     label?: ReactNode;
     hint?: ReactNode;
     error?: string;
@@ -81,7 +81,7 @@ export const Checkbox = ({
                             error ? "border-error" : "border-input-border",
                             "peer-checked:bg-primary peer-checked:border-primary peer-checked:text-button-primary-text",
                             "peer-indeterminate:bg-primary peer-indeterminate:border-primary peer-indeterminate:text-button-primary-text",
-                            "peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-focus-visible:ring-offset-1",
+                            "peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1 peer-focus-visible:outline-primary",
                             "peer-disabled:opacity-50",
                             classNames?.box
                         )}

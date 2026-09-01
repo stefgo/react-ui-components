@@ -3,9 +3,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 /**
  * A reference sheet of the design tokens as they actually render.
  *
- * It exists to make the two open questions visible rather than arguable:
- * the corner radii below come from four different steps, and every colour still
- * needs a `dark:` twin written by hand at each call site.
+ * Every swatch below carries exactly one class, and that is the point of the
+ * sheet: a colour is `bg-card`, never that class paired with a hand-written
+ * dark twin. The `.dark` block redefines the variable, so one class covers both
+ * themes. Read it in Storybook's side-by-side theme mode, where a token that
+ * resolves in only one of the two is immediately visible.
  */
 const meta = {
     title: 'Design tokens/Overview',
@@ -17,15 +19,15 @@ type Story = StoryObj<typeof meta>;
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <section className="mb-10">
-        <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-text-muted dark:text-text-muted-dark">{title}</h2>
+        <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-text-muted">{title}</h2>
         {children}
     </section>
 );
 
 const Swatch = ({ className, name }: { className: string; name: string }) => (
     <div className="flex items-center gap-3">
-        <div className={`w-12 h-12 rounded-md border border-border dark:border-border-dark ${className}`} />
-        <code className="text-xs text-text-secondary dark:text-text-secondary-dark">{name}</code>
+        <div className={`w-12 h-12 rounded-md border border-border ${className}`} />
+        <code className="text-xs text-text-secondary">{name}</code>
     </div>
 );
 
@@ -45,39 +47,50 @@ export const Colours: Story = {
                 </div>
             </Section>
 
-            <Section title="Surfaces — each needs a dark: twin at every call site">
+            <Section title="Surfaces">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <Swatch className="bg-app-bg dark:bg-app-bg-dark" name="bg-app-bg" />
-                    <Swatch className="bg-card dark:bg-card-dark" name="bg-card" />
-                    <Swatch className="bg-card-header dark:bg-card-header-dark" name="bg-card-header" />
-                    <Swatch className="bg-hover dark:bg-hover-dark" name="bg-hover" />
-                    <Swatch className="bg-input-bg dark:bg-input-bg-dark" name="bg-input-bg" />
-                    <Swatch className="bg-sidebar-bg dark:bg-sidebar-bg-dark" name="bg-sidebar-bg" />
-                    <Swatch className="bg-table-header dark:bg-table-header-dark" name="bg-table-header" />
-                    <Swatch className="bg-statcard-bg dark:bg-statcard-bg-dark" name="bg-statcard-bg" />
+                    <Swatch className="bg-app-bg" name="bg-app-bg" />
+                    <Swatch className="bg-card" name="bg-card" />
+                    <Swatch className="bg-card-header" name="bg-card-header" />
+                    <Swatch className="bg-hover" name="bg-hover" />
+                    <Swatch className="bg-input-bg" name="bg-input-bg" />
+                    <Swatch className="bg-sidebar-bg" name="bg-sidebar-bg" />
+                    <Swatch className="bg-table-header" name="bg-table-header" />
+                    <Swatch className="bg-statcard-bg" name="bg-statcard-bg" />
                 </div>
             </Section>
 
             <Section title="Text">
                 <div className="space-y-2">
-                    <p className="text-text-primary dark:text-text-primary-dark">text-primary — headings and emphasis</p>
-                    <p className="text-text-secondary dark:text-text-secondary-dark">text-secondary — body copy</p>
-                    <p className="text-text-muted dark:text-text-muted-dark">text-muted — labels and inactive text</p>
+                    <p className="text-text-primary">text-primary — headings and emphasis</p>
+                    <p className="text-text-secondary">text-secondary — body copy</p>
+                    <p className="text-text-muted">text-muted — labels and inactive text</p>
                 </div>
             </Section>
         </>
     ),
 };
 
-/** Four different radius steps are in use today. This is what motivates the scale. */
+/**
+ * The radius scale, with the role each step is for. `borderRadius` in the preset
+ * replaces Tailwind's own steps, so anything outside this list — `rounded-2xl`,
+ * say — is a step the library has no opinion about and should not be reached for.
+ */
 export const Radii: Story = {
     render: () => (
-        <Section title="Corner radii in use">
+        <Section title="Corner radii">
             <div className="flex flex-wrap gap-6">
-                {['rounded-md', 'rounded-lg', 'rounded-xl', 'rounded-2xl', 'rounded-full'].map((r) => (
-                    <div key={r} className="text-center">
-                        <div className={`w-20 h-20 bg-card dark:bg-card-dark border border-border dark:border-border-dark ${r}`} />
-                        <code className="mt-2 block text-[11px] text-text-muted dark:text-text-muted-dark">{r}</code>
+                {[
+                    ['rounded-sm', 'inline chips, small controls'],
+                    ['rounded-md', 'buttons, inputs, menus'],
+                    ['rounded-lg', 'cards, panels, sheets'],
+                    ['rounded-xl', 'large surfaces, mobile sheets'],
+                    ['rounded-full', 'pills and icon buttons'],
+                ].map(([r, use]) => (
+                    <div key={r} className="w-32 text-center">
+                        <div className={`w-20 h-20 mx-auto bg-card border border-border ${r}`} />
+                        <code className="mt-2 block text-[11px] text-text-primary">{r}</code>
+                        <span className="block text-[11px] text-text-muted">{use}</span>
                     </div>
                 ))}
             </div>
@@ -88,7 +101,7 @@ export const Radii: Story = {
 export const Layering: Story = {
     render: () => (
         <Section title="Z-index scale">
-            <ul className="text-sm space-y-1 text-text-secondary dark:text-text-secondary-dark">
+            <ul className="text-sm space-y-1 text-text-secondary">
                 {[
                     ['z-sticky', '10', 'sticky table headers'],
                     ['z-header', '30', 'DashboardHeader'],
@@ -98,7 +111,7 @@ export const Layering: Story = {
                     ['z-modal', '70', 'reserved for dialogs'],
                 ].map(([cls, value, use]) => (
                     <li key={cls} className="flex gap-4">
-                        <code className="w-28 text-text-primary dark:text-text-primary-dark">{cls}</code>
+                        <code className="w-28 text-text-primary">{cls}</code>
                         <span className="w-10 tabular-nums">{value}</span>
                         <span>{use}</span>
                     </li>

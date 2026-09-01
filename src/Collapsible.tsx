@@ -11,7 +11,7 @@ export interface CollapsibleClassNames {
     content?: string;
 }
 
-interface CollapsibleProps extends Controllable<boolean> {
+export interface CollapsibleProps extends Controllable<boolean> {
     title: ReactNode;
     children: ReactNode;
     className?: string;

@@ -34,7 +34,7 @@ export interface SidebarClassNames {
     itemBadgeInactive?: string;
 }
 
-interface SidebarProps {
+export interface SidebarProps {
     groups: SidebarGroup[];
     isCollapsed?: boolean;
     /** Accessible name of the navigation landmark. */
@@ -62,7 +62,7 @@ const NavItem = ({
         aria-current={active ? 'page' : undefined}
         className={cn(
             "w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-base",
-            "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
             isCollapsed ? "justify-center" : "justify-between",
             active
                 ? "bg-sidebar-item-active text-text-primary shadow-sm ring-1 ring-border"

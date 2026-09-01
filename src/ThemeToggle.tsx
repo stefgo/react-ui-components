@@ -5,7 +5,7 @@ export interface ThemeToggleClassNames {
     icon?: string;
 }
 
-interface ThemeToggleProps {
+export interface ThemeToggleProps {
     theme: string;
     onToggle: () => void;
     className?: string; // Standard root className
@@ -26,7 +26,7 @@ export const ThemeToggle = ({
             onClick={onToggle}
             className={cn(
                 "p-2 flex items-center justify-center rounded-md text-text-muted hover:text-text-primary hover:bg-hover transition-colors",
-                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
                 className
             )}
             title={label}

@@ -45,8 +45,8 @@ export const Sizes: Story = {
 /** Badges usually sit inline with text — this is where vertical rhythm shows. */
 export const InContext: Story = {
     render: () => (
-        <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
-            Client <span className="font-medium text-text-primary dark:text-text-primary-dark">pbs-node-01</span>{' '}
+        <p className="text-sm text-text-secondary">
+            Client <span className="font-medium text-text-primary">pbs-node-01</span>{' '}
             is <Badge variant="success" size="sm">online</Badge> and last ran 4 minutes ago.
         </p>
     ),

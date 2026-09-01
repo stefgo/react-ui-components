@@ -15,7 +15,7 @@ type ActionButtonNativeProps = Omit<
     'onClick' | 'disabled' | 'color' | 'title'
 >;
 
-interface ActionButtonProps extends ActionButtonNativeProps {
+export interface ActionButtonProps extends ActionButtonNativeProps {
     icon: IconComponent;
     onClick: (e: React.MouseEvent) => void;
     disabled?: boolean | (() => boolean);
@@ -95,7 +95,7 @@ export const ActionButton = ({
             disabled={isDisabled}
             className={cn(
                 "transition-all rounded-full flex items-center justify-center",
-                "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+                "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
                 paddings[size],
                 colorClasses[color],
                 variantClasses,

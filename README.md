@@ -282,7 +282,12 @@ Every component takes `classNames` for its named inner elements.
 
 - `title`, `action` (rendered right), `titleAs` (heading level, or `div` to stay
   out of the document outline)
-- `classNames`: `header`, `headerTitle`, `headerAction`
+- `padding`: `none` | `md` (default). `none` hands the content area to the
+  child — a `DataTable`, a `DataMultiView`, a `FileBrowser`: anything that
+  brings its own spacing and scroll container and has to be a direct child of
+  the card to fill it.
+- `classNames`: `header`, `headerTitle`, `headerAction`, `content` (the padding
+  wrapper, which only exists while `padding` is not `none`)
 
 #### `StatCard`
 
@@ -583,8 +588,8 @@ rows would make a page's length depend on what is expanded.
 
 ## Migrating from 2.x to 3.0
 
-Five groups of changes. Each is mechanical, and TypeScript points at every call
-site — there is no silent behaviour change to hunt for.
+Six groups of changes. Each is mechanical, and TypeScript points at every call
+site — with one exception, called out in group 6, where a default changed.
 
 ### 1. Colour tokens
 
@@ -680,6 +685,43 @@ view now filters, sorts and slices itself, in that order.
 `ActionButton` no longer sets a native `title`; the visible hint comes from a
 real `Tooltip` and the accessible name from `aria-label`. Nothing to change
 unless you were styling `[title]`.
+
+### 6. `DataCard` is gone — `Card` has `padding`
+
+`DataCard` was `Card` plus a `p-6` wrapper, and its own `noPadding` prop turned
+that single difference back off. It is now the `padding` prop on `Card`.
+
+```diff
+- <DataCard title="Users">{form}</DataCard>
++ <Card title="Users">{form}</Card>
+
+- <DataCard title="Users" noPadding><DataTable … /></DataCard>
++ <Card title="Users" padding="none"><DataTable … /></Card>
+
+- <DataCard classNames={{ card: { header: 'py-2' }, content: 'space-y-4' }} />
++ <Card classNames={{ header: 'py-2', content: 'space-y-4' }} />
+```
+
+`DataCardClassNames` is gone with it: its `card` key was a second nesting level
+around `CardClassNames`, and `content` moved onto `CardClassNames` unchanged.
+
+**The one change TypeScript will not point at:** `Card` now pads its content by
+default. A `<Card>` that used to hand-roll the padding itself gets it twice.
+
+```diff
+  <Card title="Page not found">
+-     <div className="p-6 space-y-4">{children}</div>
++     <div className="space-y-4">{children}</div>
+  </Card>
+```
+
+Grep your `<Card` call sites for a child whose first class is a padding
+utility — that is the whole of the migration. Where the child was there *only*
+to carry the padding, drop it and use `classNames.content` instead.
+
+Two shape notes for `padding="none"`: there is no wrapper element at all, so
+`classNames.content` does nothing, and a child using `flex-1` or `h-full` stays
+a direct child of the card, as it must be to fill it.
 
 ### What you can now delete
 

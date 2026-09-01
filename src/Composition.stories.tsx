@@ -84,7 +84,7 @@ const Page = () => {
                     </Tooltip>
                 }
             >
-                <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                         <Input label="Repository" defaultValue="pbs://backup.local:8007" hint="Include the scheme." />
                         <Select
@@ -117,7 +117,7 @@ const Page = () => {
                 </div>
             </Card>
 
-            <Card title="Clients">
+            <Card title="Clients" padding="none">
                 <DataTable
                     data={clients}
                     keyField="id"

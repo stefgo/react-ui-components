@@ -8,7 +8,7 @@ export interface ButtonClassNames {
     spinner?: string;
 }
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
     size?: ControlSize;
     isLoading?: boolean;
@@ -30,13 +30,13 @@ export const Button = ({
     ref,
     ...props
 }: ButtonProps) => {
-    const baseStyles = "relative inline-flex items-center justify-center font-semibold rounded-md transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+    const baseStyles = "relative inline-flex items-center justify-center font-semibold rounded-md transition-all focus:outline focus:outline-2 focus:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
 
     const variants = {
-        primary: "bg-button-primary hover:bg-button-primary-hover text-button-primary-text focus:ring-primary shadow-lg hover:shadow-primary/20 active:scale-[0.98]",
-        secondary: "bg-button-secondary hover:bg-button-secondary-hover text-text-primary focus:ring-text-secondary",
-        danger: "bg-button-danger hover:bg-button-danger-hover text-button-primary-text focus:ring-error shadow-sm",
-        ghost: "bg-transparent hover:bg-hover text-text-secondary"
+        primary: "bg-button-primary hover:bg-button-primary-hover text-button-primary-text focus:outline-primary shadow-lg hover:shadow-primary/20 active:scale-[0.98]",
+        secondary: "bg-button-secondary hover:bg-button-secondary-hover text-text-primary focus:outline-text-secondary",
+        danger: "bg-button-danger hover:bg-button-danger-hover text-button-primary-text focus:outline-error shadow-sm",
+        ghost: "bg-transparent hover:bg-hover text-text-secondary focus:outline-primary"
     };
 
     const sizes = {
