@@ -34,7 +34,7 @@ export interface CardProps {
     ref?: Ref<HTMLDivElement>;
 }
 
-export const Card = ({ children, title, action, titleAs: TitleTag = 'h3', padding = 'md', className = '', classNames, ref }: CardProps) => {
+export const Card = ({ children, title, action, titleAs: TitleTag = 'h3', padding = 'none', className = '', classNames, ref }: CardProps) => {
     const showHeader = title || action;
     return (
         <div
