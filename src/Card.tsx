@@ -5,9 +5,18 @@ export interface CardClassNames {
     header?: string;
     headerTitle?: string;
     headerAction?: string;
+    /** The padding wrapper around `children`. Only exists while `padding` is not `'none'`. */
+    content?: string;
 }
 
 export type CardTitleLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div';
+
+/**
+ * `'none'` renders `children` as the card's own children, with no wrapper at
+ * all — a data view or a file list brings its own scroll container and has to
+ * be a direct flex child of the card to fill it.
+ */
+export type CardPadding = 'none' | 'md';
 
 export interface CardProps {
     children?: ReactNode;
@@ -18,12 +27,14 @@ export interface CardProps {
      * outline; `div` opts out of the outline entirely.
      */
     titleAs?: CardTitleLevel;
+    /** Inner spacing of the content area. Defaults to `'md'`. */
+    padding?: CardPadding;
     className?: string;
     classNames?: CardClassNames;
     ref?: Ref<HTMLDivElement>;
 }
 
-export const Card = ({ children, title, action, titleAs: TitleTag = 'h3', className = '', classNames, ref }: CardProps) => {
+export const Card = ({ children, title, action, titleAs: TitleTag = 'h3', padding = 'md', className = '', classNames, ref }: CardProps) => {
     const showHeader = title || action;
     return (
         <div
@@ -42,7 +53,9 @@ export const Card = ({ children, title, action, titleAs: TitleTag = 'h3', classN
                     {action && <div className={cn(classNames?.headerAction)}>{action}</div>}
                 </div>
             )}
-            {children}
+            {padding === 'none'
+                ? children
+                : <div className={cn("p-6", classNames?.content)}>{children}</div>}
         </div>
     );
 };

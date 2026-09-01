@@ -17,13 +17,13 @@ export const WithHeader: Story = {
     args: {
         title: 'Backup jobs',
         action: <Button size="sm" variant="secondary">Refresh</Button>,
-        children: <div className="p-5 text-sm text-text-secondary dark:text-text-secondary-dark">Card body.</div>,
+        children: <p className="text-sm text-text-secondary">Card body.</p>,
     },
 };
 
 export const WithoutHeader: Story = {
     args: {
-        children: <div className="p-5 text-sm text-text-secondary dark:text-text-secondary-dark">A card with no header at all.</div>,
+        children: <p className="text-sm text-text-secondary">A card with no header at all.</p>,
     },
 };
 
@@ -32,7 +32,7 @@ export const RichHeader: Story = {
     args: {
         title: <><HardDrive size={18} aria-hidden /> Daily backup <Badge variant="success" size="sm">active</Badge></>,
         action: <Button size="sm">Run now</Button>,
-        children: <div className="p-5 text-sm text-text-secondary dark:text-text-secondary-dark">Last run 4 minutes ago.</div>,
+        children: <p className="text-sm text-text-secondary">Last run 4 minutes ago.</p>,
     },
 };
 
@@ -50,10 +50,30 @@ export const AlongsideStatCards: Story = {
                 <StatCard label="Snapshots" value="1204" sub="Available" icon={HardDrive} />
             </div>
             <Card title="Recent activity" action={<Button size="sm" variant="ghost">See all</Button>}>
-                <div className="p-5 text-sm text-text-secondary dark:text-text-secondary-dark">
+                <p className="text-sm text-text-secondary">
                     Compare the corner radii and surfaces across these two.
-                </div>
+                </p>
             </Card>
         </div>
     ),
+};
+
+/**
+ * `padding="none"` hands the content area over to the child. A data view or a
+ * file list brings its own scroll container and its own spacing, and has to sit
+ * directly inside the card to fill it — a wrapper in between would swallow the
+ * flex chain. This is what `DataCard` used to be.
+ */
+export const WithoutPadding: Story = {
+    args: {
+        title: 'Clients',
+        padding: 'none',
+        children: (
+            <ul className="divide-y divide-border text-sm text-text-secondary">
+                {['backup-01', 'backup-02', 'nas-fileserver'].map((name) => (
+                    <li key={name} className="px-5 py-3">{name}</li>
+                ))}
+            </ul>
+        ),
+    },
 };

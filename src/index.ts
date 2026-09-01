@@ -16,7 +16,6 @@ export * from "./ActionMenu";
 export * from "./Button";
 export * from "./Card";
 export * from "./DataAction";
-export * from "./DataCard";
 export * from "./DataList";
 export * from "./DataMultiView";
 export * from "./DataTable";

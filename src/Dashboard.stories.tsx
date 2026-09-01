@@ -74,10 +74,10 @@ const FullShellDemo = (args: React.ComponentProps<typeof Dashboard>) => {
                     <StatCard label="Snapshots" value="1204" sub="Available" icon={Server} />
                 </div>
                 <Card title={`Content for ${path}`}>
-                    <div className="p-5 text-sm text-text-secondary dark:text-text-secondary-dark">
+                    <p className="text-sm text-text-secondary">
                         Switch pages in the sidebar. On a narrow viewport the bottom nav appears and
                         Administration moves into the “More” sheet.
-                    </div>
+                    </p>
                 </Card>
             </Dashboard>
     );
@@ -97,9 +97,9 @@ export const UnknownPath: Story = {
         ],
         children: (
             <Card title="404">
-                <div className="p-5 text-sm text-text-secondary dark:text-text-secondary-dark">
+                <p className="text-sm text-text-secondary">
                     No navigation entry is highlighted.
-                </div>
+                </p>
             </Card>
         ),
     },

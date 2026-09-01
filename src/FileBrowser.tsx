@@ -70,6 +70,7 @@ export const FileBrowser = ({ currentPath, onNavigate, files, isLoading, onSelec
 
     return (
         <Card
+            padding="none"
             title={header}
             className={cn("flex flex-col", className)}
             classNames={{ header: classNames?.header }}
