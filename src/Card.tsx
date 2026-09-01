@@ -27,7 +27,7 @@ export interface CardProps {
      * outline; `div` opts out of the outline entirely.
      */
     titleAs?: CardTitleLevel;
-    /** Inner spacing of the content area. Defaults to `'md'`. */
+    /** Inner spacing of the content area. Defaults to `'none'`. */
     padding?: CardPadding;
     className?: string;
     classNames?: CardClassNames;

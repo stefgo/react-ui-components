@@ -17,12 +17,14 @@ export const WithHeader: Story = {
     args: {
         title: 'Backup jobs',
         action: <Button size="sm" variant="secondary">Refresh</Button>,
+        padding: 'md',
         children: <p className="text-sm text-text-secondary">Card body.</p>,
     },
 };
 
 export const WithoutHeader: Story = {
     args: {
+        padding: 'md',
         children: <p className="text-sm text-text-secondary">A card with no header at all.</p>,
     },
 };
@@ -32,6 +34,7 @@ export const RichHeader: Story = {
     args: {
         title: <><HardDrive size={18} aria-hidden /> Daily backup <Badge variant="success" size="sm">active</Badge></>,
         action: <Button size="sm">Run now</Button>,
+        padding: 'md',
         children: <p className="text-sm text-text-secondary">Last run 4 minutes ago.</p>,
     },
 };
@@ -49,7 +52,7 @@ export const AlongsideStatCards: Story = {
                 <StatCard label="Jobs" value="48" sub="Configurations" icon={HardDrive} />
                 <StatCard label="Snapshots" value="1204" sub="Available" icon={HardDrive} />
             </div>
-            <Card title="Recent activity" action={<Button size="sm" variant="ghost">See all</Button>}>
+            <Card title="Recent activity" padding="md" action={<Button size="sm" variant="ghost">See all</Button>}>
                 <p className="text-sm text-text-secondary">
                     Compare the corner radii and surfaces across these two.
                 </p>

@@ -282,10 +282,11 @@ Every component takes `classNames` for its named inner elements.
 
 - `title`, `action` (rendered right), `titleAs` (heading level, or `div` to stay
   out of the document outline)
-- `padding`: `none` | `md` (default). `none` hands the content area to the
+- `padding`: `none` (default) | `md`. `none` hands the content area to the
   child — a `DataTable`, a `DataMultiView`, a `FileBrowser`: anything that
   brings its own spacing and scroll container and has to be a direct child of
-  the card to fill it.
+  the card to fill it. `md` wraps the children in the `p-6` that `DataCard`
+  used to bring.
 - `classNames`: `header`, `headerTitle`, `headerAction`, `content` (the padding
   wrapper, which only exists while `padding` is not `none`)
 
@@ -691,33 +692,29 @@ unless you were styling `[title]`.
 `DataCard` was `Card` plus a `p-6` wrapper, and its own `noPadding` prop turned
 that single difference back off. It is now the `padding` prop on `Card`.
 
+`padding` defaults to `none`, which is what `Card` has always done, so every
+existing `<Card>` call site keeps rendering exactly as it did. Only the
+`DataCard` call sites move.
+
 ```diff
 - <DataCard title="Users">{form}</DataCard>
-+ <Card title="Users">{form}</Card>
++ <Card title="Users" padding="md">{form}</Card>
 
 - <DataCard title="Users" noPadding><DataTable … /></DataCard>
-+ <Card title="Users" padding="none"><DataTable … /></Card>
++ <Card title="Users"><DataTable … /></Card>
 
 - <DataCard classNames={{ card: { header: 'py-2' }, content: 'space-y-4' }} />
-+ <Card classNames={{ header: 'py-2', content: 'space-y-4' }} />
++ <Card padding="md" classNames={{ header: 'py-2', content: 'space-y-4' }} />
 ```
 
 `DataCardClassNames` is gone with it: its `card` key was a second nesting level
 around `CardClassNames`, and `content` moved onto `CardClassNames` unchanged.
 
-**The one change TypeScript will not point at:** `Card` now pads its content by
-default. A `<Card>` that used to hand-roll the padding itself gets it twice.
-
-```diff
-  <Card title="Page not found">
--     <div className="p-6 space-y-4">{children}</div>
-+     <div className="space-y-4">{children}</div>
-  </Card>
-```
-
-Grep your `<Card` call sites for a child whose first class is a padding
-utility — that is the whole of the migration. Where the child was there *only*
-to carry the padding, drop it and use `classNames.content` instead.
+**The one change TypeScript will not point at:** a `DataCard` that did *not*
+say `noPadding` needs `padding="md"` on the `Card` replacing it, or its content
+silently loses the `p-6`. Grep for `<DataCard` before you drop the import —
+that is the whole of the migration. Where a child element was there *only* to
+carry padding, `padding="md"` plus `classNames.content` replaces it.
 
 Two shape notes for `padding="none"`: there is no wrapper element at all, so
 `classNames.content` does nothing, and a child using `flex-1` or `h-full` stays
