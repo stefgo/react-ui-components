@@ -34,15 +34,15 @@ export const DashboardHeader = ({
     classNames
 }: DashboardHeaderProps) => {
     const renderBranding = () => {
-        if (branding) return <div className={cn(classNames?.branding)}>{branding}</div>;
+        if (branding) return <div className={cn("min-w-0 overflow-hidden", classNames?.branding)}>{branding}</div>;
         if (logo || title) {
             return (
-                <div className={cn("flex items-center gap-3", classNames?.branding)}>
+                <div className={cn("flex items-center gap-3 min-w-0 overflow-hidden", classNames?.branding)}>
                     {logo}
                     {title && (
                         <div className="flex flex-col">
                             {typeof title === 'string' ? (
-                                <h1 className={cn("text-xl font-bold text-text-primary leading-tight", classNames?.title)}>{title}</h1>
+                                <h1 className={cn("text-xl font-bold text-text-primary leading-tight truncate", classNames?.title)}>{title}</h1>
                             ) : title}
                         </div>
                     )}
@@ -57,7 +57,7 @@ export const DashboardHeader = ({
             "px-5 py-3 border-b border-border bg-browser-header sticky top-0 z-header shadow-sm flex items-center justify-between",
             className
         )}>
-            <div className={cn("flex items-center gap-3 overflow-hidden", classNames?.leftSection)}>
+            <div className={cn("flex items-center gap-3 min-w-0", classNames?.leftSection)}>
                 {showSidebarToggle && onToggleSidebar && (
                     <button
                         type="button"
