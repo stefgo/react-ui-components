@@ -34,7 +34,7 @@ export const Button = ({
 
     const variants = {
         primary: "bg-button-primary hover:bg-button-primary-hover text-button-primary-text focus:outline-primary shadow-lg hover:shadow-primary/20 active:scale-[0.98]",
-        secondary: "bg-button-secondary hover:bg-button-secondary-hover text-text-primary focus:outline-text-secondary",
+        secondary: "bg-button-secondary hover:bg-button-secondary-hover text-text-primary focus:outline-primary",
         danger: "bg-button-danger hover:bg-button-danger-hover text-button-primary-text focus:outline-error shadow-sm",
         ghost: "bg-transparent hover:bg-hover text-text-secondary focus:outline-primary"
     };
