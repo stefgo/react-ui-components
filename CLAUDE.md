@@ -152,6 +152,12 @@ instead of a base class. The pieces live in `src/data/`:
 | `useSortColumns.ts`, `useTreeExpansion.ts` | the views' own state |
 | `DataViewFrame.tsx` | container, scroll area, pagination bar |
 
+**The whole folder is internal.** `index.ts` re-exports only `data/types` and
+the two option interfaces a caller actually passes as props (`SortOptions`,
+`TreeExpansionOptions` with `TreeKey`). The views are the API; the pipeline
+behind them is not, so it can be reshaped without a breaking change. Nothing in
+`src/data/` has a story either — it is covered by vitest, not by eye.
+
 **The invariant:** in client mode `data` is always the *complete* set. The view
 filters, sorts and only then takes the current page. A caller that hands over a
 pre-sliced page gets a sort that covers that page alone — the defect 2.16.0
