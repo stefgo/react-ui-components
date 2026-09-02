@@ -168,6 +168,9 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
 
     const toggleButtonClass = (mode: ViewMode) => cn(
         "p-1 rounded-sm transition-all",
+        // The group is only p-1 tall, so the ring sits inside the button
+        // instead of bleeding over the neighbouring toggle.
+        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary",
         effectiveViewMode === mode
             ? 'bg-table-header-toggle-active-bg shadow text-text-primary'
             : 'text-text-muted hover:text-text-primary',
