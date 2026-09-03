@@ -1,3 +1,32 @@
+# [3.0.0-beta.3](https://github.com/stefgo/react-ui-components/compare/v3.0.0-beta.2...v3.0.0-beta.3) (2026-09-03)
+
+
+* feat(data)!: Datenschicht-Interna nicht mehr exportieren ([6a2ea8c](https://github.com/stefgo/react-ui-components/commit/6a2ea8cf008ff0f3a2f2677a163e42b95f9ca0e1))
+
+
+### Bug Fixes
+
+* **a11y:** Prevent focus stealing from closed ActionMenu and Dashboard on mount ([06277e8](https://github.com/stefgo/react-ui-components/commit/06277e80211f14e0a0a033d7c6a0ef9d82e889d4))
+* **Button:** Correct focus outline for secondary variant ([7d24627](https://github.com/stefgo/react-ui-components/commit/7d246275ffb01ad6fa5287d055288574c4a6b945))
+* **DataMultiView:** Improve focus visibility for toggle button ([213f232](https://github.com/stefgo/react-ui-components/commit/213f232a9b6b6b5eb025faa76760854d9ef7bc16))
+
+
+### Features
+
+* **a11y:** Fokusring als Konstanten, Button um Outline-Varianten ergänzt ([6b54b1a](https://github.com/stefgo/react-ui-components/commit/6b54b1a75cc09ad9362248290b4149a03e145b14))
+
+
+### BREAKING CHANGES
+
+* DataViewFrame, SortIcon, useDataView sowie die reinen
+Pipeline-, Sortier- und Tree-Funktionen (runDataPipeline, buildComparator,
+nextSortColumns, readStoredSort, isSortable, flattenTree,
+collectExpandableKeys) sind nicht mehr Teil der öffentlichen API.
+Öffentlich bleiben die Views und die Prop-Typen aus data/types sowie
+SortOptions, TreeExpansionOptions und TreeKey.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+
 # [3.0.0-beta.2](https://github.com/stefgo/react-ui-components/compare/v3.0.0-beta.1...v3.0.0-beta.2) (2026-09-01)
 
 
