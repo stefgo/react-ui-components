@@ -108,6 +108,40 @@ const chromaticLiterals = (raw: string): string[] => {
     return hits;
 };
 
+/**
+ * An element's classes, plus one level of indirection.
+ *
+ * A tag's className often names a `const` rather than spelling the classes out
+ * -- `Button`'s `variants` table, `DataMultiView`'s `toggleButtonClass` --  so
+ * the declarations of the identifiers it mentions are appended. One level, and
+ * a fixed window: enough to keep the rules below honest without demanding that
+ * every component inline its classes.
+ */
+const resolvedClasses = (tag: string, source: string): string => {
+    const className = /className=\{([\s\S]*?)\}\s*(?:[a-zA-Z{]|\/?>)/.exec(tag)?.[1] ?? '';
+    const names = new Set(className.match(/[A-Za-z_$][\w$]*/g) ?? []);
+    let resolved = tag;
+    for (const name of names) {
+        const declared = new RegExp(`\\bconst ${name}\\b`).exec(source);
+        if (declared) resolved += source.slice(declared.index, declared.index + 900);
+    }
+    return resolved;
+};
+
+/** Every `<button>`, `<input>`, `<select>` and `<textarea>` in the library. */
+const focusableTags = (): { file: string; tag: string; classes: string }[] =>
+    sourceFiles().flatMap((file) => {
+        // Comments are dropped first: `openingTags` stops at the first `>`
+        // outside braces, and a `<div>` written in a comment inside the tag
+        // truncated it before its own className.
+        const source = withoutComments(readFileSync(file, 'utf8'));
+        return openingTags(source, ['button', 'input', 'select', 'textarea']).map((tag) => ({
+            file: relative(SRC, file),
+            tag: tag.split('\n')[0].trim(),
+            classes: resolvedClasses(tag, source)
+        }));
+    });
+
 describe('conventions', () => {
     it('has no source files missing from the scan', () => {
         // Guards the guard: a broken walk would make every test below pass.
@@ -183,6 +217,67 @@ describe('conventions', () => {
             const source = readFileSync(file, 'utf8');
             return chromaticLiterals(source).map((hit) => `${relative(SRC, file)}  ${hit}`);
         });
+        expect(offenders).toEqual([]);
+    });
+
+    it('draws every focus ring from focus.ts', () => {
+        // Four offsets (0, 1, 2, -2px) and two triggers (`focus:` and
+        // `focus-visible:`) were live at once, so the gap between a control and
+        // its ring differed per component and half of them showed the ring on a
+        // mouse click. The constants in focus.ts are the only spelling.
+        const written = matches(/(?:focus|focus-visible|peer-focus-visible|group-focus-visible):outline|\boutline-offset-/, styledFiles())
+            .filter((hit) => !hit.startsWith('focus.ts'));
+        expect(written).toEqual([]);
+    });
+
+    it('gives every focusable element a focus ring', () => {
+        // The rule that was missing while `Collapsible`, `DataAction` and
+        // `FileBrowser` shipped focusable buttons with no ring at all. Nothing
+        // looked wrong, because Chrome quietly supplies its own -- drawn with a
+        // white contrast stroke, which on a dark surface is a white frame.
+        //
+        // Per *element*, not per file. The first version of this rule asked
+        // only whether the file mentioned a focus constant somewhere, and
+        // `DataMultiView` passed it while its search input and clear button had
+        // nothing: the constant it named belonged to the view toggle further up.
+        //
+        // Which constant is a judgement call -- a suppression (`FOCUS_RING_NONE`)
+        // counts, because a control whose ring is drawn by its wrapper or by a
+        // sibling is a real design. Having none does not.
+        const RING = /\bFOCUS_RING(?:_INSET|_PEER|_ERROR|_NONE|_WITHIN)?\b/;
+        const offenders = focusableTags()
+            .filter(({ classes }) => !RING.test(classes))
+            .map(({ file, tag }) => `${file}  ${tag}`);
+        expect(offenders).toEqual([]);
+    });
+
+    it('keeps transition-all away from anything focusable', () => {
+        // `transition-all` is literally `transition-property: all`, and `all`
+        // includes `outline-color`, `outline-width` and `outline-offset`. The
+        // focus ring then animates into place: its colour starts at the
+        // inherited `currentColor` -- near-white on a dark surface -- and sweeps
+        // to orange while the ring grows out of the element's edge. Clicking a
+        // field made it flash.
+        //
+        // Tailwind's default `transition` lists its properties explicitly and
+        // outline is not among them, so colours, shadows and transforms still
+        // animate while the ring appears at once. Wrappers that animate their
+        // own size (`Collapsible`, the sidebar) are not focusable and keep it.
+        const offenders = focusableTags()
+            .filter(({ classes }) => /\btransition-all\b/.test(classes))
+            .map(({ file, tag }) => `${file}  ${tag}`);
+        expect(offenders).toEqual([]);
+    });
+
+    it('suppresses the browser ring on inputs whose ring is drawn by a sibling', () => {
+        // Checkbox and Radio hide the real input and draw the box on a sibling
+        // span. Without FOCUS_RING_NONE the browser still rings the invisible
+        // input -- and Chrome draws that ring with a white contrast stroke,
+        // which on a dark surface reads as a white halo around ours.
+        const offenders = sourceFiles().filter((file) => {
+            const source = readFileSync(file, 'utf8');
+            return /\bpeer appearance-none\b/.test(source) && !/\bFOCUS_RING_NONE\b/.test(source);
+        }).map((file) => relative(SRC, file));
         expect(offenders).toEqual([]);
     });
 

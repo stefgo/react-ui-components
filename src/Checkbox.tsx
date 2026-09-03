@@ -2,6 +2,7 @@ import { InputHTMLAttributes, ReactNode, Ref, useEffect, useRef } from 'react';
 import { Check, Minus } from 'lucide-react';
 import { FormField, type FormFieldClassNames } from './form/FormField';
 import { cn } from './utils';
+import { FOCUS_RING_NONE, FOCUS_RING_PEER } from './focus';
 
 export interface CheckboxClassNames extends FormFieldClassNames {
     input?: string;
@@ -65,7 +66,16 @@ export const Checkbox = ({
                         // A real checkbox, made invisible rather than replaced by a
                         // <div>: it keeps the native focus, keyboard and form
                         // behaviour, and only the appearance is ours.
-                        className={cn("peer appearance-none w-4 h-4 m-0 cursor-pointer disabled:cursor-not-allowed", classNames?.input)}
+                        className={cn(
+                            "peer appearance-none w-4 h-4 m-0 cursor-pointer disabled:cursor-not-allowed",
+                            // Not cosmetic: the input is invisible and the ring is
+                            // drawn on the sibling span, so the browser's own ring
+                            // would sit *outside* ours -- and Chrome draws that one
+                            // with a white contrast stroke, which on a dark surface
+                            // reads as a white halo around the orange ring.
+                            FOCUS_RING_NONE,
+                            classNames?.input,
+                        )}
                         {...props}
                         aria-describedby={ids.describedBy}
                     />
@@ -81,7 +91,7 @@ export const Checkbox = ({
                             error ? "border-error" : "border-input-border",
                             "peer-checked:bg-primary peer-checked:border-primary peer-checked:text-button-primary-text",
                             "peer-indeterminate:bg-primary peer-indeterminate:border-primary peer-indeterminate:text-button-primary-text",
-                            "peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1 peer-focus-visible:outline-primary",
+                            FOCUS_RING_PEER,
                             "peer-disabled:opacity-50",
                             classNames?.box
                         )}

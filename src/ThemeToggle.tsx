@@ -1,5 +1,6 @@
 import { Sun, Moon } from 'lucide-react';
 import { cn } from './utils';
+import { FOCUS_RING } from './focus';
 
 export interface ThemeToggleClassNames {
     icon?: string;
@@ -26,7 +27,7 @@ export const ThemeToggle = ({
             onClick={onToggle}
             className={cn(
                 "p-2 flex items-center justify-center rounded-md text-text-muted hover:text-text-primary hover:bg-hover transition-colors",
-                "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+                FOCUS_RING,
                 className
             )}
             title={label}

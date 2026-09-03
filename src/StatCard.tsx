@@ -1,6 +1,7 @@
 import React from 'react';
 import type { IconComponent } from './types';
 import { cn } from './utils';
+import { FOCUS_RING } from './focus';
 
 /** Edge length of the stat icon. Fixed by the card layout, not a caller choice. */
 const STAT_ICON_SIZE = 24;
@@ -45,9 +46,9 @@ export const StatCard = ({ label, value, sub, icon: Icon, onClick, selected, cla
             // announced without any way to change it.
             aria-pressed={onClick && selected !== undefined ? selected : undefined}
             className={cn(
-                "bg-statcard-bg p-6 rounded-lg border border-border shadow-sm hover:shadow-md transition-all h-full",
+                "bg-statcard-bg p-6 rounded-lg border border-border shadow-sm hover:shadow-md transition h-full",
                 onClick
-                    ? 'w-full text-left cursor-pointer hover:border-border active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
+                    ? cn('w-full text-left cursor-pointer hover:border-border active:scale-[0.98]', FOCUS_RING)
                     : '',
                 // The ring sits on the card itself, so it always follows the
                 // card's own corner radius. A wrapper would have to repeat it.

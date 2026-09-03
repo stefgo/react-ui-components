@@ -147,6 +147,22 @@ module.exports = {
         },
       },
 
+      /*
+       * Tailwind's preflight paints a border colour on *every* element, taken
+       * from `borderColor.DEFAULT` -- stock value `gray-200`. So a bare
+       * `border` or `border-t`, with no colour class next to it, drew a
+       * near-white line: invisible on a light page, and in dark mode a bright
+       * frame around the panel, which is exactly what it looked like around a
+       * focused control's orange ring.
+       *
+       * Pointing DEFAULT at the token makes the *untyped* case follow the theme
+       * like every typed one. `divide-*` inherits from here, so `divide-y`
+       * follows too.
+       */
+      borderColor: {
+        DEFAULT: t("border"),
+      },
+
       // ─── Shape ────────────────────────────────────────────────────────────
       // Overrides Tailwind's own steps on purpose: containers are `lg`, controls
       // and overlays `md`, pills `full`. One decision instead of one per file.

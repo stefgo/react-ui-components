@@ -3,6 +3,7 @@ import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useControllableState } from './hooks/useControllableState';
 import type { Controllable } from './types';
 import { cn } from './utils';
+import { FOCUS_RING_INSET } from './focus';
 
 export interface CollapsibleClassNames {
     header?: string;
@@ -53,6 +54,7 @@ export const Collapsible = ({
                 aria-controls={contentId}
                 className={cn(
                     "w-full flex items-center justify-between px-4 py-3 text-left transition-colors hover:bg-card",
+                    FOCUS_RING_INSET,
                     headerClassName,
                     classNames?.header
                 )}

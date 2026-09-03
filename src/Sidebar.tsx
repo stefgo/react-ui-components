@@ -1,5 +1,6 @@
 import type { IconComponent } from './types';
 import { cn } from './utils';
+import { FOCUS_RING } from './focus';
 
 /** Edge length of a sidebar icon. Fixed by the item layout, not a caller choice. */
 const SIDEBAR_ICON_SIZE = 18;
@@ -61,8 +62,8 @@ const NavItem = ({
         aria-label={isCollapsed ? label : undefined}
         aria-current={active ? 'page' : undefined}
         className={cn(
-            "w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-base",
-            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+            "w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition duration-base",
+            FOCUS_RING,
             isCollapsed ? "justify-center" : "justify-between",
             active
                 ? "bg-sidebar-item-active text-text-primary shadow-sm ring-1 ring-border"

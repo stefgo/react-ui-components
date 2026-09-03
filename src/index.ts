@@ -44,4 +44,5 @@ export * from "./toast/ToastViewport";
 export * from "./DashboardLayout";
 export * from "./Dashboard";
 export * from "./utils";
+export * from "./focus";
 // Trigger release

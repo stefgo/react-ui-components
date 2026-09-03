@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { Menu } from 'lucide-react';
 import { cn } from './utils';
+import { FOCUS_RING_INSET } from './focus';
 
 export interface DashboardHeaderClassNames {
     leftSection?: string;
@@ -65,7 +66,7 @@ export const DashboardHeader = ({
                         aria-label="Toggle sidebar"
                         className={cn(
                             "p-2 -ml-2 mr-2 rounded-md text-text-muted hover:text-text-primary transition-colors md:flex hidden",
-                            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary",
+                            FOCUS_RING_INSET,
                             classNames?.sidebarToggle
                         )}
                         title="Toggle Sidebar"

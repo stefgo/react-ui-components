@@ -2,6 +2,8 @@ import { KeyboardEvent, MouseEvent, ReactNode, useCallback, useEffect, useMemo }
 import { BaseDataViewProps, Comparator } from './types';
 import { runDataPipeline } from './pipeline';
 import { usePaginationState } from './usePaginationState';
+import { FOCUS_RING_INSET } from '../focus';
+import { cn } from '../utils';
 
 /** Everything the pagination bar needs, already resolved. */
 export interface PaginationView {
@@ -126,7 +128,7 @@ export function useDataView<T>(
     // reader announce the column a cell belongs to. Focusable and operable is
     // what the row is missing, not a different role.
     const interactionClasses = onRowClick
-        ? 'cursor-pointer hover:bg-table-row-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary'
+        ? cn('cursor-pointer hover:bg-table-row-hover', FOCUS_RING_INSET)
         : '';
 
     const placeholder = isLoading ? loadingMessage

@@ -2,6 +2,7 @@ import { ChevronRight, Folder, File } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { Card } from './Card';
 import { cn } from './utils';
+import { FOCUS_RING } from './focus';
 
 export interface FsFile {
     name: string;
@@ -61,7 +62,7 @@ export const FileBrowser = ({ currentPath, onNavigate, files, isLoading, onSelec
 
     const header = (
         <>
-            <button type="button" aria-label="Go up one level" onClick={goUp} className={cn("p-1.5 hover:bg-hover rounded-full text-text-muted transition-colors", classNames?.backButton)}>
+            <button type="button" aria-label="Go up one level" onClick={goUp} className={cn("p-1.5 hover:bg-hover rounded-full text-text-muted transition-colors", FOCUS_RING, classNames?.backButton)}>
                 <ChevronRight className="rotate-180" size={18} aria-hidden />
             </button>
             <div className={cn("font-mono text-sm truncate font-medium", classNames?.pathDisplay)} title={currentPath}>{currentPath || '/'}</div>
@@ -86,7 +87,8 @@ export const FileBrowser = ({ currentPath, onNavigate, files, isLoading, onSelec
                                     type="button"
                                     onClick={() => onNavigate(file.path)}
                                     className={cn(
-                                        "flex items-center gap-2 flex-1 text-left text-info hover:text-info-hover truncate",
+                                        "flex items-center gap-2 flex-1 text-left text-info hover:text-info-hover truncate rounded-sm",
+                                        FOCUS_RING,
                                         classNames?.itemFolder
                                     )}
                                 >

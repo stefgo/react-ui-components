@@ -3,6 +3,7 @@ import { FormField, type FormFieldClassNames } from './form/FormField';
 import { useControllableState } from './hooks/useControllableState';
 import type { Controllable } from './types';
 import { cn } from './utils';
+import { FOCUS_RING } from './focus';
 
 export interface SwitchClassNames extends FormFieldClassNames {
     track?: string;
@@ -70,7 +71,7 @@ export const Switch = ({
                     onClick={() => setChecked((prev) => !prev)}
                     className={cn(
                         "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-fast",
-                        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+                        FOCUS_RING,
                         "disabled:opacity-50 disabled:cursor-not-allowed",
                         checked ? "bg-primary" : "bg-button-secondary",
                         error && "ring-1 ring-error",

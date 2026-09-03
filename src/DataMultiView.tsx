@@ -10,6 +10,7 @@ import type { TreeExpansionOptions } from './data/useTreeExpansion';
 import { useControllableState } from './hooks/useControllableState';
 import type { Controllable } from './types';
 import { cn } from './utils';
+import { FOCUS_RING, FOCUS_RING_INSET, FOCUS_RING_NONE, FOCUS_RING_WITHIN } from './focus';
 
 export interface DataMultiViewClassNames {
     card?: CardClassNames;
@@ -167,10 +168,16 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     const effectiveViewMode: ViewMode = isMobile && listColumns ? 'list' : currentViewMode;
 
     const toggleButtonClass = (mode: ViewMode) => cn(
-        "p-1 rounded-sm transition-all",
+        "p-1 rounded-sm transition",
         // The group is only p-1 tall, so the ring sits inside the button
         // instead of bleeding over the neighbouring toggle.
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary",
+        //
+        // Named here rather than hoisted into a module constant, even though
+        // that would merge it once instead of per render: `conventions.test.ts`
+        // resolves one level of indirection, so a hoist puts the ring out of
+        // its reach and the button silently stops being covered. Three merges
+        // per render is the cheaper side of that trade.
+        FOCUS_RING_INSET,
         effectiveViewMode === mode
             ? 'bg-table-header-toggle-active-bg shadow text-text-primary'
             : 'text-text-muted hover:text-text-primary',
@@ -225,21 +232,30 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                     "px-4 py-2 border-b border-border bg-card-header",
                     classNames?.searchBar
                 )}>
-                    <div className="flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-app-bg">
+                    {/*
+                        The ring goes on the pill, not on the input: the input has
+                        no border of its own, so a ring around it would float
+                        inside the pill and cut across the icon and the clear
+                        button. The input suppresses its own.
+                    */}
+                    <div className={cn(
+                        "flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-app-bg",
+                        FOCUS_RING_WITHIN
+                    )}>
                         <Search size={14} className="text-text-muted shrink-0" />
                         <input
                             type="text"
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
                             placeholder={searchPlaceholder}
-                            className="w-full bg-transparent text-sm text-text-primary placeholder:text-text-muted outline-none"
+                            className={cn("w-full bg-transparent text-sm text-text-primary placeholder:text-text-muted", FOCUS_RING_NONE)}
                         />
                         {searchQuery && (
                             <button
                                 type="button"
                                 aria-label="Clear search"
                                 onClick={() => setSearchQuery('')}
-                                className="text-text-muted hover:text-text-primary shrink-0"
+                                className={cn("text-text-muted hover:text-text-primary shrink-0 rounded-full", FOCUS_RING)}
                             >
                                 <X size={14} />
                             </button>

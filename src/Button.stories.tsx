@@ -35,6 +35,8 @@ export const Variants: Story = {
                 <Button {...args} variant="secondary">Secondary</Button>
                 <Button {...args} variant="danger">Danger</Button>
                 <Button {...args} variant="ghost">Ghost</Button>
+                <Button {...args} variant="outline">Outline</Button>
+                <Button {...args} variant="outline-danger">Outline danger</Button>
             </Row>
             <Row label="Sizes">
                 <Button {...args} size="sm">Small</Button>
@@ -54,6 +56,8 @@ export const States: Story = {
                 <Button {...args} variant="secondary" disabled>Secondary</Button>
                 <Button {...args} variant="danger" disabled>Danger</Button>
                 <Button {...args} variant="ghost" disabled>Ghost</Button>
+                <Button {...args} variant="outline" disabled>Outline</Button>
+                <Button {...args} variant="outline-danger" disabled>Outline danger</Button>
             </Row>
             <Row label="Loading">
                 <Button {...args} variant="primary" isLoading>Saving</Button>

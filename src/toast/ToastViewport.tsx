@@ -4,6 +4,7 @@ import { AlertCircle, AlertTriangle, CheckCircle2, Info, X } from 'lucide-react'
 import { ICON_SIZE, type IconComponent } from '../types';
 import { cn } from '../utils';
 import type { Toast, ToastVariant } from './types';
+import { FOCUS_RING } from '../focus';
 
 export type ToastPlacement =
     | 'top-left' | 'top-center' | 'top-right'
@@ -118,7 +119,7 @@ const ToastItem = ({ toast, onDismiss, duration, classNames }: ToastItemProps) =
                         }}
                         className={cn(
                             "mt-2 text-sm font-semibold text-primary hover:text-primary-hover",
-                            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded-sm",
+                            FOCUS_RING, "rounded-sm",
                             classNames?.action
                         )}
                     >
@@ -133,7 +134,7 @@ const ToastItem = ({ toast, onDismiss, duration, classNames }: ToastItemProps) =
                 aria-label="Dismiss notification"
                 className={cn(
                     "shrink-0 p-1 -m-1 rounded-full text-text-muted hover:text-text-primary hover:bg-hover transition-colors",
-                    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+                    FOCUS_RING,
                     classNames?.close
                 )}
             >

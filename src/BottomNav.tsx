@@ -1,5 +1,6 @@
 import type { IconComponent } from './types';
 import { cn } from './utils';
+import { FOCUS_RING_INSET } from './focus';
 
 /** Edge length of a bottom-nav icon — larger than the sidebar's, it is a touch target. */
 const BOTTOM_NAV_ICON_SIZE = 24;
@@ -35,7 +36,7 @@ const NavTab = ({ icon: Icon, label, active, onClick, classNames }: BottomNavIte
         aria-current={active ? 'page' : undefined}
         className={cn(
             "flex-1 flex flex-col items-center justify-center py-3 transition-colors",
-            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary",
+            FOCUS_RING_INSET,
             active ? "text-primary" : "text-text-muted hover:text-text-primary",
             classNames?.item,
             active ? classNames?.itemActive : classNames?.itemInactive

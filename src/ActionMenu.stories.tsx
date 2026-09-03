@@ -5,6 +5,7 @@ import { ActionMenu } from './ActionMenu';
 import { Button } from './Button';
 import { useActionMenu } from './hooks/useActionMenu';
 import { cn } from './utils';
+import { FOCUS_RING_NONE } from './focus';
 
 const meta = {
     title: 'Overlays/ActionMenu',
@@ -30,8 +31,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const entryClass =
-    'w-full flex items-center gap-2 px-3 py-2 text-sm text-text-primary hover:bg-hover focus-visible:outline-none focus-visible:bg-hover';
+const entryClass = cn(
+    'w-full flex items-center gap-2 px-3 py-2 text-sm text-text-primary hover:bg-hover focus-visible:bg-hover',
+    FOCUS_RING_NONE,
+);
 
 const WithHookDemo = () => {
     const { menuState, triggerRef, openMenu, closeMenu } = useActionMenu();

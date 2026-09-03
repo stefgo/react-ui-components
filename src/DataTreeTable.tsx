@@ -10,6 +10,7 @@ import { SortIcon } from './data/SortIcon';
 import { DataViewFrame } from './data/DataViewFrame';
 import { flattenTree } from './data/tree';
 import { cn } from './utils';
+import { FOCUS_RING } from './focus';
 
 export interface DataTreeTableClassNames extends DataViewClassNames {
     table?: string;
@@ -91,7 +92,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                                     aria-label={allExpanded ? 'Collapse all rows' : 'Expand all rows'}
                                                     className={cn(
                                                         "shrink-0 hover:text-text-primary rounded-sm",
-                                                        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+                                                        FOCUS_RING,
                                                         classNames?.chevronIcon,
                                                     )}
                                                 >
@@ -107,7 +108,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                                     onClick={(e) => handleSortClick(col, idx, e)}
                                                     className={cn(
                                                         "inline-flex items-center gap-1 select-none uppercase hover:text-text-primary",
-                                                        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded-sm",
+                                                        FOCUS_RING, "rounded-sm",
                                                         classNames?.sortButton,
                                                     )}
                                                 >
@@ -185,7 +186,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                                                     onClick={(e) => { e.stopPropagation(); toggleRow(key); }}
                                                                     className={cn(
                                                                         "shrink-0 w-4 text-text-muted hover:text-text-primary rounded-sm",
-                                                                        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+                                                                        FOCUS_RING,
                                                                         classNames?.chevronIcon,
                                                                     )}
                                                                 >

@@ -2,6 +2,7 @@ import { useId, useRef, useState } from 'react';
 import { User, LogOut, ChevronDown } from 'lucide-react';
 import { useMenuBehavior } from '../hooks/useMenuBehavior';
 import { cn } from '../utils';
+import { FOCUS_RING, FOCUS_RING_NONE } from '../focus';
 
 export interface UserMenuClassNames {
     trigger?: string;
@@ -50,7 +51,7 @@ export const UserMenu = ({
                 aria-label={`${signedInAsLabel} ${username}`}
                 className={cn(
                     "flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors p-1 pr-2 rounded-lg hover:bg-hover",
-                    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+                    FOCUS_RING,
                     classNames?.trigger
                 )}
             >
@@ -67,7 +68,8 @@ export const UserMenu = ({
                     role="menu"
                     tabIndex={-1}
                     className={cn(
-                        "absolute right-0 mt-2 w-56 bg-card rounded-lg shadow-xl border border-border py-2 animate-slide-in-from-top z-dropdown focus:outline-none",
+                        "absolute right-0 mt-2 w-56 bg-card rounded-lg shadow-xl border border-border py-2 animate-slide-in-from-top z-dropdown",
+                        FOCUS_RING_NONE,
                         classNames?.dropdown
                     )}
                 >
@@ -85,7 +87,8 @@ export const UserMenu = ({
                                 onLogout();
                             }}
                             className={cn(
-                                "w-full text-left px-4 py-2 text-sm text-error hover:bg-error-bg flex items-center gap-2 transition-colors focus:outline-none focus-visible:bg-error-bg",
+                                "w-full text-left px-4 py-2 text-sm text-error hover:bg-error-bg flex items-center gap-2 transition-colors focus-visible:bg-error-bg",
+                                FOCUS_RING_NONE,
                                 classNames?.logout
                             )}
                         >

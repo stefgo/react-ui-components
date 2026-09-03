@@ -6,6 +6,7 @@ import { useSortColumns, type SortOptions } from './data/useSortColumns';
 import { SortIcon } from './data/SortIcon';
 import { DataViewFrame } from './data/DataViewFrame';
 import { cn } from './utils';
+import { FOCUS_RING } from './focus';
 
 export interface DataTableDef<T> {
     accessorKey?: keyof T;
@@ -84,7 +85,7 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
                                                 onClick={(e) => handleSortClick(col, idx, e)}
                                                 className={cn(
                                                     "inline-flex items-center gap-1 select-none uppercase hover:text-text-primary",
-                                                    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded-sm",
+                                                    FOCUS_RING, "rounded-sm",
                                                     classNames?.sortButton
                                                 )}
                                             >

@@ -4,6 +4,7 @@ import type { SidebarGroup } from '../Sidebar';
 import type { IconComponent } from '../types';
 import { useMenuBehavior } from '../hooks/useMenuBehavior';
 import { cn } from '../utils';
+import { FOCUS_RING, FOCUS_RING_NONE } from '../focus';
 
 /** Edge length of every icon in the sheet — touch-sized, matching the bottom nav. */
 const SHEET_ICON_SIZE = 24;
@@ -70,7 +71,8 @@ export const MobileMoreSheet = ({
                 // The backdrop closes the sheet; clicks inside it must not bubble up there.
                 onClick={(e) => e.stopPropagation()}
                 className={cn(
-                    "absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto bg-card rounded-t-xl p-6 pb-24 animate-slide-in-from-bottom shadow-2xl focus:outline-none",
+                    "absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto bg-card rounded-t-xl p-6 pb-24 animate-slide-in-from-bottom shadow-2xl",
+                    FOCUS_RING_NONE,
                     classNames?.sheet
                 )}
             >
@@ -85,7 +87,7 @@ export const MobileMoreSheet = ({
                         aria-label={closeLabel}
                         className={cn(
                             "p-2 rounded-full bg-hover text-text-muted hover:bg-hover transition-colors",
-                            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+                            FOCUS_RING,
                             classNames?.close
                         )}
                     >
@@ -110,7 +112,7 @@ export const MobileMoreSheet = ({
                                         aria-current={item.active ? 'page' : undefined}
                                         className={cn(
                                             "flex items-center gap-4 p-4 rounded-lg transition-colors w-full text-left",
-                                            "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+                                            FOCUS_RING,
                                             item.active
                                                 ? "bg-hover text-text-primary ring-1 ring-border"
                                                 : "bg-app-bg text-text-secondary hover:bg-hover",

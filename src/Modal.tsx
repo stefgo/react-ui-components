@@ -4,6 +4,7 @@ import { X } from 'lucide-react';
 import { useMenuBehavior } from './hooks/useMenuBehavior';
 import { ICON_SIZE } from './types';
 import { cn } from './utils';
+import { FOCUS_RING, FOCUS_RING_NONE } from './focus';
 
 export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
 
@@ -104,7 +105,8 @@ export const Modal = ({
                 onClick={(e) => e.stopPropagation()}
                 className={cn(
                     "w-full bg-card rounded-lg border border-border shadow-2xl",
-                    "flex flex-col max-h-[calc(100vh-2rem)] focus:outline-none",
+                    "flex flex-col max-h-[calc(100vh-2rem)]",
+                    FOCUS_RING_NONE,
                     SIZES[size],
                     className,
                     classNames?.dialog
@@ -128,7 +130,7 @@ export const Modal = ({
                             aria-label={closeLabel}
                             className={cn(
                                 "shrink-0 p-1.5 rounded-full text-text-muted hover:bg-hover hover:text-text-primary transition-colors",
-                                "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+                                FOCUS_RING,
                                 classNames?.close
                             )}
                         >

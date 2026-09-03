@@ -3,6 +3,7 @@ import { ChevronDown } from 'lucide-react';
 import { FormField, type FormFieldClassNames } from './form/FormField';
 import { ICON_SIZE } from './types';
 import { cn } from './utils';
+import { FOCUS_RING } from './focus';
 
 export interface SelectClassNames extends FormFieldClassNames {
     select?: string;
@@ -51,8 +52,8 @@ export const Select = ({
                         "block w-full bg-input-bg border",
                         error ? 'border-error' : 'border-input-border',
                         "pl-3 pr-10 py-2.5 rounded-md text-text-primary",
-                        "focus:outline focus:outline-2 focus:outline-offset-0 focus:outline-primary",
-                        "transition-all sm:text-sm appearance-none",
+                        FOCUS_RING,
+                        "transition sm:text-sm appearance-none",
                         classNames?.select
                     )}
                     {...props}

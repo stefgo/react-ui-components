@@ -2,6 +2,7 @@ import { InputHTMLAttributes, ReactNode, Ref } from 'react';
 import { FormField, type FormFieldClassNames } from './form/FormField';
 import { ICON_SIZE, type IconComponent } from './types';
 import { cn } from './utils';
+import { FOCUS_RING } from './focus';
 
 export interface InputClassNames extends FormFieldClassNames {
     input?: string;
@@ -60,8 +61,8 @@ export const Input = ({
                         error ? 'border-error' : 'border-input-border',
                         Icon ? 'pl-10' : 'pl-3',
                         "pr-3 py-2.5 rounded-md text-text-primary placeholder:text-text-muted",
-                        "focus:outline focus:outline-2 focus:outline-offset-0 focus:outline-primary",
-                        "transition-all sm:text-sm",
+                        FOCUS_RING,
+                        "transition sm:text-sm",
                         classNames?.input
                     )}
                     {...props}

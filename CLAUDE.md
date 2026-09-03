@@ -90,6 +90,13 @@ class resolves per theme by itself. There should be no `dark:` prefix in `src/`
 except for a decoration that genuinely has no light counterpart — there is
 exactly one, in `LoginPage`.
 
+The rule covers the case where *no* class is written at all: Tailwind's
+preflight paints `border-color` on every element from `borderColor.DEFAULT`,
+whose stock value is `gray-200`. A bare `border` therefore drew a near-white
+line — invisible on a light page, a bright frame in dark mode. The preset points
+`borderColor.DEFAULT` at the `border` token, so the untyped case follows the
+theme like every typed one.
+
 **2. Icons are components.** `icon: IconComponent`, never `ReactNode`. Only then
 can the surface set the size and `aria-hidden` itself. Sizes on controls are
 `'sm' | 'md' | 'lg'`, never a pixel number; `ICON_SIZE` maps the step to the
@@ -99,20 +106,96 @@ edge length.
 slot and no `containerClassName` — both were removed because they duplicated
 `className`.
 
-**4. Focus is an `outline`, never a `ring`.** `focus-visible:outline
-focus-visible:outline-2 focus-visible:outline-offset-2
-focus-visible:outline-primary`, and no `outline-none` alongside it — that
-utility draws a transparent 2px outline and would race the colour on variant
-order. `outline-2` alone sets only the width; without the bare `outline`
-(`outline-style: solid`) nothing is drawn. Two reasons this is not the same as
-a ring: `ring` is a `box-shadow`, so a surface that also carries a *selection*
-ring cannot show both, and `box-shadow` is discarded in forced-colours mode
-while an outline survives. Only `focus:outline-none` on a container that takes
-focus programmatically and must not show it (`Modal`, `ActionMenu`, `UserMenu`,
-`MobileMoreSheet`) is legitimate. Form controls keep the `focus:` trigger
-rather than `focus-visible:` and sit at `outline-offset-0`; everything
-clickable uses `focus-visible:` at offset 2, or a negative offset where the
-contour must stay inside its row (`BottomNav`, `useDataView`).
+**4. Focus is an `outline` from `focus.ts`, never a hand-written one.** The
+ring is not a `ring`: `ring` is a `box-shadow`, so a surface that also carries
+a *selection* ring cannot show both, and `box-shadow` is discarded in
+forced-colours mode while an outline survives. `outline-2` alone sets only the
+width; without the bare `outline` (`outline-style: solid`) nothing is drawn.
+
+Four constants, and nothing else — a hand-written `outline-*` fails
+`conventions.test.ts`:
+
+- `FOCUS_RING` — the default, `focus-visible:` at `outline-offset-2`.
+- `FOCUS_RING_INSET` — the same at `outline-offset-[-2px]`, for elements with
+  no room around them, where an outward ring is clipped by the neighbour or the
+  scroll container (`BottomNav`, `DashboardHeader`, `DataMultiView`,
+  `useDataView`).
+- `FOCUS_RING_PEER` — the `peer-focus-visible:` form, for `Checkbox` and
+  `Radio`, whose visible box is a sibling `<span>`.
+- `FOCUS_RING_WITHIN` — the `focus-within:` form, for a composite control where
+  the ring belongs to the wrapper rather than to the input inside it (the search
+  pill in `DataMultiView`). The input inside carries `FOCUS_RING_NONE`.
+- `FOCUS_RING_ERROR` — the same ring in the error colour, for `Button`'s
+  `danger` and `outline-danger` variants.
+
+`FOCUS_RING_NONE` (`focus:outline-none`) suppresses the *browser's* ring, and
+it is not cosmetic: Chrome draws `outline: auto` as two strokes, a dark one and
+a white contrast one outside it, so on a dark surface an unsuppressed ring
+reads as a white halo around ours. It belongs on a container that takes focus
+programmatically and must not show it (`Modal`, `ActionMenu`, `UserMenu`,
+`MobileMoreSheet`), on a menu entry that marks focus with its background, and —
+this is the one that is easy to miss — on the `appearance-none` inputs behind
+`Checkbox` and `Radio`, which are invisible but still focusable. A second
+convention test checks for exactly that.
+
+The ring rule is checked **per element**, not per file: the first version asked
+only whether a file mentioned a focus constant somewhere, and `DataMultiView`
+passed it while its search input and clear button had none — the constant it
+named belonged to the view toggle further up. The test resolves one level of
+indirection (a `const` the className names), which is where it stops: it cannot
+see that *every* entry of a variant table has a ring, so `Button` is covered by
+a rendering test in `focus.test.tsx` instead.
+
+**The ring must not be transitioned.** `transition-all` is literally
+`transition-property: all`, and `all` includes `outline-color`, `outline-width`
+and `outline-offset`. The ring then animates into place: its colour starts at
+the inherited `currentColor` — near-white on a dark surface — and sweeps to
+orange while the ring grows out of the element's edge, so clicking a field made
+it flash. Focusable elements use Tailwind's default `transition`, whose
+property list is explicit and contains no outline; only wrappers that animate
+their own size and take no focus (`Collapsible`, the sidebar) keep
+`transition-all`. A convention test enforces this per element.
+
+The trigger is `focus-visible:` everywhere, including the form controls: the
+ring is a keyboard affordance, and a field that keeps it after a mouse click
+just looks stuck. The gap is 2px everywhere; changing it means editing the
+strings in `focus.ts`, which are written out in full because Tailwind finds
+classes by scanning the built files as text.
+
+**`cn` had to be taught what `outline` means.** `tailwind-merge` 3.x is built
+for Tailwind v4, where a bare `outline` is a *width*; on Tailwind v3 it is
+`outline-style: solid`. So `cn` read it as a conflict with `outline-2` and
+dropped it — in every component, for as long as the ring has existed. Nothing
+failed: the CSS rule was emitted, the class just never reached the DOM, and
+`outline-style` stayed at the user-agent default `auto`. `auto` is not "no
+outline" — it hands the drawing to the browser, which paints its own two-stroke
+ring, tinted with our `outline-color` and wrapped in a white contrast stroke.
+That was the white frame around the orange ring in dark mode. `utils.ts` moves
+the bare `outline` into the style group; `focus.test.ts` asserts each constant
+survives `cn` whole. If tailwind-merge or Tailwind is upgraded, check that test
+first — it is where the two versions' disagreement shows up.
+
+**Variant tables are module constants, not locals.** Every entry ends in a
+`cn()` call, so a table built inside the component runs one tailwind-merge pass
+per variant on every render — and `Button` and `ActionButton` are the two
+components this library renders most, three of them per row of a data table.
+Nothing in those tables depends on a prop, so they are computed once at module
+level (`VARIANTS`, `SIZES`, `COLOR_CLASSES`, `PADDINGS`).
+
+There is one place where the same hoist is deliberately *not* done:
+`DataMultiView`'s `toggleButtonClass` names `FOCUS_RING_INSET` inline. The
+conventions test resolves one level of indirection, so moving the ring into a
+module constant puts it out of reach and the button silently stops being
+covered — the test proves this by failing the moment you try. Three merges per
+render is the cheaper side of that trade.
+
+**`Button` has six variants,** and the two bordered ones exist because two
+different apps were building them by hand out of `ghost` plus a border:
+`outline` (primary-tinted, for an action that is offered rather than
+recommended) and `outline-danger` (neutral at rest, error-coloured on hover,
+for a destructive action that must not shout). A caller reaching for
+`variant="ghost" className="border …"` is describing a variant that belongs
+here instead.
 
 **5. Controllable state is `value` / `defaultValue` / `onChange`,** built on
 `useControllableState`. Flat on the props when a component has one such state,
@@ -202,7 +285,7 @@ Three habits worth keeping:
   confirm the test actually fails. A test never seen red proves nothing.
 - Prefer a test on the shared module (`FormField`, `useControllableState`) over
   the same test repeated per component.
-- `src/conventions.test.ts` greps the source for violations of the four rules
+- `src/conventions.test.ts` greps the source for violations of the rules
   above. It is not decoration: it has already caught a stale `-dark` class that
   a codemod missed, a `root` slot reintroduced in a new component, and a prop
   that was declared but no longer read. Extend it when you add a rule.

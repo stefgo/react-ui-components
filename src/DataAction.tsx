@@ -5,6 +5,7 @@ import { ActionMenu } from './ActionMenu';
 import { useActionMenu } from './hooks/useActionMenu';
 import { ICON_SIZE, type IconComponent } from './types';
 import { cn } from './utils';
+import { FOCUS_RING_NONE } from './focus';
 
 export interface DataActionClassNames {
     actionButton?: ActionButtonClassNames;
@@ -119,6 +120,11 @@ export const DataAction = <TId extends string | number>({
                                     disabled={isDisabled}
                                     className={cn(
                                         "w-full text-left px-4 py-2 text-sm flex items-center gap-2",
+                                        // Inside a popover an outward ring is clipped by it, so the
+                                        // entry marks focus with its background instead -- the same
+                                        // way ActionMenu and UserMenu do.
+                                        FOCUS_RING_NONE,
+                                        "focus-visible:bg-hover",
                                         isDisabled ? disabledClass : enabledClass,
                                         classNames?.menuItem,
                                         isDisabled ? classNames?.menuItemDisabled : classNames?.menuItemActive

@@ -2,6 +2,7 @@ import React from 'react';
 import { Tooltip } from './Tooltip';
 import { ICON_SIZE, type ControlSize, type IconComponent } from './types';
 import { cn } from './utils';
+import { FOCUS_RING } from './focus';
 
 export type ActionButtonColor = 'green' | 'blue' | 'red' | 'orange' | 'gray' | 'indigo' | 'error';
 export type ActionButtonVariant = 'solid' | 'ghost';
@@ -28,6 +29,30 @@ export interface ActionButtonProps extends ActionButtonNativeProps {
     ref?: React.Ref<HTMLButtonElement>;
 }
 
+/*
+ * The tables are module-level: nothing in them depends on a prop, and an
+ * ActionButton is the component this library renders most -- three per row of
+ * a data table. Rebuilding seven colour entries per render bought nothing.
+ *
+ * The disabled look is one string rather than a branch per colour, because it
+ * is the same for all seven: a disabled button no longer signals what it would
+ * have done.
+ */
+const DISABLED_CLASSES = "text-text-muted opacity-30 cursor-not-allowed";
+
+const COLOR_CLASSES: Record<ActionButtonColor, string> = {
+    green: "text-text-muted hover:text-success hover:bg-hover",
+    blue: "text-text-muted hover:text-info hover:bg-hover",
+    red: "text-text-muted hover:text-error hover:bg-hover",
+    orange: "text-text-muted hover:text-primary hover:bg-warning-bg",
+    gray: "text-text-muted hover:text-text-secondary hover:bg-hover",
+    indigo: "text-text-muted hover:text-accent hover:bg-accent-bg",
+    error: "text-error/60 hover:text-error hover:bg-error-bg"
+};
+
+// The padding grows with the icon so the hit area keeps its proportions.
+const PADDINGS: Record<ControlSize, string> = { sm: "p-1", md: "p-1.5", lg: "p-2" };
+
 export const ActionButton = ({
     icon: Icon,
     onClick,
@@ -43,36 +68,9 @@ export const ActionButton = ({
 }: ActionButtonProps) => {
     const isDisabled = typeof disabled === 'function' ? disabled() : disabled;
 
-    const colorClasses: Record<ActionButtonColor, string> = {
-        green: isDisabled
-            ? "text-text-muted opacity-30 cursor-not-allowed"
-            : "text-text-muted hover:text-success hover:bg-hover",
-        blue: isDisabled
-            ? "text-text-muted opacity-30 cursor-not-allowed"
-            : "text-text-muted hover:text-info hover:bg-hover",
-        red: isDisabled
-            ? "text-text-muted opacity-30 cursor-not-allowed"
-            : "text-text-muted hover:text-error hover:bg-hover",
-        orange: isDisabled
-            ? "text-text-muted opacity-30 cursor-not-allowed"
-            : "text-text-muted hover:text-primary hover:bg-warning-bg",
-        gray: isDisabled
-            ? "text-text-muted opacity-30 cursor-not-allowed"
-            : "text-text-muted hover:text-text-secondary hover:bg-hover",
-        indigo: isDisabled
-            ? "text-text-muted opacity-30 cursor-not-allowed"
-            : "text-text-muted hover:text-accent hover:bg-accent-bg",
-        error: isDisabled
-            ? "text-text-muted opacity-30 cursor-not-allowed"
-            : "text-error/60 hover:text-error hover:bg-error-bg",
-        };
-
     const variantClasses = variant === 'solid' && !isDisabled
         ? "bg-hover shadow-sm"
         : "";
-
-    // The padding grows with the icon so the hit area keeps its proportions.
-    const paddings: Record<ControlSize, string> = { sm: "p-1", md: "p-1.5", lg: "p-2" };
 
     const getTooltip = () => {
         if (!tooltip) return undefined;
@@ -94,10 +92,10 @@ export const ActionButton = ({
             }}
             disabled={isDisabled}
             className={cn(
-                "transition-all rounded-full flex items-center justify-center",
-                "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
-                paddings[size],
-                colorClasses[color],
+                "transition rounded-full flex items-center justify-center",
+                FOCUS_RING,
+                PADDINGS[size],
+                isDisabled ? DISABLED_CLASSES : COLOR_CLASSES[color],
                 variantClasses,
                 className
             )}

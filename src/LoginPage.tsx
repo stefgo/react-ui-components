@@ -1,6 +1,8 @@
 import { useState, FormEvent } from 'react';
 import { Lock, User, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
+import { cn } from './utils';
+import { FOCUS_RING } from './focus';
 
 export interface LoginPageProps {
     title: string;
@@ -75,7 +77,7 @@ export const LoginPage = ({
                                 <p className="text-text-muted text-sm mb-6">Please log in using your identity provider.</p>
                                 <button
                                     onClick={onOidcLogin}
-                                    className="group relative w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md text-sm font-semibold text-button-primary-text bg-primary hover:bg-primary-hover focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-primary transition-all shadow-glow-accent hover:shadow-primary/20 active:scale-[0.98]"
+                                    className={cn("group relative w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md text-sm font-semibold text-button-primary-text bg-primary hover:bg-primary-hover transition shadow-glow-accent hover:shadow-primary/20 active:scale-[0.98]", FOCUS_RING)}
                                 >
                                     Login with OIDC
                                     <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -102,7 +104,7 @@ export const LoginPage = ({
                                             type="text"
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
-                                            className="block w-full pl-10 pr-3 py-2.5 bg-input-bg border border-input-border rounded-md text-text-primary placeholder-text-muted focus:outline focus:outline-2 focus:outline-offset-0 focus:outline-primary/50 focus:border-primary transition-all sm:text-sm"
+                                            className={cn("block w-full pl-10 pr-3 py-2.5 bg-input-bg border border-input-border rounded-md text-text-primary placeholder-text-muted focus-visible:border-primary transition sm:text-sm", FOCUS_RING)}
                                             placeholder="Enter your username"
                                             required
                                         />
@@ -119,7 +121,7 @@ export const LoginPage = ({
                                             type="password"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            className="block w-full pl-10 pr-3 py-2.5 bg-input-bg border border-input-border rounded-md text-text-primary placeholder-text-muted focus:outline focus:outline-2 focus:outline-offset-0 focus:outline-primary/50 focus:border-primary transition-all sm:text-sm"
+                                            className={cn("block w-full pl-10 pr-3 py-2.5 bg-input-bg border border-input-border rounded-md text-text-primary placeholder-text-muted focus-visible:border-primary transition sm:text-sm", FOCUS_RING)}
                                             placeholder="••••••••"
                                             required
                                         />
@@ -130,7 +132,7 @@ export const LoginPage = ({
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="group relative w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md text-sm font-semibold text-button-primary-text bg-primary hover:bg-primary-hover focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-glow-accent hover:shadow-primary/20 active:scale-[0.98]"
+                                className={cn("group relative w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md text-sm font-semibold text-button-primary-text bg-primary hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition shadow-glow-accent hover:shadow-primary/20 active:scale-[0.98]", FOCUS_RING)}
                             >
                                 {isLoading ? 'Signing in...' : 'Sign in to Dashboard'}
                                 {!isLoading && <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />}

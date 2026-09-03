@@ -1,6 +1,7 @@
 import { useId } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from './utils';
+import { FOCUS_RING } from './focus';
 
 export interface PaginationControlsClassNames {
     infoWrapper?: string;
@@ -57,7 +58,8 @@ export const PaginationControls = ({
                     value={pageSize}
                     onChange={(e) => onPageSizeChange(Number(e.target.value))}
                     className={cn(
-                        "bg-input-bg border border-input-border text-text-primary text-sm rounded-sm focus:outline focus:outline-2 focus:outline-offset-0 focus:outline-primary focus:border-primary block p-1",
+                        "bg-input-bg border border-input-border text-text-primary text-sm rounded-sm focus-visible:border-primary block p-1",
+                        FOCUS_RING,
                         classNames?.select
                     )}
                 >
@@ -78,6 +80,7 @@ export const PaginationControls = ({
                     disabled={page <= 1}
                     className={cn(
                         "p-1 rounded-sm hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary transition-colors",
+                        FOCUS_RING,
                         classNames?.button
                     )}
                 >
@@ -95,6 +98,7 @@ export const PaginationControls = ({
                     disabled={totalKnown && page >= totalPages}
                     className={cn(
                         "p-1 rounded-sm hover:bg-hover disabled:opacity-50 disabled:cursor-not-allowed text-text-secondary transition-colors",
+                        FOCUS_RING,
                         classNames?.button
                     )}
                 >

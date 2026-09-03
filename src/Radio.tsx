@@ -4,6 +4,7 @@ import { FieldMessages } from './form/FieldMessages';
 import { useControllableState } from './hooks/useControllableState';
 import type { Controllable } from './types';
 import { cn } from './utils';
+import { FOCUS_RING_NONE, FOCUS_RING_PEER } from './focus';
 
 interface RadioGroupContextValue {
     name: string;
@@ -59,7 +60,16 @@ export const Radio = ({ value, label, className = '', classNames, id, ref, disab
                     // Native radio, restyled rather than replaced: arrow-key
                     // navigation and the roving tab stop are browser behaviour,
                     // and re-implementing them is how they get subtly wrong.
-                    className={cn("peer appearance-none w-4 h-4 m-0 cursor-pointer disabled:cursor-not-allowed", classNames?.input)}
+                    className={cn(
+                        "peer appearance-none w-4 h-4 m-0 cursor-pointer disabled:cursor-not-allowed",
+                        // Not cosmetic: the input is invisible and the ring is
+                        // drawn on the sibling span, so the browser's own ring
+                        // would sit *outside* ours -- and Chrome draws that one
+                        // with a white contrast stroke, which on a dark surface
+                        // reads as a white halo around the orange ring.
+                        FOCUS_RING_NONE,
+                        classNames?.input,
+                    )}
                     {...props}
                 />
                 <span
@@ -69,7 +79,7 @@ export const Radio = ({ value, label, className = '', classNames, id, ref, disab
                         "bg-input-bg text-transparent",
                         group.invalid ? "border-error" : "border-input-border",
                         "peer-checked:border-primary peer-checked:text-primary",
-                        "peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-1 peer-focus-visible:outline-primary",
+                        FOCUS_RING_PEER,
                         "peer-disabled:opacity-50",
                         classNames?.dot
                     )}

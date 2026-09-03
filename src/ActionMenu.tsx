@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useMenuBehavior } from './hooks/useMenuBehavior';
 import { usePopoverPosition, type AnchorRect } from './hooks/usePopoverPosition';
 import { cn } from './utils';
+import { FOCUS_RING_NONE } from './focus';
 
 export interface ActionMenuProps {
     isOpen: boolean;
@@ -51,7 +52,8 @@ export const ActionMenu = ({
             role="menu"
             tabIndex={-1}
             className={cn(
-                "w-48 bg-card rounded-md shadow-lg border border-border z-dropdown py-1 focus:outline-none",
+                "w-48 bg-card rounded-md shadow-lg border border-border z-dropdown py-1",
+                FOCUS_RING_NONE,
                 // In the DOM but not yet measured: it needs a size before it can
                 // be placed, and it has no size until it is rendered.
                 isPositioned ? "visible" : "invisible",
