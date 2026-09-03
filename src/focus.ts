@@ -11,8 +11,9 @@
  *
  * The classes are written out in full on purpose: Tailwind finds classes by
  * scanning the built files as text, so an offset composed at runtime
- * (`` `outline-offset-${n}` ``) produces no CSS at all. The gap is 2px
- * everywhere -- changing it means editing all four strings below.
+ * (`` `outline-offset-${n}` ``) produces no CSS at all. The gap is 2px on every
+ * outward ring -- changing it means editing each of those strings below. The
+ * inset ring is the one exception and says why at its own definition.
  */
 
 /**
@@ -30,9 +31,19 @@ export const FOCUS_RING =
  * For elements with nothing but neighbours around them -- table rows, tabs, the
  * bottom nav -- where an outward ring is clipped by the neighbour or the scroll
  * container and shows up with one edge missing.
+ *
+ * The inset is 3px here and not the 2px gap the outward rings use, because this
+ * ring's own corners are square while the surface around it is usually not: the
+ * last row of a `DataMultiView` sits on the `rounded-lg` (8px) bottom edge of an
+ * `overflow-hidden` Card, and the Card clips whatever pokes out of the curve.
+ * A square corner clears a radius `r` only from `r * (1 - 1/sqrt(2))` inwards --
+ * 2.34px at 8px -- so at 2px both bottom corners of the ring came off. Rounding
+ * the row instead is not an option: half the rows are `<tr>`, and border-radius
+ * does not apply to table rows. Raising the radius anywhere means checking this
+ * number again.
  */
 export const FOCUS_RING_INSET =
-    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary";
+    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-primary";
 
 /**
  * The ring for a control whose visible box is a sibling `<span>` rather than
