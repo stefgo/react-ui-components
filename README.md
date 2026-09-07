@@ -451,6 +451,41 @@ devices and is announced inconsistently.
   is never cut off. Collapsed content is `inert` — out of the tab order and off
   the accessibility tree.
 
+#### `Stepper`
+
+The progress strip of a multi-step flow — an `<ol>`, because the position
+("3 of 5") is what a step indicator is *for*.
+
+- `steps`: `{ id, label, description? }`, `current`, `orientation`
+- The current step carries `aria-current="step"`; a completed one says so in its
+  accessible name (`completedLabel`).
+- `onStepSelect` makes the **completed** steps buttons, so the user can jump
+  back. Without it the strip is inert — a display, not a control. Upcoming steps
+  never become controls: skipping past the current step would skip what it
+  validates.
+- Owns no state and never advances by itself.
+
+#### `Wizard`
+
+`Stepper` plus the current step's content plus the navigation between them.
+Works inline in a `Card` and inside a `Modal` (`classNames={{ body: 'flex p-0' }}`,
+no modal `footer` — the wizard brings its own).
+
+```tsx
+<Wizard
+  steps={[{ id: 'mode', label: 'Connection', canContinue: !!mode, content: <ModeStep /> }, …]}
+  value={index} onChange={setIndex}          // controlled: required for a branching flow
+  onCancel={close} onFinish={create} finishLabel="Create client" isFinishing={creating}
+/>
+```
+
+- `canContinue` per step is the whole validation contract — the wizard never
+  inspects the content, it only asks whether the step is complete.
+- `hideBack` for a step that has already had an effect and cannot be undone.
+- **Only the current step is rendered, so the step contents' state belongs to
+  the caller.** A step holding its inputs in its own `useState` loses them on
+  Back; hold the form data above the wizard and Back/Next come for free.
+
 #### `Sidebar` and `BottomNav`
 
 - `Sidebar`: `groups` — `{ title?, items }`, each item with `icon: IconComponent`

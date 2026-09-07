@@ -26,6 +26,8 @@ export * from "./Sidebar";
 export * from "./DashboardHeader";
 export * from "./BottomNav";
 export * from "./Collapsible";
+export * from "./Stepper";
+export * from "./Wizard";
 export * from "./hooks/useActionMenu";
 export * from "./hooks/useMenuBehavior";
 export * from "./hooks/usePagination";
