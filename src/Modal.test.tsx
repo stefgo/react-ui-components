@@ -43,6 +43,15 @@ describe('Modal', () => {
         expect(onClose).toHaveBeenCalled();
     });
 
+    it('ignores Escape when closing on it is turned off', async () => {
+        const onClose = vi.fn();
+        render(<Modal isOpen onClose={onClose} title="Registration token" closeOnEscape={false} />);
+
+        await userEvent.keyboard('{Escape}');
+        expect(onClose).not.toHaveBeenCalled();
+        expect(screen.getByRole('dialog')).toBeInTheDocument();
+    });
+
     it('closes through the close button', async () => {
         const onClose = vi.fn();
         render(<Modal isOpen onClose={onClose} title="Delete client" />);

@@ -25,6 +25,14 @@ export interface UseMenuBehaviorOptions {
     closeOnViewportChange?: boolean;
     /** Prevent the page behind a dialog from scrolling. */
     lockScroll?: boolean;
+    /**
+     * Escape closes. On by default, and for a menu it stays on — WAI-ARIA
+     * requires it. Turn it off only for a dialog whose dismissal is itself the
+     * decision: content shown once and never again, where a reflexive keystroke
+     * would destroy something the operator has not read yet. Such a dialog must
+     * still offer a visible way out.
+     */
+    closeOnEscape?: boolean;
 }
 
 /**
@@ -38,7 +46,8 @@ export const useMenuBehavior = <T extends HTMLElement = HTMLDivElement>({
     mode = 'menu',
     triggerRef,
     closeOnViewportChange = false,
-    lockScroll = false
+    lockScroll = false,
+    closeOnEscape = true
 }: UseMenuBehaviorOptions) => {
     const containerRef = useRef<T>(null);
     const previouslyFocused = useRef<HTMLElement | null>(null);
@@ -111,8 +120,10 @@ export const useMenuBehavior = <T extends HTMLElement = HTMLDivElement>({
 
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
+                // Swallowed either way: a dialog that ignores Escape must not let it
+                // through to whatever opened it, or the surface behind closes instead.
                 event.stopPropagation();
-                onClose();
+                if (closeOnEscape) onClose();
                 return;
             }
 
@@ -153,7 +164,7 @@ export const useMenuBehavior = <T extends HTMLElement = HTMLDivElement>({
 
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, onClose, mode, getItems]);
+    }, [isOpen, onClose, mode, getItems, closeOnEscape]);
 
     // A menu anchored to a viewport coordinate goes stale once the page moves.
     useEffect(() => {

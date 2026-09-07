@@ -35,7 +35,13 @@ export interface ModalProps {
      * unsaved input, where a stray click should not discard work.
      */
     closeOnOverlayClick?: boolean;
-    /** Hides the × button. Escape still closes; leave it on unless the dialog is truly modal. */
+    /**
+     * Escape closes the dialog. Turn it off only where dismissing is the decision
+     * itself — a token shown once, a warning that must be acknowledged — and keep a
+     * visible way out, because Escape is no longer one.
+     */
+    closeOnEscape?: boolean;
+    /** Hides the × button. Escape still closes it unless `closeOnEscape` is off; leave it on unless the dialog is truly modal. */
     hideCloseButton?: boolean;
     closeLabel?: string;
     className?: string;
@@ -67,6 +73,7 @@ export const Modal = ({
     footer,
     size = 'md',
     closeOnOverlayClick = true,
+    closeOnEscape = true,
     hideCloseButton = false,
     closeLabel = 'Close dialog',
     className = '',
@@ -79,7 +86,8 @@ export const Modal = ({
         isOpen,
         onClose,
         mode: 'dialog',
-        lockScroll: true
+        lockScroll: true,
+        closeOnEscape
     });
 
     if (!isOpen) return null;
