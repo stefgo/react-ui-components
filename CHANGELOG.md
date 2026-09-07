@@ -1,3 +1,16 @@
+# [3.0.0-beta.4](https://github.com/stefgo/react-ui-components/compare/v3.0.0-beta.3...v3.0.0-beta.4) (2026-09-07)
+
+
+### Bug Fixes
+
+* **a11y:** Fokusring der letzten Zeile nicht mehr an der Card-Rundung beschnitten ([7a5ea32](https://github.com/stefgo/react-ui-components/commit/7a5ea327ce0319e42b8c5c7e2055960a7be1665d))
+
+
+### Features
+
+* **Modal:** Escape abschaltbar machen ([dee15cd](https://github.com/stefgo/react-ui-components/commit/dee15cdc8a5ca590eb9727ef82ae2f55c238b59e))
+* **Wizard:** Mehrschrittige Abläufe als Stepper und Wizard ([3561435](https://github.com/stefgo/react-ui-components/commit/3561435b3ce2475e0c2df2949942679f17d711d3))
+
 # [3.0.0-beta.3](https://github.com/stefgo/react-ui-components/compare/v3.0.0-beta.2...v3.0.0-beta.3) (2026-09-03)
 
 
