@@ -2,12 +2,11 @@ import { ReactNode } from "react";
 import { cn } from './utils';
 
 export interface DashboardLayoutClassNames {
-    root?: string;
     main?: string;
     contentContainer?: string;
 }
 
-interface DashboardLayoutProps {
+export interface DashboardLayoutProps {
     header: ReactNode;
     sidebar: ReactNode;
     bottomNav?: ReactNode;
@@ -30,9 +29,8 @@ export const DashboardLayout = ({
 }: DashboardLayoutProps) => {
     return (
         <div className={cn(
-            "h-screen overflow-hidden bg-app-bg dark:bg-app-bg-dark text-text-primary dark:text-text-primary-dark font-sans flex flex-col transition-colors duration-300",
-            className,
-            classNames?.root
+            "h-screen overflow-hidden bg-app-bg text-text-primary font-sans flex flex-col transition-colors duration-slow",
+            className
         )}>
             {header}
 

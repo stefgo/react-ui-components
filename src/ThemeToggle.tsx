@@ -1,12 +1,12 @@
 import { Sun, Moon } from 'lucide-react';
 import { cn } from './utils';
+import { FOCUS_RING } from './focus';
 
 export interface ThemeToggleClassNames {
-    root?: string;
     icon?: string;
 }
 
-interface ThemeToggleProps {
+export interface ThemeToggleProps {
     theme: string;
     onToggle: () => void;
     className?: string; // Standard root className
@@ -19,19 +19,23 @@ export const ThemeToggle = ({
     className = '',
     classNames
 }: ThemeToggleProps) => {
+    const label = theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+
     return (
         <button
+            type="button"
             onClick={onToggle}
             className={cn(
-                "p-2 flex items-center justify-center rounded-lg text-text-muted dark:text-text-muted-dark hover:text-text-primary dark:hover:text-text-primary-dark hover:bg-hover dark:hover:bg-hover-dark transition-colors",
-                className,
-                classNames?.root
+                "p-2 flex items-center justify-center rounded-md text-text-muted hover:text-text-primary hover:bg-hover transition-colors",
+                FOCUS_RING,
+                className
             )}
-            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            title={label}
+            aria-label={label}
         >
-            {theme === 'dark' 
-                ? <Sun size={20} className={cn(classNames?.icon)} /> 
-                : <Moon size={20} className={cn(classNames?.icon)} />
+            {theme === 'dark'
+                ? <Sun size={20} className={cn(classNames?.icon)} aria-hidden="true" />
+                : <Moon size={20} className={cn(classNames?.icon)} aria-hidden="true" />
             }
         </button>
     );
