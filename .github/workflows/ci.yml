@@ -1,41 +1,69 @@
-name: CI
+name: Check Code
 
-# Alle Pruefungen an einer Stelle. Der Release-Workflow ruft diesen Workflow
-# per workflow_call auf, statt die Schritte ein zweites Mal zu fuehren - sonst
-# driften die beiden Kopien auseinander.
+# Every check in one place. The release workflow calls this workflow via
+# workflow_call instead of running the steps a second time -- otherwise the two
+# copies drift apart.
 on:
+  # main and dev are covered by release.yml, which calls this workflow itself --
+  # naming them here as well would run the checks twice for every push.
+  # Everything else ran unchecked until now: the triggers were pull_request and
+  # workflow_call only, and there are no pull requests here.
+  push:
+    branches-ignore: ["main", "dev"]
   pull_request:
   workflow_call:
   workflow_dispatch:
 
+# Three pushes in a row to the same branch make the first two runs pointless.
+# github.workflow is the *caller's* name when this workflow is reached through
+# workflow_call, so a run from release.yml lands in its own group and can
+# neither cancel a plain branch run of these checks nor be cancelled by one.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  # Not cancelling on main and dev. On those refs these checks only ever run as
+  # the called job of release.yml, and release.yml sets cancel-in-progress:
+  # false for a good reason -- a cancelled checks job would produce exactly the
+  # half-finished run it avoids there.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/dev' }}
+
 jobs:
   checks:
+    name: Lint, test and build
     runs-on: ubuntu-latest
+    # Explicit rather than implicit: switching the repository defaults to
+    # restrictive token permissions must not change this workflow.
+    permissions:
+      contents: read
+
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
-          fetch-depth: 0 # commitlint braucht den Commit-Range des PRs
+          fetch-depth: 0 # commitlint needs the commit range of the pull request
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
 
-      # Node 22 bringt npm 10 mit, das Lockfile entsteht lokal mit npm 11. Die
-      # beiden sind nicht austauschbar: die optionalen Peers von
-      # @commitlint/read (conventional-commits-filter/-parser) stehen bei npm 10
-      # im Lockfile und bei npm 11 nicht, npm ci scheitert also an der jeweils
-      # anderen Version. packageManager in package.json ist die eine Quelle.
+      # Node 22 ships npm 10, the lockfile is written locally with npm 11. The
+      # two are not interchangeable: the optional peers of @commitlint/read
+      # (conventional-commits-filter/-parser) are in the lockfile under npm 10
+      # and absent under npm 11, so npm ci fails under whichever version did not
+      # write it. packageManager in package.json is the single source.
       - name: Pin npm
         run: npm i -g "npm@$(node -p "require('./package.json').packageManager.split('@')[1]")"
 
       - name: Install dependencies
         run: npm ci
 
-      # Die Commit-Message ist der einzige Input, aus dem semantic-release die
-      # naechste Version ableitet. Ein Tippfehler im Typ erzeugt kein Release,
-      # ohne dass irgendetwas rot wird - deshalb hier.
+      # The commit message is the only input semantic-release derives the next
+      # version from. A typo in the type produces no release at all, without
+      # anything going red -- hence this check.
+      #
+      # It is still not the actual safeguard: it is bound to pull_request, and
+      # pull requests only come from Dependabot here. For everything else
+      # .githooks/commit-msg checks before the commit is made.
       - name: Commit messages
         if: github.event_name == 'pull_request'
         run: >
@@ -55,6 +83,14 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      # After the build, because it needs the output: checks that every path
+      # package.json promises to the outside (main, module, types, files,
+      # exports) exists in the build. lint, test and build all import from src/,
+      # so nothing else says whether dist/ still matches package.json -- and a
+      # release has already slipped past that twice.
+      - name: Check package entry points
+        run: npm run check:entry-points
 
       # The stories are the only place several components are exercised at all,
       # so a broken one has to fail the build rather than the next person to
