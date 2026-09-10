@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/stefgo/react-ui-components/compare/v3.0.0...v3.0.1) (2026-09-10)
+
+
+### Bug Fixes
+
+* Accept lucide-react 1.x as a peer dependency ([1f6e2d0](https://github.com/stefgo/react-ui-components/commit/1f6e2d0bd58f18be17dd4ac7cea8a8090b065dc6))
+
 # [3.0.0](https://github.com/stefgo/react-ui-components/compare/v2.16.1...v3.0.0) (2026-09-09)
 
 
