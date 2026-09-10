@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Checks the commit message against commitlint.config.mjs.
+#
+# This hook is the *only* place the check actually runs: the step in ci.yml is
+# bound to `pull_request`, and this repository is maintained without pull
+# requests -- the history is local merges of dev into main. The check looked
+# like it was working and never ran once.
+#
+# The commit type is the only input semantic-release derives the next version
+# from. A typo in it surfaces nowhere else: no release is created, and nothing
+# goes red.
+npx --no -- commitlint --edit "$1"
