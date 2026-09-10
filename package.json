@@ -1,6 +1,6 @@
 {
   "name": "@stefgo/react-ui-components",
-  "version": "3.0.0-beta.4",
+  "version": "3.0.0",
   "license": "MIT",
   "private": false,
   "repository": {
@@ -38,11 +38,13 @@
     }
   },
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks 2>/dev/null || true",
     "dev": "tsup src/*.ts src/*.tsx \"!src/**/*.test.*\" \"!src/**/*.stories.*\" --format cjs,esm --watch --dts --minify --splitting --treeshake",
     "build": "tsup src/*.ts src/*.tsx \"!src/**/*.test.*\" \"!src/**/*.stories.*\" --format cjs,esm --dts --minify --clean --splitting --treeshake",
     "lint": "tsc --noEmit && eslint src",
     "tokens:build": "node scripts/generate-tokens-css.js",
     "tokens:check": "node scripts/generate-tokens-css.js && git diff --exit-code -- src/index.css",
+    "check:entry-points": "node scripts/check-entry-points.js",
     "prepublishOnly": "npm run build",
     "test": "vitest run",
     "test:watch": "vitest",

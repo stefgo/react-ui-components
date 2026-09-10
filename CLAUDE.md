@@ -17,7 +17,8 @@ npm run lint            # tsc --noEmit + eslint
 npm test                # vitest (jsdom), pure logic + component behaviour
 npm run tokens:build    # regenerate src/index.css from tokens.js
 npm run tokens:check    # fails if it is stale
-npx commitlint --from origin/main --to HEAD   # the commit messages CI will check
+npm run check:entry-points   # after a build: does package.json still match dist/?
+npx commitlint --from origin/main --to HEAD   # the same check .githooks/commit-msg runs
 ```
 
 Node 22 (`.nvmrc`) and npm 11 (`packageManager` in `package.json`) — both workflows
@@ -29,9 +30,16 @@ other. CI installs the pinned npm before `npm ci` for exactly that reason.
 Storybook has a **side-by-side** theme mode that renders a story in light and
 dark at once. Judge colour changes there, never in a consumer.
 
-`.github/workflows/ci.yml` runs commitlint, `tokens:check`, lint, test, build and
-Storybook — on every pull request, and again via `workflow_call` from the release
-workflow. The checks live in one file so the two paths cannot drift apart.
+`.github/workflows/ci.yml` (**Check Code**) runs commitlint, `tokens:check`, lint,
+test, build, the entry-point check and Storybook — on every push to a topic branch,
+on pull requests, and again via `workflow_call` from the release workflow. The checks
+live in one file so the two paths cannot drift apart. `main` and `dev` are deliberately
+absent from the push trigger: `release.yml` calls this workflow itself, and listing
+them would run everything twice.
+
+**`npm install` points git at `.githooks/`** (the `prepare` script). Two hooks live
+there: `commit-msg` runs commitlint, and `pre-push` refuses any branch but `main` and
+`dev` — on those two, a push *is* a release.
 
 ## Architecture
 
@@ -298,6 +306,22 @@ Three habits worth keeping:
   in `Modal` and `MobileMoreSheet`. And no colour literal may appear in `src/`
   or in `tailwind-preset.js`, beyond a neutral black or white shadow.
 
+### Comments
+
+**Comments are written in English** — source, JSDoc, scripts, workflows and the
+YAML configuration alike. The whole tree is English as of now: `src/` and
+`scripts/` always were, and `.github/`, `.githooks/` and `commitlint.config.mjs`
+were translated in one pass. A German comment is therefore a new one, not a
+leftover.
+
+The exception is quoted material. A comment that cites a commit subject as
+evidence — `.githooks/commit-msg`, the `no-breaking-bang` rule — keeps the
+original wording, otherwise the quote can no longer be found in `git log`.
+
+Commit messages follow the same rule — see *Release*. The existing history is
+German and is not worth rewriting, so the log stays mixed; everything written
+from here on is English.
+
 ### Release
 
 `semantic-release` publishes automatically from two branches: `main` gives a stable
@@ -307,13 +331,28 @@ a consumer can migrate against a real published version instead of against `main
 PRs merge to `dev` → `main`.
 
 **The commit message is the only input the version comes from,** so it is checked
-like code: commitlint (`@commitlint/config-conventional`) fails a PR whose commits
-are not Conventional Commits. A `Fix:` instead of `fix:` produces no release at all
-and nothing else would go red. `subject-case` is deliberately off — the subjects are
-German and capitalise nouns; the *type* is what decides a release, not the spelling
-behind it.
+like code — but by `.githooks/commit-msg`, not by CI. The commitlint step in `ci.yml`
+is bound to `pull_request`, and this repository is maintained without pull requests
+(the history is local merges of `dev` into `main`), so it never fired. A `Fix:`
+instead of `fix:` produces no release at all and nothing else would go red;
+`core.hooksPath` is set by the root `prepare` script, and it is now rejected locally.
 
-Two details worth keeping:
+- **Commit messages are written in English** — subject and body. They become
+  `CHANGELOG.md` and the GitHub release notes, which are read by the same audience
+  that reads the README and the Storybook docs, and that is English throughout. The
+  history up to 3.0.0 is German and stays that way; the rule applies going forward.
+- `subject-case` stays off. It forbids `sentence-case`, which is the natural form for
+  an English subject (`fix: Correct the focus outline on the secondary variant`), and
+  it would also fail the German commits that are not being rewritten. The *type* is
+  what decides a release, not the spelling behind it.
+- **`feat!: …` does not work** and is rejected by the local `no-breaking-bang` rule.
+  The Angular preset's `headerPattern` contains no `!`, so such a commit is read as
+  *typeless*. Three commits in the history carry `!` without a footer and released
+  nothing; the twelve breaking changes of 3.0.0 carry both and did release the major,
+  but stand in `CHANGELOG.md` as sectionless bullets because their type was lost. Use
+  a `BREAKING CHANGE:` footer — that is what raises the major here.
+
+Three details worth keeping:
 
 - `concurrency: release-${{ github.ref }}` with `cancel-in-progress: false`. Two runs
   at once would read the same last tag and compute the same next version; and a run
@@ -321,5 +360,17 @@ Two details worth keeping:
 - `fetch-depth: 0` on both checkouts. semantic-release needs the full history and all
   tags to find the last release, and commitlint needs the PR's commit range.
 
+- `cancel-in-progress` in `ci.yml` is off for `main` and `dev` for the same reason.
+  On those refs the checks only ever run as the called job of a release, and
+  cancelling them would produce exactly the half-finished run the line above avoids.
+
 The release job has no build step of its own — `prepublishOnly` builds the tarball,
 and the `checks` job already built once as a check.
+
+**Dependabot keeps the actions current** (`.github/dependabot.yml`): one grouped pull
+request a month against `dev`, prefixed `ci` so it stays out of the release notes. In a
+repository without pull requests that request would simply wait — six actions in the
+sibling project drifted up to two majors behind that way — so `dependabot-auto-merge.yml`
+(**Merge Dependency Updates**) puts it into auto-merge, gated by its own `ci.yml` run. It
+needs *Allow auto-merge* enabled in the repository settings. npm is deliberately not
+covered; security updates arrive without configuration.

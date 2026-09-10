@@ -1,0 +1,37 @@
+version: 2
+
+# Only the actions. A pinned action does not age loudly -- it keeps working until
+# the runner drops the version, and then a workflow that nobody touched fails.
+# One grouped pull request a month is the cheapest way to notice.
+#
+# Noticing was never the problem. This repository is maintained without pull
+# requests -- the history is local merges of dev into main -- so the monthly pull
+# request waited. dependabot-auto-merge.yml is the other half: the pull request
+# merges itself once its checks are green.
+#
+# npm is deliberately absent. The test suite covers the components, but not the
+# toolchain most bumps land in: tsup, Storybook, Vite and the Tailwind preset
+# decide what actually gets published, and a green run says little about that.
+# Security-relevant npm updates still arrive on their own: Dependabot security
+# updates need no configuration file.
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    # dev, not main. A push to main publishes a stable release, a push to dev
+    # only a beta prerelease. An action bump therefore lands first where a
+    # failure reaches nobody who installed the library.
+    target-branch: dev
+    schedule:
+      interval: monthly
+    # One pull request for all of them rather than one per action.
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      # Conventional Commits are enforced by .githooks/commit-msg, which
+      # Dependabot does not run -- the prefix has to be configured here. `ci`
+      # keeps the bump out of the release notes, which is where an action
+      # update belongs.
+      prefix: "ci"
+    labels:
+      - dependencies
