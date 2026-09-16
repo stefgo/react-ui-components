@@ -1,6 +1,7 @@
 import { ReactNode, useId } from 'react';
 import { X, Shield } from 'lucide-react';
 import type { SidebarGroup } from '../Sidebar';
+import { badgeDotClass, badgeToneClass } from './badgeTone';
 import type { IconComponent } from '../types';
 import { useMenuBehavior } from '../hooks/useMenuBehavior';
 import { cn } from '../utils';
@@ -128,13 +129,22 @@ export const MobileMoreSheet = ({
                                         <span className="font-semibold text-lg flex-1">{item.label}</span>
                                         {item.badge && (
                                             <span className={cn(
-                                                "text-xs px-2 py-1 rounded-full bg-hover",
-                                                item.active
-                                                    ? "text-text-primary"
-                                                    : "text-text-muted"
+                                                "text-xs px-2 py-1 rounded-full",
+                                                badgeToneClass(item.badgeTone) ?? cn(
+                                                    "bg-hover",
+                                                    item.active
+                                                        ? "text-text-primary"
+                                                        : "text-text-muted"
+                                                )
                                             )}>
                                                 {item.badge}
                                             </span>
+                                        )}
+                                        {!item.badge && item.badgeDot && (
+                                            <span
+                                                aria-hidden="true"
+                                                className={cn("w-2.5 h-2.5 rounded-full flex-shrink-0", badgeDotClass(item.badgeTone))}
+                                            />
                                         )}
                                     </button>
                                 ))}

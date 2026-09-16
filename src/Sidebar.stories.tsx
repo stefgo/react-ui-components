@@ -9,7 +9,7 @@ const groups: SidebarGroup[] = [
             { id: 'clients', label: 'Clients', icon: Monitor, badge: '9 / 12', active: true, onClick: () => {} },
             { id: 'jobs', label: 'Jobs', icon: HardDrive, badge: '24 / 48', onClick: () => {} },
             { id: 'repos', label: 'Repositories', icon: Server, badgeDot: true, onClick: () => {} },
-            { id: 'history', label: 'History', icon: Activity, onClick: () => {} },
+            { id: 'history', label: 'History', icon: Activity, badgeDot: true, badgeTone: 'warning', onClick: () => {} },
         ],
     },
     {
@@ -17,7 +17,7 @@ const groups: SidebarGroup[] = [
         items: [
             { id: 'users', label: 'Users', icon: Users, onClick: () => {} },
             { id: 'tokens', label: 'Client Tokens', icon: Key, onClick: () => {} },
-            { id: 'settings', label: 'Settings', icon: Settings, onClick: () => {} },
+            { id: 'settings', label: 'Settings', icon: Settings, badge: '3', badgeTone: 'error', onClick: () => {} },
         ],
     },
 ];

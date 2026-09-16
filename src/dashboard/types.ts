@@ -1,4 +1,5 @@
 import type { IconComponent } from '../types';
+import type { SidebarBadgeTone } from '../Sidebar';
 
 export interface DashboardNavGroup {
     id: string;
@@ -10,8 +11,13 @@ export interface DashboardPageNav {
     /** Icon component, e.g. any icon exported by lucide-react. The surface picks its size. */
     icon: IconComponent;
     badge?: string;
-    /** Show a dot indicator when the sidebar is collapsed and the label is hidden. */
+    /**
+     * Show a dot indicator. Collapsed, it sits on the icon; expanded, it takes the
+     * badge's place when there is no `badge` text.
+     */
     badgeDot?: boolean;
+    /** Colours the badge and the dot. Without it the badge is neutral and the dot red. */
+    badgeTone?: SidebarBadgeTone;
     /** References DashboardNavGroup.id */
     groupId?: string;
     /** Where the entry appears on small screens. Default: 'sidebar'. */

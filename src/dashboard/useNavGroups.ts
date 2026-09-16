@@ -48,6 +48,7 @@ export const useNavGroups = (
         active: p.id === activeId,
         badge: p.nav!.badge,
         badgeDot: p.nav!.badgeDot,
+        badgeTone: p.nav!.badgeTone,
         onClick: () => {
             p.nav!.onClick();
             onNavigate?.();

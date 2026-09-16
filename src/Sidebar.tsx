@@ -1,6 +1,7 @@
 import type { IconComponent } from './types';
 import { cn } from './utils';
 import { FOCUS_RING } from './focus';
+import { badgeDotClass, badgeToneClass } from './dashboard/badgeTone';
 
 /** Edge length of a sidebar icon. Fixed by the item layout, not a caller choice. */
 const SIDEBAR_ICON_SIZE = 18;
@@ -10,10 +11,18 @@ export interface SidebarItem {
     label: string;
     icon: IconComponent;
     badge?: string;
-    badgeDot?: boolean; // If true, show a dot indicator when sidebar is collapsed
+    /**
+     * Show a dot indicator. Collapsed, it sits on the icon; expanded, it takes the
+     * badge's place when there is no `badge` text.
+     */
+    badgeDot?: boolean;
+    /** Colours the badge and the dot. Without it the badge is neutral and the dot red. */
+    badgeTone?: SidebarBadgeTone;
     active?: boolean;
     onClick: () => void;
 }
+
+export type SidebarBadgeTone = 'warning' | 'error';
 
 export interface SidebarGroup {
     title?: string;
@@ -51,6 +60,7 @@ const NavItem = ({
     onClick,
     badge,
     badgeDot,
+    badgeTone,
     isCollapsed,
     classNames
 }: SidebarItem & { isCollapsed?: boolean; classNames?: SidebarClassNames }) => (
@@ -76,7 +86,7 @@ const NavItem = ({
             <div className={cn("flex-shrink-0 relative", classNames?.itemIcon)} aria-hidden="true">
                 <Icon size={SIDEBAR_ICON_SIZE} />
                 {isCollapsed && badgeDot && (
-                    <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-error" />
+                    <span className={cn("absolute -top-1 -right-1 w-2 h-2 rounded-full", badgeDotClass(badgeTone))} />
                 )}
             </div>
             {!isCollapsed && <span className={cn("truncate", classNames?.itemLabel)}>{label}</span>}
@@ -85,15 +95,21 @@ const NavItem = ({
             <span
                 className={cn(
                     "text-xs px-2 py-0.5 rounded-full",
-                    active
+                    badgeToneClass(badgeTone) ?? (active
                         ? "bg-sidebar-badge-active"
-                        : "bg-sidebar-badge-inactive",
+                        : "bg-sidebar-badge-inactive"),
                     classNames?.itemBadge,
                     active ? classNames?.itemBadgeActive : classNames?.itemBadgeInactive
                 )}
             >
                 {badge}
             </span>
+        )}
+        {!isCollapsed && !badge && badgeDot && (
+            <span
+                aria-hidden="true"
+                className={cn("w-2 h-2 rounded-full flex-shrink-0", badgeDotClass(badgeTone))}
+            />
         )}
     </button>
 );
