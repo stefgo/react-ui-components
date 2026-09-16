@@ -1,3 +1,11 @@
+# [3.1.0](https://github.com/stefgo/react-ui-components/compare/v3.0.1...v3.1.0) (2026-09-16)
+
+
+### Features
+
+* Add badgeTone to sidebar items ([61dc6cb](https://github.com/stefgo/react-ui-components/commit/61dc6cb591489039ab2cfddeedf6e07e852c8014))
+* Add searchActions slot to the DataMultiView search bar ([b287d52](https://github.com/stefgo/react-ui-components/commit/b287d52ab5e17223f2689ed739fc899f38930324))
+
 ## [3.0.1](https://github.com/stefgo/react-ui-components/compare/v3.0.0...v3.0.1) (2026-09-10)
 
 
