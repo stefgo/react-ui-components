@@ -119,6 +119,12 @@ const GROUPS = [
 
             { name: "badge-neutral-bg", light: { alias: "hover" } },
             { name: "badge-neutral-text", light: { alias: "text-secondary" } },
+
+            // Status dots are a few pixels wide and carry no text, so they need
+            // their own colours: `warning` is nearly the brand orange, and a true
+            // yellow drops to about 2:1 on a light surface. Amber keeps 3:1 there.
+            { name: "badge-dot-warning", light: "#d97706", dark: "#facc15" },
+            { name: "badge-dot-error", light: "#dc2626", dark: "#f87171" },
         ],
     },
     {

@@ -53,6 +53,10 @@ export interface SidebarProps {
     classNames?: SidebarClassNames;
 }
 
+// The dot's ring matches the item background, which an inactive item takes on while hovered.
+const dotRing = (active?: boolean) =>
+    active ? "ring-sidebar-item-active" : "ring-sidebar-bg group-hover:ring-sidebar-item-active";
+
 const NavItem = ({
     icon: Icon,
     label,
@@ -72,7 +76,7 @@ const NavItem = ({
         aria-label={isCollapsed ? label : undefined}
         aria-current={active ? 'page' : undefined}
         className={cn(
-            "w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition duration-base",
+            "group w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition duration-base",
             FOCUS_RING,
             isCollapsed ? "justify-center" : "justify-between",
             active
@@ -86,7 +90,7 @@ const NavItem = ({
             <div className={cn("flex-shrink-0 relative", classNames?.itemIcon)} aria-hidden="true">
                 <Icon size={SIDEBAR_ICON_SIZE} />
                 {isCollapsed && badgeDot && (
-                    <span className={cn("absolute -top-1 -right-1 w-2 h-2 rounded-full", badgeDotClass(badgeTone))} />
+                    <span className={cn("absolute -top-1 -right-1", badgeDotClass(badgeTone), dotRing(active))} />
                 )}
             </div>
             {!isCollapsed && <span className={cn("truncate", classNames?.itemLabel)}>{label}</span>}
@@ -108,7 +112,7 @@ const NavItem = ({
         {!isCollapsed && !badge && badgeDot && (
             <span
                 aria-hidden="true"
-                className={cn("w-2 h-2 rounded-full flex-shrink-0", badgeDotClass(badgeTone))}
+                className={cn("flex-shrink-0", badgeDotClass(badgeTone), dotRing(active))}
             />
         )}
     </button>

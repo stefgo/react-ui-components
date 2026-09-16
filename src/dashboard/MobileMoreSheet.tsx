@@ -143,7 +143,7 @@ export const MobileMoreSheet = ({
                                         {!item.badge && item.badgeDot && (
                                             <span
                                                 aria-hidden="true"
-                                                className={cn("w-2.5 h-2.5 rounded-full flex-shrink-0", badgeDotClass(item.badgeTone))}
+                                                className={cn("flex-shrink-0 ring-card", badgeDotClass(item.badgeTone))}
                                             />
                                         )}
                                     </button>

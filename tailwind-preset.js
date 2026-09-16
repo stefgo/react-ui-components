@@ -104,6 +104,7 @@ module.exports = {
           error: { bg: t("badge-error-bg"), text: t("badge-error-text") },
           info: { bg: t("badge-info-bg"), text: t("badge-info-text") },
           neutral: { bg: t("badge-neutral-bg"), text: t("badge-neutral-text") },
+          dot: { warning: t("badge-dot-warning"), error: t("badge-dot-error") },
         },
 
         // ─── Component: Input / Select ───────────────────────────────────────

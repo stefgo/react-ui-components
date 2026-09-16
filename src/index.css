@@ -63,6 +63,8 @@
   --ruic-badge-info-text:    #1d4ed8;
   --ruic-badge-neutral-bg:   var(--ruic-hover, #f3f4f6);
   --ruic-badge-neutral-text: var(--ruic-text-secondary, #4b5563);
+  --ruic-badge-dot-warning:  #d97706;
+  --ruic-badge-dot-error:    #dc2626;
 
   /* ─── Component: Input / Select ──────────────────────────────────────── */
   --ruic-input-bg:     var(--ruic-bg-app, #f9fafb);
@@ -131,6 +133,8 @@
   --ruic-badge-error-text:   #f87171;
   --ruic-badge-info-bg:      rgba(30, 58, 138, 0.3);
   --ruic-badge-info-text:    #60a5fa;
+  --ruic-badge-dot-warning:  #facc15;
+  --ruic-badge-dot-error:    #f87171;
 
   /* Component: Sidebar */
   --ruic-sidebar-bg:              #1a1a1a;

@@ -1,8 +1,13 @@
 import type { SidebarBadgeTone } from '../Sidebar';
+import { cn } from '../utils';
 
-/** Dot colour per tone; an untoned dot keeps the red it always had. */
+/**
+ * Dot size and colour per tone; an untoned dot keeps the red it always had.
+ * The ring in the surface colour (passed by the caller) sets the dot off from
+ * an icon it overlaps and from the item background.
+ */
 export const badgeDotClass = (tone?: SidebarBadgeTone) =>
-    tone === 'warning' ? 'bg-warning' : 'bg-error';
+    cn('w-2.5 h-2.5 rounded-full ring-2', tone === 'warning' ? 'bg-badge-dot-warning' : 'bg-badge-dot-error');
 
 /** Pill colours per tone, or `undefined` for the surface's own neutral style. */
 export const badgeToneClass = (tone?: SidebarBadgeTone) =>
