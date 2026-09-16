@@ -77,6 +77,16 @@ export const WithSearch: Story = {
     },
 };
 
+/** Filters that narrow the same list sit at the right end of the search bar. */
+export const WithSearchActions: Story = {
+    args: {
+        searchable: true,
+        searchPlaceholder: 'Search clients…',
+        searchFilter: (c: DemoClient, q: string) => c.hostname.toLowerCase().includes(q.toLowerCase()),
+        searchActions: <Button size="sm" variant="secondary">Online only</Button>,
+    },
+};
+
 export const WithHeaderActions: Story = {
     args: { extraActions: <Button size="sm">New client</Button> },
 };

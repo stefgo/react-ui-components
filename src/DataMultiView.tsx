@@ -23,6 +23,8 @@ export interface DataMultiViewClassNames {
     treeTable?: DataTreeTableClassNames;
     extraActionsWrapper?: string;
     searchBar?: string;
+    /** The wrapper of `searchActions`, at the right end of the search bar. */
+    searchActionsWrapper?: string;
 }
 
 export interface DataMultiViewProps<T> {
@@ -55,6 +57,12 @@ export interface DataMultiViewProps<T> {
     searchable?: boolean;
     /** Placeholder text for the search input */
     searchPlaceholder?: string;
+    /**
+     * Controls that narrow the same list the search does — a filter select, for
+     * example — rendered at the right end of the search bar. Only shown while
+     * `searchable` is set, since that is when the bar exists.
+     */
+    searchActions?: ReactNode;
     /** Filter function for internal filtering. Receives each item and the current query string. */
     searchFilter?: (item: T, query: string) => boolean;
     /** The search query. Leave it out and the view owns it. */
@@ -89,6 +97,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         sort,
         searchable,
         searchPlaceholder = 'Suchen…',
+        searchActions,
         searchFilter,
         search,
         viewMode,
@@ -229,7 +238,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         <Card padding="none" className={cn("overflow-hidden flex flex-col h-full", className)} classNames={{ ...classNames?.card, ...classNames?.header, header: cn(classNames?.card?.header, classNames?.header?.header, searchable && 'border-b-0 pb-1') }} title={title} action={headerAction}>
             {searchable && (
                 <div className={cn(
-                    "px-4 py-2 border-b border-border bg-card-header",
+                    "px-4 py-2 border-b border-border bg-card-header flex items-center gap-3",
                     classNames?.searchBar
                 )}>
                     {/*
@@ -239,7 +248,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                         button. The input suppresses its own.
                     */}
                     <div className={cn(
-                        "flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-app-bg",
+                        "flex flex-1 min-w-0 items-center gap-2 px-3 py-1 rounded-full border border-border bg-app-bg",
                         FOCUS_RING_WITHIN
                     )}>
                         <Search size={14} className="text-text-muted shrink-0" />
@@ -261,6 +270,11 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                             </button>
                         )}
                     </div>
+                    {searchActions && (
+                        <div className={cn("flex items-center gap-2 shrink-0", classNames?.searchActionsWrapper)}>
+                            {searchActions}
+                        </div>
+                    )}
                 </div>
             )}
             {effectiveViewMode === 'list' ? (
