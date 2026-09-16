@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/stefgo/react-ui-components/compare/v3.1.0...v3.2.0) (2026-09-16)
+
+
+### Features
+
+* Make sidebar badge dots easier to see in both themes ([4d33232](https://github.com/stefgo/react-ui-components/commit/4d33232a95842b537864c05d6b5a74ca40e52e23))
+
 # [3.1.0](https://github.com/stefgo/react-ui-components/compare/v3.0.1...v3.1.0) (2026-09-16)
 
 
