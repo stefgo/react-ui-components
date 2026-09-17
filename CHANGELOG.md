@@ -1,3 +1,20 @@
+# [4.0.0](https://github.com/stefgo/react-ui-components/compare/v3.2.0...v4.0.0) (2026-09-17)
+
+
+### Features
+
+* Add tabs, and one way to persist view state ([46ab5c9](https://github.com/stefgo/react-ui-components/commit/46ab5c9b619d5a336198508b889e28dc7d8578e8))
+
+
+### BREAKING CHANGES
+
+* `sort.storageKey` and `viewMode.storageKey` are replaced by
+`persist: { key, scope }`, which has no default scope -- the old behaviour is
+`scope: "local"`. `readStoredSort` is now `reviveSort`, and a rejected value
+returns undefined rather than the fallback, so `defaultValue` decides.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+
 # [3.2.0](https://github.com/stefgo/react-ui-components/compare/v3.1.0...v3.2.0) (2026-09-16)
 
 
