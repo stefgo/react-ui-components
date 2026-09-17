@@ -58,3 +58,37 @@ export interface Controllable<T> {
     defaultValue?: T;
     onChange?: (next: T) => void;
 }
+
+/**
+ * Where an uncontrolled state survives beyond the component that holds it.
+ *
+ * The scope is the whole point of the option, so it is spelled out rather than
+ * hidden in a key prefix: `'session'` lasts until the tab is closed,
+ * `'local'` until someone clears the browser. Neither is a default worth
+ * guessing at, so there is no default — a caller that wants persistence says
+ * how long.
+ */
+export interface PersistOptions {
+    /**
+     * The storage key. It names the *view*, not the thing on screen —
+     * `'project.clients.sort'`, not `'project.<id>.sort'`, or storage grows by
+     * one entry per project anyone ever opened.
+     */
+    key: string;
+    scope: 'session' | 'local';
+}
+
+/**
+ * A controllable state that may also outlive its mount.
+ *
+ * `persist` is the *default* of the uncontrolled variant, not a second mode: a
+ * controlled caller owns the state and decides for itself whether to store it,
+ * which is what lets a caller put the same state in the URL instead.
+ *
+ * A stored value wins over `defaultValue` — that is the order that makes a
+ * remembered choice feel remembered, and it is why `defaultValue` is described
+ * as a starting value rather than an initial one.
+ */
+export interface Persistable<T> extends Controllable<T> {
+    persist?: PersistOptions;
+}

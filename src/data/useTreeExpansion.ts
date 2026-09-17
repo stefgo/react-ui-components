@@ -1,11 +1,25 @@
 import { useMemo, useState } from 'react';
-import { useControllableState } from '../hooks/useControllableState';
-import type { Controllable } from '../types';
+import { usePersistentState } from '../hooks/usePersistentState';
+import type { Persistable } from '../types';
 import { collectExpandableKeys } from './tree';
 
 export type TreeKey = string | number;
 
-export interface TreeExpansionOptions extends Controllable<Set<TreeKey>> {
+/**
+ * Turns a stored expansion back into state.
+ *
+ * A key that no longer exists is kept rather than dropped: it opens nothing,
+ * and the node it names may simply not have arrived yet — a tree filled from a
+ * websocket is empty on the first render. Dropping unknown keys here would
+ * collapse exactly the rows the user left open.
+ */
+const reviveKeys = (raw: unknown): Set<TreeKey> | undefined => {
+    if (!Array.isArray(raw)) return undefined;
+    const keys = raw.filter((key): key is TreeKey => typeof key === 'string' || typeof key === 'number');
+    return keys.length > 0 ? new Set(keys) : undefined;
+};
+
+export interface TreeExpansionOptions extends Persistable<Set<TreeKey>> {
     /**
      * Open every expandable node, including ones that arrive later. A seeding
      * policy, not a starting value — use `defaultValue` for that.
@@ -39,11 +53,16 @@ export function useTreeExpansion<T>({ data, visibleRows, getChildren, getKey, ex
     const all = expanded?.all ?? false;
     const initialKeys = () => collectExpandableKeys(data, getChildren, getKey);
 
-    const [expandedKeys, setExpandedKeys, , correctExpandedKeys] = useControllableState<Set<TreeKey>>({
+    const [expandedKeys, setExpandedKeys, , correctExpandedKeys] = usePersistentState<Set<TreeKey>>({
         value: expanded?.value,
         defaultValue: expanded?.defaultValue,
         onChange: expanded?.onChange,
+        persist: expanded?.persist,
         fallback: () => all ? new Set(initialKeys()) : new Set(),
+        revive: reviveKeys,
+        // A Set is not JSON; without this it would store as `{}` and come back
+        // as nothing at all.
+        serialize: (keys) => [...keys],
     });
 
     // Which nodes this hook has already made a decision about. Without it,

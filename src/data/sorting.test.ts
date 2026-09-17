@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it } from 'vitest';
-import { buildComparator, nextSortColumns, readStoredSort } from './sorting';
+import { describe, expect, it } from 'vitest';
+import { buildComparator, nextSortColumns, reviveSort } from './sorting';
 import type { DataTableDef } from '../DataTable';
 
 interface Row { id: number; name: string; size: number | null }
@@ -62,38 +62,23 @@ describe('buildComparator', () => {
     });
 });
 
-describe('readStoredSort', () => {
-    // A two-method stand-in: the function only reads, and pulling in a whole DOM
-    // implementation for that would be out of proportion.
-    beforeEach(() => {
-        const store = new Map<string, string>();
-        Object.defineProperty(globalThis, 'localStorage', {
-            configurable: true,
-            value: {
-                getItem: (k: string) => store.get(k) ?? null,
-                setItem: (k: string, v: string) => { store.set(k, v); },
-            },
-        });
+describe('reviveSort', () => {
+    const revive = reviveSort(itemDef);
+
+    it('rejects a stored colIndex that no longer exists', () => {
+        // Rejecting, not returning []: `undefined` is what hands the decision
+        // back to `defaultValue`, while [] would claim "sorted by nothing".
+        expect(revive([{ colIndex: 9, direction: 'asc' }])).toBeUndefined();
     });
 
-    it('falls back to defaultSort without a storage key', () => {
-        expect(readStoredSort(itemDef, undefined, { colIndex: 1, direction: 'desc' }))
+    it('rejects anything that is not an array of sort entries', () => {
+        expect(revive({ colIndex: 0 })).toBeUndefined();
+        expect(revive('desc')).toBeUndefined();
+        expect(revive([{ colIndex: 0, direction: 'sideways' }])).toBeUndefined();
+    });
+
+    it('keeps the usable entries of a partly stale sort', () => {
+        expect(revive([{ colIndex: 1, direction: 'desc' }, { colIndex: 9, direction: 'asc' }]))
             .toEqual([{ colIndex: 1, direction: 'desc' }]);
-    });
-
-    it('discards a stored colIndex that no longer exists', () => {
-        localStorage.setItem('sort-test', JSON.stringify([{ colIndex: 9, direction: 'asc' }]));
-        expect(readStoredSort(itemDef, 'sort-test')).toEqual([]);
-    });
-
-    it('discards a stored value that is not an array of sort entries', () => {
-        localStorage.setItem('sort-test', '{"colIndex":0}');
-        expect(readStoredSort(itemDef, 'sort-test', { colIndex: 0, direction: 'asc' }))
-            .toEqual([{ colIndex: 0, direction: 'asc' }]);
-    });
-
-    it('reads back a valid entry', () => {
-        localStorage.setItem('sort-test', JSON.stringify([{ colIndex: 1, direction: 'desc' }]));
-        expect(readStoredSort(itemDef, 'sort-test')).toEqual([{ colIndex: 1, direction: 'desc' }]);
     });
 });
