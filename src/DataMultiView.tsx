@@ -8,7 +8,8 @@ import { BaseDataViewProps } from './data/types';
 import type { SortOptions } from './data/useSortColumns';
 import type { TreeExpansionOptions } from './data/useTreeExpansion';
 import { useControllableState } from './hooks/useControllableState';
-import type { Controllable } from './types';
+import { usePersistentState } from './hooks/usePersistentState';
+import type { Controllable, Persistable } from './types';
 import { cn } from './utils';
 import { FOCUS_RING, FOCUS_RING_INSET, FOCUS_RING_NONE, FOCUS_RING_WITHIN } from './focus';
 
@@ -66,6 +67,11 @@ export interface DataMultiViewProps<T> {
     /** Filter function for internal filtering. Receives each item and the current query string. */
     searchFilter?: (item: T, query: string) => boolean;
     /** The search query. Leave it out and the view owns it. */
+    /**
+     * Deliberately `Controllable` and not `Persistable`: a search that came
+     * back on its own would hide rows on load, and the reason would be a field
+     * the reader has to notice first.
+     */
     search?: Controllable<string>;
     /** Which view is shown. Leave it out and the view owns it. */
     viewMode?: ViewModeOptions;
@@ -73,15 +79,7 @@ export interface DataMultiViewProps<T> {
 
 export type ViewMode = 'table' | 'list' | 'tree';
 
-export interface ViewModeOptions extends Controllable<ViewMode> {
-    /**
-     * Remembers the chosen view across reloads while uncontrolled. It is the
-     * *default* of the uncontrolled variant, not a second mode — a controlled
-     * caller can restore the view from the URL instead, which used to be
-     * impossible.
-     */
-    storageKey?: string;
-}
+export type ViewModeOptions = Persistable<ViewMode>;
 
 export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     const {
@@ -145,33 +143,19 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
 
     const firstMode: ViewMode = hasTreeView ? 'tree' : tableDef ? 'table' : 'list';
 
-    const viewModeStorageKey = viewMode?.storageKey;
-
-    const [currentViewMode, setViewMode] = useControllableState<ViewMode>({
+    const [currentViewMode, changeViewMode] = usePersistentState<ViewMode>({
         value: viewMode?.value,
         defaultValue: viewMode?.defaultValue,
         onChange: viewMode?.onChange,
-        fallback: () => {
-            if (!viewModeStorageKey || typeof localStorage === 'undefined') return firstMode;
-            const saved = localStorage.getItem(viewModeStorageKey) as ViewMode | null;
+        persist: viewMode?.persist,
+        fallback: () => firstMode,
+        revive: (raw) => {
+            if (raw !== 'table' && raw !== 'list' && raw !== 'tree') return undefined;
             // A stored 'tree' is meaningless without a tree definition.
-            if (saved === 'tree' && !hasTreeView) return firstMode;
-            return saved ?? firstMode;
-        }
+            if (raw === 'tree' && !hasTreeView) return undefined;
+            return raw;
+        },
     });
-
-    const changeViewMode = (mode: ViewMode) => {
-        setViewMode(mode);
-        // Persistence follows the uncontrolled state only; a controlled caller
-        // decides for itself whether the choice outlives the session.
-        if (!viewMode?.value && viewModeStorageKey && typeof localStorage !== 'undefined') {
-            try {
-                localStorage.setItem(viewModeStorageKey, mode);
-            } catch {
-                // Private mode or a full quota — not worth failing a click over.
-            }
-        }
-    };
 
     // Effective view mode is forced to 'list' on mobile (only if listColumns is defined)
     const effectiveViewMode: ViewMode = isMobile && listColumns ? 'list' : currentViewMode;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useControllableState } from '../hooks/useControllableState';
+import { usePersistentState } from '../hooks/usePersistentState';
 import { PaginationProps, PaginationState } from './types';
 
 export interface ResolvedPagination {
@@ -16,6 +16,21 @@ export interface ResolvedPagination {
 const DEFAULT_STATE: PaginationState = { page: 1, pageSize: 10 };
 
 /**
+ * Turns a stored pagination back into state.
+ *
+ * Only the page size survives. A page number does not: the data behind it is
+ * fetched fresh, so page 7 of a list that now has two pages would open on
+ * nothing at all -- and "which page was I on" is not what anyone means by
+ * remembering a list. "How many rows do I like seeing" is.
+ */
+const revivePagination = (raw: unknown): PaginationState | undefined => {
+    if (!raw || typeof raw !== 'object') return undefined;
+    const { pageSize } = raw as Partial<PaginationState>;
+    if (!Number.isInteger(pageSize) || (pageSize as number) < 1) return undefined;
+    return { page: 1, pageSize: pageSize as number };
+};
+
+/**
  * Resolves the `pagination` prop into one shape, whoever owns the state.
  *
  * Controlled and uncontrolled differ in exactly one place — where the current
@@ -27,11 +42,15 @@ export function usePaginationState(
 ): ResolvedPagination | null {
     const opts: PaginationProps | null = pagination === true ? {} : (pagination || null);
 
-    const [state, setState, isControlled, correct] = useControllableState<PaginationState>({
+    const [state, setState, isControlled, correct] = usePersistentState<PaginationState>({
         value: opts?.value,
         defaultValue: opts?.defaultValue ? { ...DEFAULT_STATE, ...opts.defaultValue } : undefined,
         onChange: opts?.onChange,
+        persist: opts?.persist,
         fallback: DEFAULT_STATE,
+        revive: revivePagination,
+        // The page is deliberately not stored; see `revivePagination`.
+        serialize: ({ pageSize }) => ({ pageSize }),
     });
 
     // Back to page 1 when the data or the filter changes. Adjusted during render

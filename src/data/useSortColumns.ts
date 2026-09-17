@@ -1,18 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { DataTableDef } from '../DataTable';
-import { useControllableState } from '../hooks/useControllableState';
-import type { Controllable } from '../types';
+import { usePersistentState } from '../hooks/usePersistentState';
+import type { Persistable } from '../types';
 import { Comparator, SortEntry } from './types';
-import { buildComparator, isSortable, nextSortColumns, readStoredSort } from './sorting';
+import { buildComparator, isSortable, nextSortColumns, reviveSort } from './sorting';
 
-export interface SortOptions extends Controllable<SortEntry[]> {
-    /**
-     * Persists the sort across reloads while uncontrolled. It is the *default*
-     * of the uncontrolled variant, not a second mode: a controlled caller owns
-     * the sort and decides for itself whether to store it.
-     */
-    storageKey?: string;
-}
+export type SortOptions = Persistable<SortEntry[]>;
 
 /**
  * What the sort transition actually reads off an event.
@@ -47,32 +40,16 @@ export interface UseSortColumnsResult<T> {
 
 /** Column sorting for the table views: state, persistence and the click logic. */
 export function useSortColumns<T>({ itemDef, sort }: UseSortColumnsOptions<T>): UseSortColumnsResult<T> {
-    const storageKey = sort?.storageKey;
+    const revive = useMemo(() => reviveSort(itemDef), [itemDef]);
 
-    const [sortColumns, setSortColumns, isControlled] = useControllableState<SortEntry[]>({
+    const [sortColumns, setSortColumns] = usePersistentState<SortEntry[]>({
         value: sort?.value,
-        // `defaultValue` deliberately goes through the fallback rather than
-        // straight in: a stored sort still wins over it, the way it did before
-        // the sort became controllable.
+        defaultValue: sort?.defaultValue,
         onChange: sort?.onChange,
-        fallback: () => readStoredSort(itemDef, storageKey, sort?.defaultValue),
+        persist: sort?.persist,
+        fallback: [],
+        revive,
     });
-
-    const isFirstRun = useRef(true);
-    useEffect(() => {
-        // Skip the mount run, which would only write back what was just read.
-        if (isFirstRun.current) {
-            isFirstRun.current = false;
-            return;
-        }
-        if (isControlled || !storageKey || typeof localStorage === 'undefined') return;
-        try {
-            localStorage.setItem(storageKey, JSON.stringify(sortColumns));
-        } catch {
-            // Private mode or a full quota: losing the persisted sort is not
-            // worth taking the render down for.
-        }
-    }, [sortColumns, storageKey, isControlled]);
 
     const comparator = useMemo(() => buildComparator(itemDef, sortColumns), [itemDef, sortColumns]);
 

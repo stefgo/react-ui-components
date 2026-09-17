@@ -61,41 +61,23 @@ export function nextSortColumns(prev: SortEntry[], colIndex: number, additive: b
 }
 
 /**
- * Reads a persisted sort, falling back to `defaultSort`.
+ * Turns a stored sort back into state, or rejects it.
  *
- * Anything unusable is discarded rather than trusted: the value comes from
- * localStorage, where a stale entry can outlive the column layout it was
- * written for, and a colIndex past the end of itemDef would crash the
- * comparator on the next render.
+ * Anything unusable is discarded rather than trusted: a stored entry outlives
+ * the column layout it was written for, and a colIndex past the end of itemDef
+ * would crash the comparator on the next render. Rejecting by returning
+ * `undefined` is what lets `defaultValue` take over.
  */
-export function readStoredSort<T>(
-    itemDef: DataTableDef<T>[],
-    storageKey?: string,
-    seed?: SortEntry | SortEntry[],
-): SortEntry[] {
-    const fallback = seed ? (Array.isArray(seed) ? seed : [seed]) : [];
-    if (!storageKey || typeof localStorage === 'undefined') return fallback;
-
-    let raw: string | null;
-    try {
-        raw = localStorage.getItem(storageKey);
-    } catch {
-        return fallback;
-    }
-    if (!raw) return fallback;
-
-    try {
-        const parsed: unknown = JSON.parse(raw);
-        if (!Array.isArray(parsed)) return fallback;
-        const valid = parsed.filter((entry): entry is SortEntry =>
+export function reviveSort<T>(itemDef: DataTableDef<T>[]): (raw: unknown) => SortEntry[] | undefined {
+    return (raw) => {
+        if (!Array.isArray(raw)) return undefined;
+        const valid = raw.filter((entry): entry is SortEntry =>
             !!entry
             && typeof entry === 'object'
             && Number.isInteger((entry as SortEntry).colIndex)
             && (entry as SortEntry).colIndex >= 0
             && (entry as SortEntry).colIndex < itemDef.length
             && ((entry as SortEntry).direction === 'asc' || (entry as SortEntry).direction === 'desc'));
-        return valid.length > 0 ? valid : fallback;
-    } catch {
-        return fallback;
-    }
+        return valid.length > 0 ? valid : undefined;
+    };
 }

@@ -15,16 +15,32 @@ export interface StatCardClassNames {
     sub?: string;
 }
 
-export interface StatCardProps {
+/**
+ * Everything a caller may put on the rendered element, minus what this card
+ * decides for itself. `useTabs`' `tabProps` is the reason it exists: a card
+ * used as a tab needs `role`, `aria-selected`, `aria-controls` and a roving
+ * `tabIndex` on the same element the click is on.
+ */
+type StatCardElementProps = Omit<
+    React.HTMLAttributes<HTMLElement>,
+    'onClick' | 'className' | 'children'
+>;
+
+export interface StatCardProps extends StatCardElementProps {
     label: string;
     value: string;
     sub?: string;
     icon: IconComponent;
     onClick?: () => void;
     /**
-     * Marks a clickable card as the active choice. It draws the selection ring
-     * and, more importantly, is the only thing that tells assistive technology
-     * which card of a row is the current one -- a ring alone says nothing.
+     * Marks a clickable card as the active choice, and draws the selection ring.
+     *
+     * It carries no semantics of its own. A row of cards that switches a panel
+     * is a tab list, a single card that turns something on is a toggle, and the
+     * two are announced differently -- so the card takes the ARIA it is given
+     * (`useTabs`' `tabProps`, say) and only falls back to `aria-pressed` when
+     * nobody said otherwise. It used to assume the toggle reading, which made
+     * it unusable as a tab without lying to a screen reader.
      */
     selected?: boolean;
     className?: string;
@@ -32,7 +48,7 @@ export interface StatCardProps {
     ref?: React.Ref<HTMLDivElement & HTMLButtonElement>;
 }
 
-export const StatCard = ({ label, value, sub, icon: Icon, onClick, selected, className = '', classNames, ref }: StatCardProps) => {
+export const StatCard = ({ label, value, sub, icon: Icon, onClick, selected, className = '', classNames, ref, ...rest }: StatCardProps) => {
     // A clickable card has to be a real button, or it is unreachable by keyboard
     // and invisible to assistive technology.
     const Tag = onClick ? 'button' : 'div';
@@ -43,8 +59,10 @@ export const StatCard = ({ label, value, sub, icon: Icon, onClick, selected, cla
             type={onClick ? 'button' : undefined}
             onClick={onClick}
             // Only a button can be pressed; on a plain card the state would be
-            // announced without any way to change it.
-            aria-pressed={onClick && selected !== undefined ? selected : undefined}
+            // announced without any way to change it. A caller that brought its
+            // own role brought its own way of saying "current" with it.
+            aria-pressed={onClick && selected !== undefined && !rest.role ? selected : undefined}
+            {...rest}
             className={cn(
                 "bg-statcard-bg p-6 rounded-lg border border-border shadow-sm hover:shadow-md transition h-full",
                 onClick

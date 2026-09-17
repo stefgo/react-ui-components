@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { PaginationControlsClassNames } from '../PaginationControls';
+import type { PersistOptions } from '../types';
 
 export interface DataViewClassNames {
     contentWrapper?: string;
@@ -37,6 +38,12 @@ export interface PaginationProps {
 
     /** Starting values while the view holds the state itself. Default `{ page: 1, pageSize: 10 }`. */
     defaultValue?: Partial<PaginationState>;
+
+    /**
+     * Remembers the *page size* beyond this mount while uncontrolled. The page
+     * number is never stored -- see `revivePagination`.
+     */
+    persist?: PersistOptions;
 
     /** Choices in the "Rows per page" dropdown. Default `[10, 20, 50]`. */
     pageSizeOptions?: number[];
