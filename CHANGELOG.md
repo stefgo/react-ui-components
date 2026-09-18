@@ -1,3 +1,17 @@
+# [4.1.0](https://github.com/stefgo/react-ui-components/compare/v4.0.0...v4.1.0) (2026-09-18)
+
+
+### Bug Fixes
+
+* Place the copy button right after the value in DescriptionList ([c615836](https://github.com/stefgo/react-ui-components/commit/c61583635af4cfcf104b25e0e4f532a0d3134fdc))
+
+
+### Features
+
+* Add ConfirmProvider with useConfirm and alert ([69f24a6](https://github.com/stefgo/react-ui-components/commit/69f24a60ea6a0091f82cf020cdf29d1b3a5cf3bf))
+* Add DescriptionList ([4fafa47](https://github.com/stefgo/react-ui-components/commit/4fafa472d7c5a0e6b557f3503a78a1da529782bd))
+* Add EntityHeader with always and expanded details ([4786646](https://github.com/stefgo/react-ui-components/commit/4786646835ca8e5198569882dc965b22bf47cc46))
+
 # [4.0.0](https://github.com/stefgo/react-ui-components/compare/v3.2.0...v4.0.0) (2026-09-17)
 
 
