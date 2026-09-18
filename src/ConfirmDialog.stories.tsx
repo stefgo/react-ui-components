@@ -67,6 +67,19 @@ export const CustomLabels: Story = {
     }
 };
 
+/**
+ * `cancelLabel={null}` for a notice: there is nothing to decide, so its one
+ * button acknowledges it. `useConfirm().alert()` renders exactly this.
+ */
+export const Notice: Story = {
+    args: {
+        title: 'Cannot delete the last user',
+        description: 'Deleting it would lock everyone out of this interface. Create a second user first.',
+        confirmLabel: 'OK',
+        cancelLabel: null
+    }
+};
+
 const InteractiveDemo = () => {
     const [open, setOpen] = useState(false);
     const [busy, setBusy] = useState(false);

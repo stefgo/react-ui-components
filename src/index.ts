@@ -49,6 +49,8 @@ export * from "./Textarea";
 export * from "./toast/types";
 export * from "./toast/ToastProvider";
 export * from "./toast/ToastViewport";
+export * from "./confirm/types";
+export * from "./confirm/ConfirmProvider";
 export * from "./DashboardLayout";
 export * from "./Dashboard";
 export * from "./utils";

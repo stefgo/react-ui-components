@@ -11,7 +11,11 @@ export interface ConfirmDialogProps {
     description?: ReactNode;
     children?: ReactNode;
     confirmLabel?: string;
-    cancelLabel?: string;
+    /**
+     * `null` drops the Cancel button, for a notice that has nothing to decide: its
+     * one button acknowledges it. Escape, × and the backdrop still call `onClose`.
+     */
+    cancelLabel?: string | null;
     /** `danger` for anything that destroys data. */
     variant?: 'primary' | 'danger';
     /** Shows a spinner on the confirm button and blocks both buttons. */
@@ -56,9 +60,11 @@ export const ConfirmDialog = ({
         classNames={classNames}
         footer={
             <>
-                <Button variant="secondary" onClick={onClose} disabled={isConfirming}>
-                    {cancelLabel}
-                </Button>
+                {cancelLabel !== null && (
+                    <Button variant="secondary" onClick={onClose} disabled={isConfirming}>
+                        {cancelLabel}
+                    </Button>
+                )}
                 <Button
                     variant={variant === 'danger' ? 'danger' : 'primary'}
                     onClick={onConfirm}
