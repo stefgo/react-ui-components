@@ -111,8 +111,9 @@ export const DescriptionList = ({
                         classNames?.value
                     )}
                 >
-                    {/* A div, not a span: the value may be a control with block content. */}
-                    <div className="min-w-0 flex-1 break-words">{item.value}</div>
+                    {/* A div, not a span: the value may be a control with block content. It
+                        does not grow, so the copy button sits right behind the value. */}
+                    <div className="min-w-0 break-words">{item.value}</div>
                     {item.copyable !== undefined && <CopyButton text={item.copyable} labels={labels} />}
                 </dd>
             </div>
