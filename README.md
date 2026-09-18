@@ -245,7 +245,7 @@ thing everywhere.
 | `z-bottomnav` | 40 | `BottomNav` |
 | `z-dropdown` | 50 | `ActionMenu`, `UserMenu`, `Tooltip` |
 | `z-overlay` | 60 | `MobileMoreSheet` |
-| `z-modal` | 70 | `Modal`, `ConfirmDialog`, toasts |
+| `z-modal` | 70 | `Modal`, `ConfirmDialog`, `ConfirmProvider`, toasts |
 
 ### Slot overrides
 
@@ -405,12 +405,41 @@ focus returns to whatever opened it.
 A `Modal` with the two buttons every confirmation needs.
 
 - `onConfirm`, `confirmLabel`, `cancelLabel`
+- `cancelLabel={null}` — drops Cancel, for a notice with nothing to decide
 - `variant`: `primary` | `danger`
 - `isConfirming` — spinner on confirm, both buttons blocked
 
+#### `ConfirmProvider` / `useConfirm`
+
+Asks and tells from event handlers, without a `pending`, an `isConfirming` and a
+`<ConfirmDialog>` in every component that needs one. One provider renders a
+single dialog; requests that arrive while it is open wait their turn.
+
+```tsx
+<ConfirmProvider>
+  <App />
+</ConfirmProvider>
+
+const { confirm, alert } = useConfirm();
+
+if (await confirm({ title: "Pull & recreate nginx:latest?", confirmLabel: "Pull & recreate" })) pull();
+
+// The dialog stays open, busy, until the action is done.
+confirm({ title: "Delete pbs-node-01?", variant: "danger", onConfirm: () => deleteClient(id) });
+
+await alert({ title: "Cannot delete the last user", description: "Create a second user first." });
+```
+
+- `confirm()` resolves `true` once confirmed, `false` on Cancel, Escape, × or the
+  backdrop
+- `onConfirm` — runs with the dialog open and blocked. Throwing keeps it open and
+  shows the error's message inside it, next to the button that retries;
+  returning `false` keeps it open without a message
+- `alert()` — one button (`okLabel`, default `OK`), resolves when closed
+
 #### `Toast`
 
-The one component that needs a provider: toasts are raised from event handlers
+Needs a provider, like confirmations: toasts are raised from event handlers
 and request callbacks, i.e. from outside the tree that shows them.
 
 ```tsx

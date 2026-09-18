@@ -4,6 +4,7 @@ import { useControllableState } from './hooks/useControllableState';
 import type { Controllable } from './types';
 import { cn } from './utils';
 import { FOCUS_RING_INSET } from './focus';
+import { CollapsibleRegion } from './CollapsibleRegion';
 
 export interface CollapsibleClassNames {
     header?: string;
@@ -66,25 +67,13 @@ export const Collapsible = ({
                     <div className="flex-1 overflow-hidden">{title}</div>
                 </div>
             </button>
-            {/*
-                Animating grid-template-rows from 0fr to 1fr collapses to the content's own
-                height without a max-height guess, so arbitrarily tall content is never cut off.
-                `inert` keeps collapsed content out of the tab order and off the a11y tree.
-            */}
-            <div
+            <CollapsibleRegion
                 id={contentId}
-                inert={!isExpanded}
-                className={cn(
-                    "grid transition-[grid-template-rows,opacity] duration-slow ease-in-out",
-                    isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
-                    contentClassName,
-                    classNames?.content
-                )}
+                expanded={isExpanded}
+                className={cn(contentClassName, classNames?.content)}
             >
-                <div className="min-h-0 overflow-hidden">
-                    {children}
-                </div>
-            </div>
+                {children}
+            </CollapsibleRegion>
         </div>
     );
 };

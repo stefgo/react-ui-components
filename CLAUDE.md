@@ -67,6 +67,8 @@ The preset does three things: adds the library's dist files to Tailwind's `conte
 | `hooks/useMenuBehavior.ts` | outside click, Escape, focus movement, focus trap, focus restoration, scroll lock. Used by `ActionMenu`, `UserMenu`, `MobileMoreSheet` and `Modal`. |
 | `hooks/usePopoverPosition.ts` | measuring a floating element and keeping it in the viewport, before paint. Used by `ActionMenu` and `Tooltip`. |
 | `hooks/useControllableState.ts` | controlled vs. uncontrolled, for every such state. |
+| `CollapsibleRegion.tsx` | the open/close animation of a disclosure, without its trigger. Used by `Collapsible` and `EntityHeader`. |
+| `ConfirmDialog.tsx` | the buttons, busy state and single-button notice of every confirmation. `confirm/ConfirmProvider.tsx` renders it for `useConfirm()` and adds the queue and the error shown inside it. |
 | `form/FormField.tsx` + `form/useFieldIds.ts` + `form/FieldMessages.tsx` | label, hint, error and the ARIA wiring between them. |
 
 `FormField` encodes one rule worth knowing: an error replaces the hint on screen

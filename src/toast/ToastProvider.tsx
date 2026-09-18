@@ -21,7 +21,7 @@ export interface ToastProviderProps {
 /**
  * Holds the toast queue and renders the stack.
  *
- * Toasts are the one thing here that needs a provider: they are raised from
+ * Toasts need a provider, as confirmations do: they are raised from
  * event handlers and request callbacks, i.e. from outside the tree that shows
  * them. Everything else in the library is a plain component.
  */
