@@ -1,3 +1,10 @@
+## [4.1.1](https://github.com/stefgo/react-ui-components/compare/v4.1.0...v4.1.1) (2026-09-24)
+
+
+### Bug Fixes
+
+* **badge:** Raise the contrast of the badge tones ([14a4515](https://github.com/stefgo/react-ui-components/commit/14a4515524cfdffde78a93205021e1a082ca3480))
+
 # [4.1.0](https://github.com/stefgo/react-ui-components/compare/v4.0.0...v4.1.0) (2026-09-18)
 
 
