@@ -53,14 +53,15 @@
   --ruic-button-danger-hover-bg:    #b91c1c;
 
   /* ─── Component: Badge ───────────────────────────────────────────────── */
-  --ruic-badge-success-bg:   #dcfce7;
-  --ruic-badge-success-text: #15803d;
-  --ruic-badge-warning-bg:   #ffedd5;
-  --ruic-badge-warning-text: #c2410c;
-  --ruic-badge-error-bg:     #fef2f2;
-  --ruic-badge-error-text:   #b91c1c;
-  --ruic-badge-info-bg:      #dbeafe;
-  --ruic-badge-info-text:    #1d4ed8;
+  --ruic-badge-success-bg:   #bbf7d0;
+  --ruic-badge-success-text: #166534;
+  --ruic-badge-warning-bg:   #fed7aa;
+  --ruic-badge-warning-text: #9a3412;
+  --ruic-badge-error-bg:     #fecaca;
+  --ruic-badge-error-text:   #991b1b;
+  --ruic-badge-info-bg:      #bfdbfe;
+  --ruic-badge-info-text:    #1e40af;
+  --ruic-badge-ring:         color-mix(in srgb, currentColor 20%, transparent);
   --ruic-badge-neutral-bg:   var(--ruic-hover, #f3f4f6);
   --ruic-badge-neutral-text: var(--ruic-text-secondary, #4b5563);
   --ruic-badge-dot-warning:  #d97706;
@@ -125,14 +126,15 @@
   --ruic-button-secondary-hover-bg: #444444;
 
   /* Component: Badge */
-  --ruic-badge-success-bg:   rgba(20, 83, 45, 0.3);
-  --ruic-badge-success-text: #4ade80;
-  --ruic-badge-warning-bg:   rgba(124, 45, 18, 0.3);
-  --ruic-badge-warning-text: #fb923c;
-  --ruic-badge-error-bg:     rgba(127, 29, 29, 0.3);
-  --ruic-badge-error-text:   #f87171;
-  --ruic-badge-info-bg:      rgba(30, 58, 138, 0.3);
-  --ruic-badge-info-text:    #60a5fa;
+  --ruic-badge-success-bg:   rgba(20, 83, 45, 0.6);
+  --ruic-badge-success-text: #86efac;
+  --ruic-badge-warning-bg:   rgba(124, 45, 18, 0.6);
+  --ruic-badge-warning-text: #fdba74;
+  --ruic-badge-error-bg:     rgba(127, 29, 29, 0.6);
+  --ruic-badge-error-text:   #fca5a5;
+  --ruic-badge-info-bg:      rgba(30, 58, 138, 0.6);
+  --ruic-badge-info-text:    #93c5fd;
+  --ruic-badge-ring:         color-mix(in srgb, currentColor 25%, transparent);
   --ruic-badge-dot-warning:  #facc15;
   --ruic-badge-dot-error:    #f87171;
 

@@ -105,17 +105,30 @@ const GROUPS = [
     {
         title: "Component: Badge",
         tokens: [
-            { name: "badge-success-bg", light: "#dcfce7", dark: "rgba(20, 83, 45, 0.3)" },
-            { name: "badge-success-text", light: "#15803d", dark: "#4ade80" },
+            // A pastel fill one step lighter than this (the -100 shades, or 30 %
+            // in dark mode) sits at about 1.1:1 against the card, so the pill
+            // vanished and only its text was left. These fills reach 1.2–1.5:1,
+            // the ring below draws the outline, and the text keeps AA (5.4:1 and up).
+            { name: "badge-success-bg", light: "#bbf7d0", dark: "rgba(20, 83, 45, 0.6)" },
+            { name: "badge-success-text", light: "#166534", dark: "#86efac" },
 
-            { name: "badge-warning-bg", light: "#ffedd5", dark: "rgba(124, 45, 18, 0.3)" },
-            { name: "badge-warning-text", light: "#c2410c", dark: "#fb923c" },
+            { name: "badge-warning-bg", light: "#fed7aa", dark: "rgba(124, 45, 18, 0.6)" },
+            { name: "badge-warning-text", light: "#9a3412", dark: "#fdba74" },
 
-            { name: "badge-error-bg", light: "#fef2f2", dark: "rgba(127, 29, 29, 0.3)" },
-            { name: "badge-error-text", light: "#b91c1c", dark: "#f87171" },
+            { name: "badge-error-bg", light: "#fecaca", dark: "rgba(127, 29, 29, 0.6)" },
+            { name: "badge-error-text", light: "#991b1b", dark: "#fca5a5" },
 
-            { name: "badge-info-bg", light: "#dbeafe", dark: "rgba(30, 58, 138, 0.3)" },
-            { name: "badge-info-text", light: "#1d4ed8", dark: "#60a5fa" },
+            { name: "badge-info-bg", light: "#bfdbfe", dark: "rgba(30, 58, 138, 0.6)" },
+            { name: "badge-info-text", light: "#1e40af", dark: "#93c5fd" },
+
+            // The pill's outline, in its own text colour: `currentColor` inside
+            // a custom property resolves where the property is used, so one
+            // token serves every variant. Dark needs a little more to show.
+            {
+                name: "badge-ring",
+                light: "color-mix(in srgb, currentColor 20%, transparent)",
+                dark: "color-mix(in srgb, currentColor 25%, transparent)",
+            },
 
             { name: "badge-neutral-bg", light: { alias: "hover" } },
             { name: "badge-neutral-text", light: { alias: "text-secondary" } },

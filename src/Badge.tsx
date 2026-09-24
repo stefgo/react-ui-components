@@ -17,7 +17,7 @@ export const Badge = ({
     className = '',
     ref
 }: BadgeProps) => {
-    const baseStyles = "inline-flex items-center font-medium rounded-full transition-colors";
+    const baseStyles = "inline-flex items-center font-medium rounded-full ring-1 ring-inset ring-badge-ring transition-colors";
 
     const variants = {
         success: "bg-badge-success-bg text-badge-success-text",
