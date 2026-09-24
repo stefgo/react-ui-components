@@ -7,6 +7,8 @@ one size scale, one way to pass an icon, one way to hold state, and one
 `FormField` behind every control. The differences between components are the
 ones that matter; the rest is decided once.
 
+**[Storybook of the latest release](https://stefgo.github.io/react-ui-components/)**
+
 ## Features
 
 - **One decision per concern** — colour, radius, motion, layering and control
@@ -802,6 +804,11 @@ npm run tokens:build    # regenerate src/index.css from tokens.js
 npm run tokens:check    # fails if it is stale
 npm run build           # tsup: CJS, ESM, .d.ts
 ```
+
+Every stable release publishes its Storybook to
+[GitHub Pages](https://stefgo.github.io/react-ui-components/)
+(`.github/workflows/storybook.yml`, called by `release.yml`). A beta from `dev`
+does not; to republish by hand, run the workflow with an optional tag.
 
 Storybook has a **side-by-side** theme mode that renders a story in light and
 dark next to each other. That is where colour changes are judged.

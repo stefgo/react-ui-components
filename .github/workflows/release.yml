@@ -38,6 +38,8 @@ jobs:
       packages: write # publish to GitHub Packages
       issues: write # @semantic-release/github comments on issues …
       pull-requests: write # … and on pull requests during a release
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -68,3 +70,25 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
+
+      # semantic-release tags the release commit in this checkout, so a v* tag on
+      # HEAD means this run released. Empty when the commits since the last tag
+      # called for no release.
+      - name: Find the release tag
+        id: tag
+        run: echo "tag=$(git tag --points-at HEAD --list 'v*' | head -n1)" >> "$GITHUB_OUTPUT"
+
+  # Stable releases only: a beta from dev must not replace the published
+  # Storybook of the version most people install.
+  storybook:
+    needs: release
+    if: github.ref == 'refs/heads/main' && needs.release.outputs.tag != ''
+    uses: ./.github/workflows/storybook.yml
+    with:
+      tag: ${{ needs.release.outputs.tag }}
+    # The called workflow narrows these per job again; a caller has to grant
+    # at least what its callee's jobs ask for.
+    permissions:
+      contents: read
+      pages: write
+      id-token: write

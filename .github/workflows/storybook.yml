@@ -1,0 +1,94 @@
+name: Publish Storybook
+
+# Publishes the Storybook of a release to GitHub Pages, so the live workbench
+# always shows the version that is on the registry -- not whatever main holds
+# between two releases.
+#
+# There is no tag or release trigger: semantic-release pushes the tag and
+# creates the GitHub release with GITHUB_TOKEN, and events caused by that token
+# start no workflow. release.yml therefore calls this workflow itself once a
+# stable release has been tagged. workflow_dispatch republishes by hand, e.g.
+# after a failed deploy.
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: Release tag to publish
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to publish (empty = latest stable release)
+        type: string
+        required: false
+
+# Two deploys at once would race for the same site. Not cancelling: a
+# half-finished deploy is worse than a second one waiting its turn.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Storybook
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # All tags, so an empty dispatch input can be resolved below.
+          fetch-depth: 0
+
+      # A beta tag from dev is excluded: the site shows the stable line only.
+      - name: Check out the release tag
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          if [ -z "$TAG" ]; then
+              TAG="$(git tag --list 'v*' --sort=-v:refname | grep -v -- '-' | head -n1)"
+          fi
+          if [ -z "$TAG" ]; then
+              echo "::error::No release tag found"
+              exit 1
+          fi
+          echo "Publishing Storybook for $TAG"
+          git checkout --detach "refs/tags/$TAG"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # See ci.yml: npm 10 and npm 11 do not write the same lockfile.
+      - name: Pin npm
+        run: npm i -g "npm@$(node -p "require('./package.json').packageManager.split('@')[1]")"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Storybook writes relative asset paths, so the build works under the
+      # /react-ui-components/ subpath of Pages without a base setting.
+      - name: Build Storybook
+        run: npm run build-storybook
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: storybook-static
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    # Only this job writes, and only to Pages.
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
