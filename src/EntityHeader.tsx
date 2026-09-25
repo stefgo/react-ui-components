@@ -25,13 +25,30 @@ export interface EntityDetail extends DescriptionItem {
     visibility?: DetailVisibility;
 }
 
+/**
+ * A titled part of the details, for a page whose details are about more than
+ * one thing -- a container, the host it runs on, the image it runs.
+ */
+export interface EntityDetailGroup {
+    /** React key. */
+    key: string;
+    title: ReactNode;
+    /** In front of the group's title: an icon, mostly. */
+    leading?: ReactNode;
+    /** Next to the group's title: badges about that part alone. */
+    meta?: ReactNode;
+    details: EntityDetail[];
+}
+
 export interface EntityHeaderClassNames {
     header?: string;
     title?: string;
     meta?: string;
     actions?: string;
     alert?: string;
+    /** Each group's part, when the details are grouped. */
     details?: string;
+    groupTitle?: string;
     toggle?: string;
 }
 
@@ -56,6 +73,14 @@ export interface EntityHeaderProps extends Persistable<boolean> {
     /** Below the row and never collapsed: whatever needs attention must not hide behind a toggle. */
     alert?: ReactNode;
     details?: EntityDetail[];
+    /**
+     * The details in titled groups, in place of `details`, which is ignored
+     * when both are given. One toggle opens the `'expanded'` details of every
+     * group at once.
+     */
+    detailGroups?: EntityDetailGroup[];
+    /** Heading level of each group's title. Defaults to `'h3'`, one below the default `titleAs`. */
+    groupTitleAs?: CardTitleLevel;
     detailColumns?: DescriptionListColumns;
     labels?: EntityHeaderLabels;
     className?: string;
@@ -64,6 +89,11 @@ export interface EntityHeaderProps extends Persistable<boolean> {
 }
 
 const reviveExpanded = (raw: unknown) => (typeof raw === 'boolean' ? raw : undefined);
+
+/** A group of what `details` alone gives: no title, so no heading either. */
+interface NormalizedGroup extends Omit<EntityDetailGroup, 'title'> {
+    title?: ReactNode;
+}
 
 /**
  * The head of a page about one thing -- a host, a project, a repository: one
@@ -80,6 +110,11 @@ const reviveExpanded = (raw: unknown) => (typeof raw === 'boolean' ? raw : undef
  * icon in the row, and a closed header is just the row. With both, it is a
  * "Show more" under the visible part, where the eye already is.
  *
+ * With `detailGroups` the same holds across all groups: each group splits its
+ * details the same way and gets a region of its own, and the one toggle opens
+ * them all. A group with only `'expanded'` details collapses whole, heading
+ * included, so a closed header shows no heading over nothing.
+ *
  * The header draws its own toggle rather than using `Collapsible`, whose
  * trigger is the whole header: the actions in the row would end up inside a
  * `<button>`.
@@ -92,6 +127,8 @@ export const EntityHeader = ({
     actions,
     alert,
     details = [],
+    detailGroups,
+    groupTitleAs: GroupTitleTag = 'h3',
     detailColumns = 2,
     labels,
     value,
@@ -112,13 +149,75 @@ export const EntityHeader = ({
     });
     const regionId = useId();
 
-    const visible = details.filter((d) => d.visibility === 'always');
-    const hidden = details.filter((d) => d.visibility !== 'always');
+    // Plain details are one group without a title; from here on both are rendered alike.
+    const groups: NormalizedGroup[] = (detailGroups ?? [{ key: '', details }])
+        .filter((g) => g.details.length > 0);
+    const split = groups.map((g, index) => ({
+        group: g,
+        visible: g.details.filter((d) => d.visibility === 'always'),
+        hidden: g.details.filter((d) => d.visibility !== 'always'),
+        id: detailGroups ? `${regionId}-${index}` : regionId
+    }));
+    const anyVisible = split.some((s) => s.visible.length > 0);
+    const anyHidden = split.some((s) => s.hidden.length > 0);
+    const iconToggle = anyHidden && !anyVisible;
+    // Every region the toggle opens; with only collapsible details they share one.
+    const controls = iconToggle
+        ? regionId
+        : split.filter((s) => s.hidden.length > 0).map((s) => s.id).join(' ');
     const toggle = () => setExpanded((prev) => !prev);
 
-    const hiddenList = (
-        <DescriptionList items={hidden} columns={detailColumns} labels={labels} />
+    const list = (items: EntityDetail[]) => (
+        <DescriptionList items={items} columns={detailColumns} labels={labels} />
     );
+
+    const heading = (g: NormalizedGroup) =>
+        g.title !== undefined && (
+            <div className="mb-3 flex flex-wrap items-center gap-x-2 gap-y-1">
+                {g.leading && <div className="shrink-0 flex items-center text-text-muted">{g.leading}</div>}
+                <GroupTitleTag
+                    className={cn("min-w-0 text-sm font-semibold text-text-primary", classNames?.groupTitle)}
+                >
+                    {g.title}
+                </GroupTitleTag>
+                {g.meta && <div className="flex flex-wrap items-center gap-2">{g.meta}</div>}
+            </div>
+        );
+
+    const section = (g: NormalizedGroup, children: ReactNode) => (
+        <div key={g.key} className={cn("px-5 py-4 border-t border-border", classNames?.details)}>
+            {heading(g)}
+            {children}
+        </div>
+    );
+
+    const showMore = (
+        <div className="flex justify-end mt-2">
+            <button
+                type="button"
+                aria-expanded={expanded}
+                aria-controls={controls}
+                onClick={toggle}
+                className={cn(
+                    "flex items-center gap-1 rounded text-sm text-text-muted hover:text-text-primary transition",
+                    FOCUS_RING,
+                    classNames?.toggle
+                )}
+            >
+                {expanded ? labels?.showLess ?? 'Show less' : labels?.showMore ?? 'Show more'}
+                <ChevronDown
+                    size={16}
+                    aria-hidden
+                    className={cn("transition-transform duration-slow", expanded && "rotate-180")}
+                />
+            </button>
+        </div>
+    );
+
+    // With visible details, "Show more" sits under the last of them. When the last group
+    // collapses whole, it gets a row of its own, since that group's part may be closed.
+    const last = split[split.length - 1];
+    const toggleInLast = anyHidden && !!last && last.visible.length > 0;
 
     return (
         <Card ref={ref} className={className}>
@@ -144,15 +243,15 @@ export const EntityHeader = ({
                         </div>
                     )}
                 </div>
-                {(actions || (hidden.length > 0 && visible.length === 0)) && (
+                {(actions || iconToggle) && (
                     <div className={cn("shrink-0 flex items-center gap-2", classNames?.actions)}>
-                        {hidden.length > 0 && visible.length === 0 && (
+                        {iconToggle && (
                             <ActionButton
                                 icon={Info}
                                 variant={expanded ? 'solid' : 'ghost'}
                                 tooltip={labels?.details ?? 'Details'}
                                 aria-expanded={expanded}
-                                aria-controls={regionId}
+                                aria-controls={controls}
                                 onClick={toggle}
                                 className={classNames?.toggle}
                             />
@@ -168,44 +267,35 @@ export const EntityHeader = ({
                 </div>
             )}
 
-            {visible.length > 0 && (
-                <div className={cn("px-5 py-4 border-t border-border", classNames?.details)}>
-                    <DescriptionList items={visible} columns={detailColumns} labels={labels} />
-                    {hidden.length > 0 && (
-                        <>
-                            <CollapsibleRegion id={regionId} expanded={expanded}>
-                                <div className="pt-4">{hiddenList}</div>
+            {anyVisible && (
+                <>
+                    {split.map(({ group, visible, hidden, id }) =>
+                        visible.length === 0 ? (
+                            <CollapsibleRegion key={group.key} id={id} expanded={expanded}>
+                                {section(group, list(hidden))}
                             </CollapsibleRegion>
-                            <div className="flex justify-end mt-2">
-                                <button
-                                    type="button"
-                                    aria-expanded={expanded}
-                                    aria-controls={regionId}
-                                    onClick={toggle}
-                                    className={cn(
-                                        "flex items-center gap-1 rounded text-sm text-text-muted hover:text-text-primary transition",
-                                        FOCUS_RING,
-                                        classNames?.toggle
+                        ) : (
+                            section(
+                                group,
+                                <>
+                                    {list(visible)}
+                                    {hidden.length > 0 && (
+                                        <CollapsibleRegion id={id} expanded={expanded}>
+                                            <div className="pt-4">{list(hidden)}</div>
+                                        </CollapsibleRegion>
                                     )}
-                                >
-                                    {expanded ? labels?.showLess ?? 'Show less' : labels?.showMore ?? 'Show more'}
-                                    <ChevronDown
-                                        size={16}
-                                        aria-hidden
-                                        className={cn("transition-transform duration-slow", expanded && "rotate-180")}
-                                    />
-                                </button>
-                            </div>
-                        </>
+                                    {group === last.group && toggleInLast && showMore}
+                                </>
+                            )
+                        )
                     )}
-                </div>
+                    {anyHidden && !toggleInLast && <div className="px-5 pb-4">{showMore}</div>}
+                </>
             )}
 
-            {visible.length === 0 && hidden.length > 0 && (
+            {iconToggle && (
                 <CollapsibleRegion id={regionId} expanded={expanded}>
-                    <div className={cn("px-5 py-4 border-t border-border", classNames?.details)}>
-                        {hiddenList}
-                    </div>
+                    {split.map(({ group, hidden }) => section(group, list(hidden)))}
                 </CollapsibleRegion>
             )}
         </Card>

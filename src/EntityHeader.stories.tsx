@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { AlertCircle, Edit, MoreVertical, RefreshCw } from 'lucide-react';
-import { EntityHeader, type EntityDetail } from './EntityHeader';
+import { AlertCircle, Box, Edit, Layers, Monitor, MoreVertical, RefreshCw } from 'lucide-react';
+import { EntityHeader, type EntityDetail, type EntityDetailGroup } from './EntityHeader';
 import { ActionButton } from './ActionButton';
 import { Badge } from './Badge';
 
@@ -82,3 +82,40 @@ export const Narrow: Story = {
 export const Persisted: Story = {
     args: { persist: { key: 'storybook.entity-header.details', scope: 'local' } },
 };
+
+const GROUPS: EntityDetailGroup[] = [
+    {
+        key: 'host',
+        title: 'Host',
+        leading: <Monitor size={16} />,
+        details: [
+            { label: 'Hostname', value: 'web-01', visibility: 'always' },
+            { label: 'IP', value: '192.168.1.50', mono: true, visibility: 'always' }
+        ]
+    },
+    {
+        key: 'container',
+        title: 'Container',
+        leading: <Box size={16} />,
+        details: [
+            { label: 'Status', value: 'Up 2 hours', visibility: 'always' },
+            { label: 'Container ID', value: '4f1c2d3e4a5b', mono: true, copyable: '4f1c2d3e4a5b', visibility: 'always' },
+            { label: 'Command', value: 'nginx -g "daemon off;"', mono: true },
+            { label: 'Ports', value: '0.0.0.0:8080 → 80/tcp', mono: true }
+        ]
+    },
+    {
+        key: 'image',
+        title: 'nginx:latest',
+        leading: <Layers size={16} />,
+        meta: <Badge variant="warning">Superseded</Badge>,
+        details: [
+            { label: 'Image ID', value: 'sha256:1a2b3c4d', mono: true, visibility: 'always' },
+            { label: 'Size', value: '187 MB', visibility: 'always' },
+            { label: 'Digest', value: 'sha256:9f8e7d6c', mono: true }
+        ]
+    }
+];
+
+/** Details about several things, one titled group each; one "Show more" opens them all. */
+export const Grouped: Story = { args: { title: 'dim-client', detailGroups: GROUPS, details: undefined } };
