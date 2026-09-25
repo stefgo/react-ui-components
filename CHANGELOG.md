@@ -1,3 +1,10 @@
+## [4.2.1](https://github.com/stefgo/react-ui-components/compare/v4.2.0...v4.2.1) (2026-09-25)
+
+
+### Bug Fixes
+
+* **ActionButton:** Give the orange hover the neutral surface ([4ac0078](https://github.com/stefgo/react-ui-components/commit/4ac007838236d97b924b0f5efc2a9381139a2578))
+
 # [4.2.0](https://github.com/stefgo/react-ui-components/compare/v4.1.1...v4.2.0) (2026-09-25)
 
 
