@@ -44,7 +44,7 @@ const COLOR_CLASSES: Record<ActionButtonColor, string> = {
     green: "text-text-muted hover:text-success hover:bg-hover",
     blue: "text-text-muted hover:text-info hover:bg-hover",
     red: "text-text-muted hover:text-error hover:bg-hover",
-    orange: "text-text-muted hover:text-primary hover:bg-warning-bg",
+    orange: "text-text-muted hover:text-primary hover:bg-hover",
     gray: "text-text-muted hover:text-text-secondary hover:bg-hover",
     indigo: "text-text-muted hover:text-accent hover:bg-accent-bg",
     error: "text-error/60 hover:text-error hover:bg-error-bg"
