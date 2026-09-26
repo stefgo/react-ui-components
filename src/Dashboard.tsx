@@ -65,6 +65,8 @@ export interface DashboardProps {
     onToggleSidebar: () => void;
 
     headerLeftActions?: ReactNode;
+    /** A full-width line below the header, such as `ConnectionBanner`. */
+    banner?: ReactNode;
     className?: string;
     mainClassName?: string;
     contentContainerClassName?: string;
@@ -87,6 +89,7 @@ export const Dashboard = ({
     isSidebarCollapsed,
     onToggleSidebar,
     headerLeftActions,
+    banner,
     className = "",
     mainClassName = "",
     contentContainerClassName = "",
@@ -156,6 +159,7 @@ export const Dashboard = ({
 
     return (
         <DashboardLayout
+            banner={banner}
             className={className}
             mainClassName={mainClassName}
             contentContainerClassName={contentContainerClassName}
