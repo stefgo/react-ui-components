@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { MoreVertical } from 'lucide-react';
 import { ActionButton, ActionButtonColor, ActionButtonClassNames } from './ActionButton';
-import { ActionMenu } from './ActionMenu';
+import { ActionMenu, MenuItem } from './ActionMenu';
 import { useActionMenu } from './hooks/useActionMenu';
-import { ICON_SIZE, type IconComponent } from './types';
+import type { IconComponent } from './types';
 import { cn } from './utils';
-import { FOCUS_RING_NONE } from './focus';
 
 export interface DataActionClassNames {
     actionButton?: ActionButtonClassNames;
@@ -93,47 +92,26 @@ export const DataAction = <TId extends string | number>({
                         triggerRef={triggerRef}
                     >
                         {menuEntries.map((entry, index) => {
-                            const isDanger = entry.variant === 'danger';
                             const isDisabled = entry.disabled ?? false;
-
-                            const enabledClass = isDanger
-                                ? 'text-error hover:bg-error-bg'
-                                : 'text-text-secondary hover:bg-hover';
-
-                            const disabledClass = 'text-text-muted cursor-not-allowed';
-
                             const labelText = typeof entry.label === 'string'
                                 ? entry.label
                                 : isDisabled ? entry.label.disabled : entry.label.enabled;
 
                             return (
-                                <button
+                                <MenuItem
                                     key={index}
-                                    type="button"
-                                    role="menuitem"
-                                    onClick={() => {
-                                        if (!isDisabled) {
-                                            entry.onClick();
-                                            closeMenu();
-                                        }
-                                    }}
+                                    icon={entry.icon}
+                                    onClick={entry.onClick}
+                                    variant={entry.variant}
                                     disabled={isDisabled}
+                                    disabledTitle={entry.disabledTitle ?? labelText}
                                     className={cn(
-                                        "w-full text-left px-4 py-2 text-sm flex items-center gap-2",
-                                        // Inside a popover an outward ring is clipped by it, so the
-                                        // entry marks focus with its background instead -- the same
-                                        // way ActionMenu and UserMenu do.
-                                        FOCUS_RING_NONE,
-                                        "focus-visible:bg-hover",
-                                        isDisabled ? disabledClass : enabledClass,
                                         classNames?.menuItem,
                                         isDisabled ? classNames?.menuItemDisabled : classNames?.menuItemActive
                                     )}
-                                    title={isDisabled ? (entry.disabledTitle ?? labelText) : labelText}
                                 >
-                                    <entry.icon size={ICON_SIZE.sm} aria-hidden />
                                     {labelText}
-                                </button>
+                                </MenuItem>
                             );
                         })}
                     </ActionMenu>

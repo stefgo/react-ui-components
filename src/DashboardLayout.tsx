@@ -8,6 +8,11 @@ export interface DashboardLayoutClassNames {
 
 export interface DashboardLayoutProps {
     header: ReactNode;
+    /**
+     * A full-width line between the header and the page -- `ConnectionBanner`. Outside
+     * the scrolling area, so it stays in view however far the page is scrolled.
+     */
+    banner?: ReactNode;
     sidebar: ReactNode;
     bottomNav?: ReactNode;
     children: ReactNode;
@@ -19,6 +24,7 @@ export interface DashboardLayoutProps {
 
 export const DashboardLayout = ({
     header,
+    banner,
     sidebar,
     bottomNav,
     children,
@@ -33,6 +39,7 @@ export const DashboardLayout = ({
             className
         )}>
             {header}
+            {banner}
 
             <div className="flex flex-1 overflow-hidden">
                 {sidebar}
