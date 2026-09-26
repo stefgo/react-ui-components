@@ -1,3 +1,11 @@
+# [4.3.0](https://github.com/stefgo/react-ui-components/compare/v4.2.1...v4.3.0) (2026-09-26)
+
+
+### Features
+
+* Add MenuItem, StatusDot, LoadingIndicator, EmptyState, ConnectionBanner and ManualRun ([4de6e03](https://github.com/stefgo/react-ui-components/commit/4de6e03f760848706b148b46bed4028e0c7bb698))
+* **StatusDot:** Add StatusDotProvider to stop the pulse while nothing is live ([54590fc](https://github.com/stefgo/react-ui-components/commit/54590fce35cdc6520ee9706983fc3781a4788ce4))
+
 ## [4.2.1](https://github.com/stefgo/react-ui-components/compare/v4.2.0...v4.2.1) (2026-09-25)
 
 
