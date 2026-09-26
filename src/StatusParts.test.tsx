@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Pencil, Trash2 } from 'lucide-react';
 import { ActionMenu, MenuItem } from './ActionMenu';
-import { StatusDot } from './StatusDot';
+import { StatusDot, StatusDotProvider } from './StatusDot';
 import { ConnectionBanner } from './ConnectionBanner';
 import { EmptyState } from './EmptyState';
 import { ManualRun } from './ManualRun';
@@ -58,6 +58,16 @@ describe('StatusDot', () => {
         const { container } = render(<StatusDot tone="error" />);
         expect(screen.queryByRole('img')).not.toBeInTheDocument();
         expect(container.firstChild).toHaveAttribute('aria-hidden', 'true');
+    });
+});
+
+describe('StatusDotProvider', () => {
+    it('stops the pulse while nothing is live', () => {
+        const { rerender } = render(<StatusDotProvider live><StatusDot tone="success" label="online" /></StatusDotProvider>);
+        expect(screen.getByRole('img').className).toMatch(/animate-pulse-glow/);
+
+        rerender(<StatusDotProvider live={false}><StatusDot tone="success" label="online" /></StatusDotProvider>);
+        expect(screen.getByRole('img').className).not.toMatch(/animate-/);
     });
 });
 

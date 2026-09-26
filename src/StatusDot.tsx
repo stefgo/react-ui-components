@@ -1,3 +1,4 @@
+import { createContext, useContext, ReactNode } from 'react';
 import { cn } from './utils';
 
 export type StatusDotTone = 'success' | 'warning' | 'info' | 'error' | 'accent' | 'neutral' | 'unknown';
@@ -25,6 +26,28 @@ export interface StatusDotProps {
     className?: string;
 }
 
+const LiveContext = createContext(true);
+
+export interface StatusDotProviderProps {
+    /**
+     * Whether the states below are still being watched. While `false`, no dot in the
+     * subtree pulses, whatever its `pulse` says.
+     */
+    live: boolean;
+    children: ReactNode;
+}
+
+/**
+ * Stops every dot below from pulsing while the page has lost its live connection.
+ *
+ * A pulse says "this is happening now". A dashboard that no longer receives updates
+ * cannot know that, and a dot pulsing "online" for a machine nobody is watching any
+ * more is exactly the false comfort that let a dropped socket go unnoticed.
+ */
+export const StatusDotProvider = ({ live, children }: StatusDotProviderProps) => (
+    <LiveContext.Provider value={live}>{children}</LiveContext.Provider>
+);
+
 const TONES: Record<StatusDotTone, string> = {
     success: 'bg-success shadow-glow-success',
     warning: 'bg-warning',
@@ -43,7 +66,8 @@ const TONES: Record<StatusDotTone, string> = {
  * the second had no way to be announced at all.
  */
 export const StatusDot = ({ tone, pulse, size = 'sm', label, className }: StatusDotProps) => {
-    const pulsing = pulse ?? tone === 'success';
+    const live = useContext(LiveContext);
+    const pulsing = live && (pulse ?? tone === 'success');
 
     return (
         <span
