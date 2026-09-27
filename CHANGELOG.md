@@ -1,3 +1,12 @@
+## [4.3.1](https://github.com/stefgo/react-ui-components/compare/v4.3.0...v4.3.1) (2026-09-27)
+
+
+### Bug Fixes
+
+* Cache npm after pinning it in CI ([b56b0d2](https://github.com/stefgo/react-ui-components/commit/b56b0d2ff983d6bdbf8badaaefa1b714466d5eb5))
+* Declare the npm requirement for development only ([5260779](https://github.com/stefgo/react-ui-components/commit/5260779781074e2c7e6138e6f7b32953cebd2b47))
+* Turn off setup-node's automatic npm cache ([49597d0](https://github.com/stefgo/react-ui-components/commit/49597d08b21de5d92126d901a5e97cb62b08ffb8))
+
 # [4.3.0](https://github.com/stefgo/react-ui-components/compare/v4.2.1...v4.3.0) (2026-09-26)
 
 
