@@ -27,6 +27,13 @@ npm 10 writes the optional peers of `@commitlint/read` into `package-lock.json` 
 npm 11 leaves them out, so a lockfile written by one makes `npm ci` fail under the
 other. CI installs the pinned npm before `npm ci` for exactly that reason.
 
+The npm requirement lives in **`devEngines`, not `engines`**. `engines` is published
+and checked on every consumer's install, so `npm: ">=11"` there made each consumer on
+the npm 10 that ships with Node 22 (the `node:22` build images of kasm, dim and pbcm)
+print `EBADENGINE`, although the package never runs npm. `devEngines` applies only
+inside this repository, where npm 10 now fails with `EBADDEVENGINES` instead of
+quietly rewriting the lockfile. `engines` keeps only the Node version.
+
 Storybook has a **side-by-side** theme mode that renders a story in light and
 dark at once. Judge colour changes there, never in a consumer.
 
