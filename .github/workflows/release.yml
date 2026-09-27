@@ -53,14 +53,16 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
+          package-manager-cache: false
           registry-url: "https://npm.pkg.github.com"
 
       # See ci.yml: npm 10 and npm 11 do not write the same lockfile.
       - name: Pin npm
         run: npm i -g "npm@$(node -p "require('./package.json').packageManager.split('@')[1]")"
 
-      # Not setup-node's cache: npm, which asks npm for its cache directory
-      # before the step above has run, and npm 10 fails on devEngines.
+      # Not setup-node's npm cache (package-manager-cache: false above, as it
+      # is on by default once packageManager is set): it asks npm for its cache
+      # directory before the step above has run, and npm 10 fails on devEngines.
       - name: Cache npm
         uses: actions/cache@v6
         with:
