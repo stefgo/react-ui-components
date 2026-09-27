@@ -33,6 +33,9 @@ the npm 10 that ships with Node 22 (the `node:22` build images of kasm, dim and 
 print `EBADENGINE`, although the package never runs npm. `devEngines` applies only
 inside this repository, where npm 10 now fails with `EBADDEVENGINES` instead of
 quietly rewriting the lockfile. `engines` keeps only the Node version.
+That includes CI before the pin step: `setup-node`'s `cache: npm` runs
+`npm config get cache` under npm 10 and fails, so the workflows cache `~/.npm` with
+`actions/cache` **after** pinning npm instead.
 
 Storybook has a **side-by-side** theme mode that renders a story in light and
 dark at once. Judge colour changes there, never in a consumer.
