@@ -1,3 +1,10 @@
+# [4.4.0](https://github.com/stefgo/react-ui-components/compare/v4.3.1...v4.4.0) (2026-10-03)
+
+
+### Features
+
+* Describe a DataMultiView column once for both views ([c304376](https://github.com/stefgo/react-ui-components/commit/c3043761dcfd973e3114c4d77c5a0259a77a1a1a))
+
 ## [4.3.1](https://github.com/stefgo/react-ui-components/compare/v4.3.0...v4.3.1) (2026-09-27)
 
 
