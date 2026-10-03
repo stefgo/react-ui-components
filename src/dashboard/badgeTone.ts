@@ -16,3 +16,7 @@ export const badgeToneClass = (tone?: SidebarBadgeTone) =>
         : tone === 'error'
             ? 'bg-badge-error-bg text-badge-error-text ring-1 ring-inset ring-badge-ring'
             : undefined;
+
+/** An entry's accessible name: its label, and what its badge says when that is known. */
+export const navItemName = (label: string, badgeLabel?: string) =>
+    badgeLabel ? `${label}, ${badgeLabel}` : label;

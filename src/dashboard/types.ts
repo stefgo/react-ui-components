@@ -12,6 +12,13 @@ export interface DashboardPageNav {
     icon: IconComponent;
     badge?: string;
     /**
+     * What the badge says, in words: "3 of 5 online" for a badge reading "3 / 5". It
+     * becomes the badge's tooltip and part of the entry's accessible name -- a bare
+     * pair of numbers is announced as just that, and the collapsed sidebar shows no
+     * badge at all.
+     */
+    badgeLabel?: string;
+    /**
      * Show a dot indicator. Collapsed, it sits on the icon; expanded, it takes the
      * badge's place when there is no `badge` text.
      */

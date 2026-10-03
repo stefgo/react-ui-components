@@ -6,7 +6,7 @@ const groups: SidebarGroup[] = [
     {
         title: 'Resources',
         items: [
-            { id: 'clients', label: 'Clients', icon: Monitor, badge: '9 / 12', active: true, onClick: () => {} },
+            { id: 'clients', label: 'Clients', icon: Monitor, badge: '9 / 12', badgeLabel: '9 of 12 online', active: true, onClick: () => {} },
             { id: 'jobs', label: 'Jobs', icon: HardDrive, badge: '24 / 48', onClick: () => {} },
             { id: 'repos', label: 'Repositories', icon: Server, badgeDot: true, onClick: () => {} },
             { id: 'history', label: 'History', icon: Activity, badgeDot: true, badgeTone: 'warning', onClick: () => {} },

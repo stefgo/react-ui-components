@@ -52,6 +52,56 @@ describe('Dashboard', () => {
         expect(document.querySelectorAll('[aria-current="page"]')).toHaveLength(0);
     });
 
+    describe('badge label', () => {
+        const withBadge = (isSidebarCollapsed: boolean) =>
+            render(
+                <Dashboard
+                    username="stefan"
+                    onLogout={vi.fn()}
+                    theme="light"
+                    onToggleTheme={vi.fn()}
+                    isSidebarCollapsed={isSidebarCollapsed}
+                    onToggleSidebar={vi.fn()}
+                    pages={[
+                        {
+                            id: 'clients',
+                            path: '/clients',
+                            nav: {
+                                label: 'Clients',
+                                icon: Monitor,
+                                badge: '3 / 5',
+                                badgeLabel: '3 of 5 online',
+                                onClick: vi.fn(),
+                            },
+                        },
+                    ]}
+                    currentPath="/clients"
+                />
+            );
+
+        it('names the entry by its label and what the badge says', () => {
+            withBadge(false);
+            expect(screen.getAllByRole('button', { name: 'Clients, 3 of 5 online' }).length).toBeGreaterThan(0);
+        });
+
+        it('explains the badge on hover', () => {
+            withBadge(false);
+            expect(screen.getByText('3 / 5')).toHaveAttribute('title', '3 of 5 online');
+        });
+
+        it('still says it where the collapsed sidebar shows no badge', () => {
+            withBadge(true);
+            const entry = screen.getAllByRole('button', { name: 'Clients, 3 of 5 online' })[0];
+            expect(entry).toHaveAttribute('title', 'Clients, 3 of 5 online');
+            expect(screen.queryByText('3 / 5')).not.toBeInTheDocument();
+        });
+
+        it('leaves an entry without one named by its content', () => {
+            renderDashboard('/clients');
+            expect(screen.getAllByRole('button', { name: 'Clients' }).length).toBeGreaterThan(0);
+        });
+    });
+
     it('shows mobile-more entries in the desktop sidebar', () => {
         renderDashboard('/clients');
         expect(screen.getAllByRole('button', { name: 'Settings' }).length).toBeGreaterThan(0);

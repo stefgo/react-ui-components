@@ -520,6 +520,9 @@ no modal `footer` — the wizard brings its own).
 #### `Sidebar` and `BottomNav`
 
 - `Sidebar`: `groups` — `{ title?, items }`, each item with `icon: IconComponent`
+- `badgeLabel` says a badge in words (`"3 of 5 online"` for `"3 / 5"`): it is the badge's
+  tooltip and part of the entry's accessible name, also where the collapsed sidebar
+  shows no badge
 - `BottomNav`: `items` — the same item shape, flat
 - Each surface picks its own icon size; there is no `size` prop to get wrong.
 
