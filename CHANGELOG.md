@@ -1,3 +1,10 @@
+# [4.5.0](https://github.com/stefgo/react-ui-components/compare/v4.4.0...v4.5.0) (2026-10-03)
+
+
+### Features
+
+* Say a navigation badge in words with badgeLabel ([f209965](https://github.com/stefgo/react-ui-components/commit/f209965564ee5895777c1e8806ca3cadd9fe8896))
+
 # [4.4.0](https://github.com/stefgo/react-ui-components/compare/v4.3.1...v4.4.0) (2026-10-03)
 
 
