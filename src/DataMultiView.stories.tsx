@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Pencil, Trash2 } from 'lucide-react';
 import { DataMultiView, DataMultiViewProps, ViewMode } from './DataMultiView';
+import type { DataColumnDef } from './data/columns';
 import { DataTableDef } from './DataTable';
 import { DataListColumnDef } from './DataList';
 import { Badge } from './Badge';
@@ -45,6 +46,34 @@ const listColumns: DataListColumnDef<DemoClient>[] = [
         ],
     },
     { fields: [{ accessorKey: 'jobs', listLabel: 'Jobs' }, { accessorKey: 'lastSeen', listLabel: 'Last seen' }] },
+];
+
+const actions = (c: DemoClient) => (
+    <DataAction
+        rowId={c.id}
+        menuEntries={[
+            { label: 'Edit', icon: Pencil, onClick: () => {} },
+            { label: 'Delete', icon: Trash2, onClick: () => {}, variant: 'danger' },
+        ]}
+    />
+);
+
+const columns: DataColumnDef<DemoClient>[] = [
+    { header: 'Host', accessorKey: 'hostname', sortable: true, list: { label: null } },
+    {
+        header: 'Status',
+        accessorKey: 'status',
+        sortable: true,
+        render: (c) => <Badge size="sm" variant={statusVariant[c.status]}>{c.status}</Badge>,
+    },
+    { header: 'Jobs', accessorKey: 'jobs', sortable: true },
+    { header: 'Last seen', accessorKey: 'lastSeen' },
+    {
+        header: <span className="sr-only">Actions</span>,
+        render: actions,
+        table: { cellClassName: 'w-px' },
+        list: { label: null, group: 'actions' },
+    },
 ];
 
 // Storybook cannot infer through a generic component.
@@ -94,6 +123,20 @@ export const WithHeaderActions: Story = {
 /** With `getChildren` the tree view becomes available and replaces the table toggle. */
 export const TreeView: Story = {
     args: { data: clientTree, getChildren, treeExpanded: { all: true } },
+};
+
+/**
+ * `columns` describes every column once: the heading is the list label, and one
+ * `render` serves both views. `tableDef` and `listColumns` ask for the same
+ * column twice instead.
+ */
+export const OneColumnDefinition: Story = {
+    args: {
+        tableDef: undefined,
+        listColumns: undefined,
+        columns,
+        listGroups: [{ id: 'content', grow: true }, { id: 'actions' }],
+    },
 };
 
 export const Loading: Story = { args: { data: [], isLoading: true } };
