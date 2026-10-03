@@ -1,7 +1,7 @@
 import type { IconComponent } from './types';
 import { cn } from './utils';
 import { FOCUS_RING } from './focus';
-import { badgeDotClass, badgeToneClass } from './dashboard/badgeTone';
+import { badgeDotClass, badgeToneClass, navItemName } from './dashboard/badgeTone';
 
 /** Edge length of a sidebar icon. Fixed by the item layout, not a caller choice. */
 const SIDEBAR_ICON_SIZE = 18;
@@ -11,6 +11,13 @@ export interface SidebarItem {
     label: string;
     icon: IconComponent;
     badge?: string;
+    /**
+     * What the badge says, in words: "3 of 5 online" for a badge reading "3 / 5". It
+     * becomes the badge's tooltip and part of the entry's accessible name -- a bare
+     * pair of numbers is announced as just that, and the collapsed sidebar shows no
+     * badge at all.
+     */
+    badgeLabel?: string;
     /**
      * Show a dot indicator. Collapsed, it sits on the icon; expanded, it takes the
      * badge's place when there is no `badge` text.
@@ -65,15 +72,17 @@ const NavItem = ({
     badge,
     badgeDot,
     badgeTone,
+    badgeLabel,
     isCollapsed,
     classNames
 }: SidebarItem & { isCollapsed?: boolean; classNames?: SidebarClassNames }) => (
     <button
         type="button"
         onClick={onClick}
-        title={isCollapsed ? label : ""}
-        // Collapsed items hide their label, so it has to come through ARIA.
-        aria-label={isCollapsed ? label : undefined}
+        title={isCollapsed ? navItemName(label, badgeLabel) : ""}
+        // Collapsed items hide their label, so it has to come through ARIA. With a
+        // badge label the name is spelled out either way: it replaces the badge's text.
+        aria-label={isCollapsed || badgeLabel ? navItemName(label, badgeLabel) : undefined}
         aria-current={active ? 'page' : undefined}
         className={cn(
             "group w-full flex items-center px-3 py-2 rounded-md text-sm font-medium transition duration-base",
@@ -97,6 +106,7 @@ const NavItem = ({
         </div>
         {!isCollapsed && badge && (
             <span
+                title={badgeLabel}
                 className={cn(
                     "text-xs px-2 py-0.5 rounded-full",
                     badgeToneClass(badgeTone) ?? (active

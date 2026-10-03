@@ -1,7 +1,7 @@
 import { ReactNode, useId } from 'react';
 import { X, Shield } from 'lucide-react';
 import type { SidebarGroup } from '../Sidebar';
-import { badgeDotClass, badgeToneClass } from './badgeTone';
+import { badgeDotClass, badgeToneClass, navItemName } from './badgeTone';
 import type { IconComponent } from '../types';
 import { useMenuBehavior } from '../hooks/useMenuBehavior';
 import { cn } from '../utils';
@@ -110,6 +110,7 @@ export const MobileMoreSheet = ({
                                         key={item.id}
                                         type="button"
                                         onClick={item.onClick}
+                                        aria-label={item.badgeLabel ? navItemName(item.label, item.badgeLabel) : undefined}
                                         aria-current={item.active ? 'page' : undefined}
                                         className={cn(
                                             "flex items-center gap-4 p-4 rounded-lg transition-colors w-full text-left",
@@ -128,7 +129,7 @@ export const MobileMoreSheet = ({
                                         />
                                         <span className="font-semibold text-lg flex-1">{item.label}</span>
                                         {item.badge && (
-                                            <span className={cn(
+                                            <span title={item.badgeLabel} className={cn(
                                                 "text-xs px-2 py-1 rounded-full",
                                                 badgeToneClass(item.badgeTone) ?? cn(
                                                     "bg-hover",
