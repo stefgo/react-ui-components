@@ -588,10 +588,43 @@ New `classNames` slot on both tables: `sortButton`, for the header's button.
 
 Switches between table, list and tree view.
 
+- `columns` + `listGroups`: every column once, for both views (see below)
 - `tableDef`, `listColumns`, `treeTableDef`, `getChildren`
 - `search`: `Controllable<string>` + `searchable` / `searchFilter`
 - `viewMode`: `Controllable<'table' | 'list' | 'tree'>` + `storageKey`
 - `treeExpanded`, `sort`, `pagination`
+
+`columns` takes a `DataColumnDef<T>[]` and replaces `tableDef` and
+`listColumns`, which ask for the same column twice. The heading is also the list
+label, and one `render` serves both views:
+
+```tsx
+const columns: DataColumnDef<Client>[] = [
+    { header: 'Host', accessorKey: 'hostname', sortable: true, list: { label: null } },
+    { header: 'Status', sortable: true, sortValue: (c) => c.status,
+      render: (c) => <Badge variant={tone[c.status]}>{c.status}</Badge> },
+    { header: 'ID', accessorKey: 'id', table: false },
+    { header: 'Actions', render: (c) => <DataAction rowId={c.id} … />,
+      list: { label: null, group: 'actions' } },
+];
+
+<DataMultiView
+    columns={columns}
+    listGroups={[{ id: 'content', grow: true }, { id: 'actions', className: 'md:text-right' }]}
+    …
+/>
+```
+
+- `table: false` / `list: false` leaves the column out of that view. A sort's
+  `colIndex` counts the table's columns, so it skips the ones with `table: false`.
+- `list.label` replaces the heading as the label; `null` shows the value alone.
+- `list.group` names the block of the row the field sits in. A field without a
+  group, or with one `listGroups` does not define, goes into the first.
+- `render(item, view)` receives `'table'` or `'list'` for the cell that has to
+  differ between the two.
+
+`tableDef` and `listColumns` keep working. Passed next to `columns` they are
+ignored, with a warning.
 
 ---
 

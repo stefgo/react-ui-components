@@ -5,6 +5,7 @@ import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
 import { DataList, DataListColumnDef, DataListClassNames } from './DataList';
 import { DataTreeTable, DataTreeTableClassNames } from './DataTreeTable';
 import { BaseDataViewProps } from './data/types';
+import { toListColumns, toTableDef, type DataColumnDef, type DataListGroupDef } from './data/columns';
 import type { SortOptions } from './data/useSortColumns';
 import type { TreeExpansionOptions } from './data/useTreeExpansion';
 import { useControllableState } from './hooks/useControllableState';
@@ -34,6 +35,14 @@ export interface DataMultiViewProps<T> {
     className?: string;
     data: T[];
     getChildren?: (item: T) => T[] | undefined | null;
+    /**
+     * Every column once, for the table and the list view alike. Use it instead
+     * of `tableDef` and `listColumns`, not next to them: where both are given,
+     * `columns` is what is shown.
+     */
+    columns?: DataColumnDef<T>[];
+    /** The blocks a list row is laid out in, for `columns`. One block without it. */
+    listGroups?: DataListGroupDef[];
     tableDef?: DataTableDef<T>[];
     listColumns?: DataListColumnDef<T>[];
     /** Column definitions for tree table view. Requires `getChildren` to be set. */
@@ -86,8 +95,10 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         title,
         extraActions,
         className = '',
-        tableDef,
-        listColumns,
+        columns,
+        listGroups,
+        tableDef: tableDefProp,
+        listColumns: listColumnsProp,
         getChildren,
         treeExpanded,
         treeTableIndentSize,
@@ -130,8 +141,24 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         }
     }, [paginationMode, searchFilter]);
 
+    const hasBothColumnSources = !!columns && !!(tableDefProp || listColumnsProp);
+    useEffect(() => {
+        if (hasBothColumnSources) {
+            console.warn(
+                '[DataMultiView] columns replaces tableDef and listColumns; the two that '
+                + 'were passed next to it are ignored.',
+            );
+        }
+    }, [hasBothColumnSources]);
+
+    const tableDef = useMemo(() => (columns ? toTableDef(columns) : tableDefProp), [columns, tableDefProp]);
+    const listColumns = useMemo(
+        () => (columns ? toListColumns(columns, listGroups) : listColumnsProp),
+        [columns, listGroups, listColumnsProp],
+    );
+
     const hasTreeView = !!(tableDef && getChildren);
-    
+
     // Mobile detection
     const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
 

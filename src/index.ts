@@ -3,6 +3,7 @@ export * from "./form/FormField";
 export * from "./form/FieldMessages";
 export * from "./form/useFieldIds";
 export * from "./data/types";
+export type { DataColumnDef, DataColumnView, DataListGroupDef } from "./data/columns";
 export type { SortOptions } from "./data/useSortColumns";
 export type { TreeExpansionOptions, TreeKey } from "./data/useTreeExpansion";
 export * from "./ActionButton";
