@@ -1,6 +1,6 @@
 import { KeyboardEvent, MouseEvent, ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { BaseDataViewProps, Comparator, RowKey } from './types';
-import { toggleKey } from './selection';
+import { selectAllState, toggleAll, toggleKey } from './selection';
 import { useControllableState } from '../hooks/useControllableState';
 import { runDataPipeline } from './pipeline';
 import { usePaginationState } from './usePaginationState';
@@ -39,6 +39,15 @@ export interface RowSelection<T> {
     isSelected: (item: T) => boolean;
     toggle: (item: T) => void;
     label: (item: T) => string;
+    /**
+     * How much of what "select all" would pick is picked. A view with a header
+     * row draws its box from this; the list has no such row and leaves it out.
+     */
+    allState: 'all' | 'some' | 'none';
+    /** Picks everything "select all" stands for, or -- when all of it is picked -- none of it. */
+    toggleAll: () => void;
+    /** False when there is no row "select all" could pick. */
+    hasCandidates: boolean;
 }
 
 const NO_SELECTION: ReadonlySet<RowKey> = new Set();
@@ -120,12 +129,25 @@ export function useDataView<T>(
     });
     const isSelectable = selectionOptions?.isSelectable;
     const rowLabel = selectionOptions?.rowLabel;
-    const selection = useMemo<RowSelection<T> | null>(() => (selectionOptions ? {
+    // What "select all" picks: the rows the filter leaves, not the page of them
+    // that is on screen -- an action on "everything that matches" must not stop
+    // at the page break. In a tree these are the root rows.
+    const hasSelection = selectionOptions != null;
+    const selectAllKeys = useMemo(() => {
+        if (!hasSelection) return [];
+        return (filter ? data.filter(filter) : data)
+            .filter((item) => isSelectable?.(item) ?? true)
+            .map(getKey);
+    }, [hasSelection, data, filter, isSelectable, getKey]);
+    const selection = useMemo<RowSelection<T> | null>(() => (hasSelection ? {
         isSelectable: (item) => isSelectable?.(item) ?? true,
         isSelected: (item) => selected.has(getKey(item)),
         toggle: (item) => setSelected((prev) => toggleKey(prev, getKey(item))),
         label: (item) => rowLabel?.(item) ?? 'Select row',
-    } : null), [selectionOptions, isSelectable, rowLabel, selected, setSelected, getKey]);
+        allState: selectAllState(selectAllKeys, selected),
+        toggleAll: () => setSelected((prev) => toggleAll(prev, selectAllKeys)),
+        hasCandidates: selectAllKeys.length > 0,
+    } : null), [hasSelection, isSelectable, rowLabel, selected, setSelected, getKey, selectAllKeys]);
 
     const getRowClass = useCallback((item: T): string => (
         typeof rowClassName === 'function' ? rowClassName(item) : (rowClassName ?? '')

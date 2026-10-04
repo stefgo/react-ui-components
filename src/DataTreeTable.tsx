@@ -8,7 +8,7 @@ import { useSortColumns, type SortOptions } from './data/useSortColumns';
 import { useTreeExpansion, type TreeExpansionOptions } from './data/useTreeExpansion';
 import { SortIcon } from './data/SortIcon';
 import { DataViewFrame } from './data/DataViewFrame';
-import { SelectionCheckbox } from './data/SelectionCheckbox';
+import { SelectAllCheckbox, SelectionCheckbox } from './data/SelectionCheckbox';
 import { flattenTree } from './data/tree';
 import { cn } from './utils';
 import { FOCUS_RING } from './focus';
@@ -67,7 +67,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                         <tr className={cn("border-b border-border", classNames?.headerRow)}>
                             {selection && (
                                 <th scope="col" className={cn("w-px pl-6 pr-0 py-2", classNames?.th)}>
-                                    <span className="sr-only">Select</span>
+                                    <SelectAllCheckbox selection={selection} />
                                 </th>
                             )}
                             {itemDef.map((col, idx) => {

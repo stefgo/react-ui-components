@@ -5,8 +5,6 @@ import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
 import { DataList, DataListColumnDef, DataListClassNames } from './DataList';
 import { DataTreeTable, DataTreeTableClassNames } from './DataTreeTable';
 import { BaseDataViewProps, type RowKey, type SelectionOptions } from './data/types';
-import { selectAllState, toggleAll } from './data/selection';
-import { Checkbox } from './Checkbox';
 import { toListColumns, toTableDef, type DataColumnDef, type DataListGroupDef } from './data/columns';
 import type { SortOptions } from './data/useSortColumns';
 import type { TreeExpansionOptions } from './data/useTreeExpansion';
@@ -29,16 +27,19 @@ export interface DataMultiViewClassNames {
     searchBar?: string;
     /** The wrapper of `searchActions`, at the right end of the search bar. */
     searchActionsWrapper?: string;
-    /** The line with "select all", the count and `selectionActions`. */
-    selectionBar?: string;
+    /** `selectionActions`, in the header while something is picked. */
+    selectionActionsWrapper?: string;
+    /** The count of what is picked, in brackets behind the title. */
+    selectionCount?: string;
 }
 
 export interface MultiViewSelectionOptions<T> extends SelectionOptions<T> {
     /**
-     * What the selection line says while something is picked. Default:
-     * "3 selected", the number of picked keys -- which in a tree counts a
-     * parent next to its children, so a caller that picks both says what the
-     * selection amounts to instead.
+     * What stands in brackets behind the title while something is picked.
+     * With `selectionActions` the default is "3 selected", the number of
+     * picked keys -- which in a tree counts a parent next to its children, so
+     * a caller that picks both says what the selection amounts to instead.
+     * Without them, the count is shown only where this is given.
      */
     label?: (selected: ReadonlySet<RowKey>) => string;
 }
@@ -105,15 +106,17 @@ export interface DataMultiViewProps<T> {
     /** Which view is shown. Leave it out and the view owns it. */
     viewMode?: ViewModeOptions;
     /**
-     * A checkbox in front of every row, in all three views, and a line above
-     * them with "select all" and the count. "Select all" picks what the search
-     * leaves, on every page; in a tree those are the root rows. Leave out
-     * `value` and the view owns the selection.
+     * A checkbox in front of every row, in all three views, and "select all"
+     * in the header of that column -- which the list does not have, so it has
+     * no "select all" either. "Select all" picks what the search leaves, on
+     * every page; in a tree those are the root rows. Leave out `value` and the
+     * view owns the selection.
      */
     selection?: MultiViewSelectionOptions<T>;
     /**
-     * What can be done with the picked rows, shown in the selection line while
-     * at least one is picked. Called with their keys.
+     * What can be done with the picked rows, shown in the card's header while
+     * at least one is picked; their count then follows the title in brackets.
+     * Called with their keys.
      */
     selectionActions?: (selected: ReadonlySet<RowKey>) => ReactNode;
 }
@@ -166,29 +169,14 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
             : undefined
     ), [searchable, searchFilter, searchQuery]);
 
-    // Held here rather than in the view underneath: the line above the rows
-    // needs it, and switching between table and list must not empty it.
+    // Held here rather than in the view underneath: the header needs it, and
+    // switching between table and list must not empty it.
     const [selected, setSelected] = useControllableState<ReadonlySet<RowKey>>({
         value: selection?.value,
         defaultValue: selection?.defaultValue,
         onChange: selection?.onChange,
         fallback: NO_SELECTION,
     });
-    const { data, keyField } = props;
-    const isSelectable = selection?.isSelectable;
-    // What "select all" picks: the rows the search leaves, not the page of them
-    // that is on screen -- an action on "everything that matches" must not stop
-    // at the page break.
-    const selectAllKeys = useMemo(() => {
-        if (!selection) return [];
-        const keyOf = (item: T): RowKey => (
-            typeof keyField === 'function' ? keyField(item) : item[keyField] as unknown as RowKey
-        );
-        return (filter ? data.filter(filter) : data)
-            .filter((item) => isSelectable?.(item) ?? true)
-            .map(keyOf);
-    }, [selection, data, keyField, filter, isSelectable]);
-    const allState = selectAllState(selectAllKeys, selected);
     const rowSelection = useMemo<SelectionOptions<T> | undefined>(() => (selection ? {
         value: selected,
         onChange: setSelected,
@@ -293,10 +281,29 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         </div>
     ) : null;
 
+    const hasPicks = !!selection && selected.size > 0;
+    const selectionHeader = hasPicks && selectionActions ? (
+        <div className={cn("flex flex-wrap items-center justify-end gap-2", classNames?.selectionActionsWrapper)}>
+            {selectionActions(selected)}
+        </div>
+    ) : null;
+    // Behind the title, in brackets: it is the title's rows that are counted.
+    // Only where the caller does something with what is picked -- it brings
+    // actions, or says what the selection amounts to -- or the number would
+    // lead nowhere.
+    const selectionCount = hasPicks && (selectionActions || selection.label) ? (
+        <span className={cn("font-normal text-text-secondary", classNames?.selectionCount)} aria-live="polite">
+            ({selection.label?.(selected) ?? `${selected.size} selected`})
+        </span>
+    ) : null;
+
     const headerAction = (
-        <div className={cn("flex items-center gap-3", classNames?.extraActionsWrapper)}>
-            {viewToggle}
-            {extraActions}
+        <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
+            {selectionHeader}
+            <div className={cn("flex items-center gap-3", classNames?.extraActionsWrapper)}>
+                {viewToggle}
+                {extraActions}
+            </div>
         </div>
     );
 
@@ -313,7 +320,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     };
 
     return (
-        <Card padding="none" className={cn("overflow-hidden flex flex-col h-full", className)} classNames={{ ...classNames?.card, ...classNames?.header, header: cn(classNames?.card?.header, classNames?.header?.header, searchable && 'border-b-0 pb-1') }} title={title} action={headerAction}>
+        <Card padding="none" className={cn("overflow-hidden flex flex-col h-full", className)} classNames={{ ...classNames?.card, ...classNames?.header, header: cn(selection && 'flex-wrap gap-x-4 gap-y-2', classNames?.card?.header, classNames?.header?.header, searchable && 'border-b-0 pb-1') }} title={selectionCount ? <>{title}{' '}{selectionCount}</> : title} action={headerAction}>
             {searchable && (
                 <div className={cn(
                     "px-4 py-2 border-b border-border bg-card-header flex items-center gap-3",
@@ -360,25 +367,6 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                     {searchActions && (
                         <div className={cn("flex items-center gap-2 shrink-0", classNames?.searchActionsWrapper)}>
                             {searchActions}
-                        </div>
-                    )}
-                </div>
-            )}
-            {selection && (
-                <div className={cn(
-                    "px-5 py-2 border-b border-border flex flex-wrap items-center gap-x-3 gap-y-2 min-h-[2.75rem]",
-                    classNames?.selectionBar
-                )}>
-                    <Checkbox
-                        label={selected.size === 0 ? 'Select all' : selection.label?.(selected) ?? `${selected.size} selected`}
-                        checked={allState === 'all'}
-                        indeterminate={allState === 'some'}
-                        disabled={selectAllKeys.length === 0}
-                        onChange={() => setSelected((prev) => toggleAll(prev, selectAllKeys))}
-                    />
-                    {selected.size > 0 && selectionActions && (
-                        <div className="ml-auto flex flex-wrap items-center gap-2">
-                            {selectionActions(selected)}
                         </div>
                     )}
                 </div>

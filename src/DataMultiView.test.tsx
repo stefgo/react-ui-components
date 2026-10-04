@@ -94,21 +94,53 @@ describe('DataMultiView', () => {
         const rowLabel = (row: Row) => `Select ${row.name}`;
         const actions = (selected: ReadonlySet<RowKey>) => <button type="button">Update {selected.size}</button>;
 
-        it('has no checkbox and no selection line unless asked', () => {
+        it('has no checkbox unless asked', () => {
             render(<DataMultiView data={data} keyField="id" columns={nameColumns} />);
             expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
         });
 
         it('picks a row, counts it and offers the actions only then', async () => {
             const user = userEvent.setup();
-            render(<DataMultiView data={data} keyField="id" columns={nameColumns} selection={{ rowLabel }} selectionActions={actions} />);
+            render(<DataMultiView title="Rows" data={data} keyField="id" columns={nameColumns} selection={{ rowLabel }} selectionActions={actions} />);
 
+            expect(screen.getByRole('heading', { name: 'Rows' })).toBeInTheDocument();
             expect(screen.queryByRole('button', { name: /Update/ })).not.toBeInTheDocument();
             await user.click(screen.getByRole('checkbox', { name: 'Select alpha' }));
 
             expect(screen.getByRole('checkbox', { name: 'Select alpha' })).toBeChecked();
-            expect(screen.getByRole('checkbox', { name: '1 selected' })).toBePartiallyChecked();
+            expect(screen.getByRole('checkbox', { name: 'Select all' })).toBePartiallyChecked();
+            expect(screen.getByRole('heading', { name: 'Rows (1 selected)' })).toBeInTheDocument();
             expect(screen.getByRole('button', { name: 'Update 1' })).toBeInTheDocument();
+        });
+
+        it('has "select all" in the header of the column, not in a line of its own', () => {
+            render(<DataMultiView data={data} keyField="id" columns={nameColumns} selection={{ rowLabel }} selectionActions={actions} />);
+            const header = screen.getByRole('checkbox', { name: 'Select all' }).closest('th');
+            expect(header).toHaveAttribute('scope', 'col');
+        });
+
+        it('says nothing in the header without an action for what is picked', async () => {
+            const user = userEvent.setup();
+            render(<DataMultiView data={data} keyField="id" columns={nameColumns} selection={{ rowLabel }} />);
+
+            await user.click(screen.getByRole('checkbox', { name: 'Select alpha' }));
+            expect(screen.queryByText('(1 selected)')).not.toBeInTheDocument();
+        });
+
+        it('counts in the title for a caller that names the selection, actions or not', async () => {
+            const user = userEvent.setup();
+            render(
+                <DataMultiView
+                    title="Rows"
+                    data={data}
+                    keyField="id"
+                    columns={nameColumns}
+                    selection={{ rowLabel, label: (selected) => `${selected.size} picked` }}
+                />,
+            );
+
+            await user.click(screen.getByRole('checkbox', { name: 'Select alpha' }));
+            expect(screen.getByRole('heading', { name: 'Rows (1 picked)' })).toBeInTheDocument();
         });
 
         it('does not open the row that is picked', async () => {
@@ -140,9 +172,9 @@ describe('DataMultiView', () => {
             await user.click(screen.getByRole('checkbox', { name: 'Select all' }));
             // Three match, two are on the page.
             expect([...onChange.mock.lastCall![0]]).toEqual([1, 2, 3]);
-            expect(screen.getByRole('checkbox', { name: '3 selected' })).toBeChecked();
+            expect(screen.getByRole('checkbox', { name: 'Select all' })).toBeChecked();
 
-            await user.click(screen.getByRole('checkbox', { name: '3 selected' }));
+            await user.click(screen.getByRole('checkbox', { name: 'Select all' }));
             expect([...onChange.mock.lastCall![0]]).toEqual([]);
         });
 
@@ -163,7 +195,7 @@ describe('DataMultiView', () => {
             expect([...onChange.mock.lastCall![0]]).toEqual([2]);
         });
 
-        it('keeps the selection when the view changes, and shows it in the list', async () => {
+        it('keeps the selection when the view changes, and shows it in the list without "select all"', async () => {
             const user = userEvent.setup();
             render(<DataMultiView data={data} keyField="id" columns={nameColumns} selection={{ rowLabel }} />);
 
@@ -173,6 +205,8 @@ describe('DataMultiView', () => {
             expect(screen.queryByRole('table')).not.toBeInTheDocument();
             expect(screen.getByRole('checkbox', { name: 'Select alpha' })).toBeChecked();
             expect(screen.getByRole('checkbox', { name: 'Select beta' })).not.toBeChecked();
+            // The list has no header row to put it in.
+            expect(screen.queryByRole('checkbox', { name: 'Select all' })).not.toBeInTheDocument();
         });
 
         it('shows what a caller that owns the selection hands it', async () => {
@@ -196,11 +230,12 @@ describe('DataMultiView', () => {
                     keyField="id"
                     columns={nameColumns}
                     selection={{ rowLabel, label: (selected) => `${selected.size * 2} containers selected` }}
+                    selectionActions={actions}
                 />,
             );
 
             await user.click(screen.getByRole('checkbox', { name: 'Select alpha' }));
-            expect(screen.getByRole('checkbox', { name: '2 containers selected' })).toBeInTheDocument();
+            expect(screen.getByText('(2 containers selected)')).toBeInTheDocument();
         });
 
         it('picks a child row of a tree by its own key', async () => {
@@ -223,7 +258,7 @@ describe('DataMultiView', () => {
             await user.click(within(row).getByRole('checkbox', { name: 'Select host-a' }));
             expect([...onChange.mock.lastCall![0]]).toEqual(['web@a']);
             // "Select all" is about the root rows; one child does not make it partial.
-            expect(screen.getByRole('checkbox', { name: '1 selected' })).not.toBePartiallyChecked();
+            expect(screen.getByRole('checkbox', { name: 'Select all' })).not.toBePartiallyChecked();
         });
     });
 
