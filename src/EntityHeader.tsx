@@ -70,6 +70,13 @@ export interface EntityHeaderProps extends Persistable<boolean> {
     meta?: ReactNode;
     /** Right-hand end of the row, e.g. an `ActionMenu` trigger. */
     actions?: ReactNode;
+    /**
+     * On a narrow screen the actions take the last line, at its right-hand end.
+     * For a header with more than one action -- a row of buttons rather than
+     * the one that opens a menu: beside the title they leave it a few letters.
+     * The actions arrive as one node, so the header cannot count them itself.
+     */
+    actionsBelow?: boolean;
     /** Below the row and never collapsed: whatever needs attention must not hide behind a toggle. */
     alert?: ReactNode;
     details?: EntityDetail[];
@@ -115,6 +122,12 @@ interface NormalizedGroup extends Omit<EntityDetailGroup, 'title'> {
  * them all. A group with only `'expanded'` details collapses whole, heading
  * included, so a closed header shows no heading over nothing.
  *
+ * On a narrow screen the badges take a line of their own, below the title and
+ * the actions. Beside the title they would share its box, which is as wide as
+ * what the actions leave -- and a truncated title leaves the badges a column of
+ * a few letters. So the box dissolves there (`contents`) and its two children
+ * wrap as items of the row itself.
+ *
  * The header draws its own toggle rather than using `Collapsible`, whose
  * trigger is the whole header: the actions in the row would end up inside a
  * `<button>`.
@@ -125,6 +138,7 @@ export const EntityHeader = ({
     leading,
     meta,
     actions,
+    actionsBelow = false,
     alert,
     details = [],
     detailGroups,
@@ -223,28 +237,39 @@ export const EntityHeader = ({
         <Card ref={ref} className={className}>
             <div
                 className={cn(
-                    "px-5 py-4 flex items-center gap-4 bg-card-header",
+                    "px-5 py-4 flex items-center gap-4 bg-card-header max-sm:flex-wrap max-sm:gap-y-2",
                     classNames?.header
                 )}
             >
                 {leading && <div className="shrink-0 flex items-center">{leading}</div>}
-                <div className="min-w-0 flex-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+                <div className="min-w-0 flex-1 flex flex-wrap items-center gap-x-3 gap-y-1 max-sm:contents">
                     <TitleTag
                         className={cn(
-                            "min-w-0 max-w-full truncate text-xl font-bold text-text-primary",
+                            "min-w-0 max-w-full truncate text-xl font-bold text-text-primary max-sm:flex-1",
                             classNames?.title
                         )}
                     >
                         {title}
                     </TitleTag>
                     {meta && (
-                        <div className={cn("flex flex-wrap items-center gap-2", classNames?.meta)}>
+                        <div
+                            className={cn(
+                                "flex flex-wrap items-center gap-2 max-sm:order-1 max-sm:basis-full",
+                                classNames?.meta
+                            )}
+                        >
                             {meta}
                         </div>
                     )}
                 </div>
                 {(actions || iconToggle) && (
-                    <div className={cn("shrink-0 flex items-center gap-2", classNames?.actions)}>
+                    <div
+                        className={cn(
+                            "shrink-0 flex items-center gap-2",
+                            actionsBelow && "max-sm:order-2 max-sm:basis-full max-sm:justify-end",
+                            classNames?.actions
+                        )}
+                    >
                         {iconToggle && (
                             <ActionButton
                                 icon={Info}

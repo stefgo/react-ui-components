@@ -72,7 +72,10 @@ export const WithAlert: Story = {
     }
 };
 
-/** A long title truncates; the badges wrap below it and the actions keep their place. */
+/**
+ * A long title truncates. On a phone the badges take a line of their own below
+ * the title and the actions, so the title keeps the width of the row.
+ */
 export const Narrow: Story = {
     args: { title: 'a-rather-long-hostname.internal.example.org' },
     parameters: { viewport: { defaultViewport: 'mobile1' } },
@@ -119,3 +122,9 @@ const GROUPS: EntityDetailGroup[] = [
 
 /** Details about several things, one titled group each; one "Show more" opens them all. */
 export const Grouped: Story = { args: { title: 'dim-client', detailGroups: GROUPS, details: undefined } };
+
+/** With `actionsBelow` a row of buttons takes the last line instead of the title's width. */
+export const NarrowActionsBelow: Story = {
+    args: { title: 'a-rather-long-hostname.internal.example.org', actionsBelow: true },
+    parameters: { viewport: { defaultViewport: 'mobile1' } },
+};

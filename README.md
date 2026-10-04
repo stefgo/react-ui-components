@@ -505,6 +505,19 @@ devices and is announced inconsistently.
 
 ### Layout and navigation
 
+#### `EntityHeader`
+
+The head of a page about one thing: its name, a few badges, its actions, and
+details below.
+
+- `title`, `titleAs`, `leading`, `meta`, `actions`, `alert`
+- `details` / `detailGroups`, each detail `visibility: 'always' | 'expanded'`
+- `value` / `defaultValue` / `onChange` / `persist` — whether the details are open
+- `actionsBelow` — on a narrow screen the actions take the last line; for a header
+  with a row of buttons rather than one menu trigger
+- On a narrow screen the badges take a line of their own below the title and the
+  actions, so a long title keeps the width of the row.
+
 #### `Collapsible`
 
 - `title`, plus `value` / `defaultValue` / `onChange`
