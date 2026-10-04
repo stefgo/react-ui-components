@@ -83,6 +83,7 @@ The preset does three things: adds the library's dist files to Tailwind's `conte
 | `form/FormField.tsx` + `form/useFieldIds.ts` + `form/FieldMessages.tsx` | label, hint, error and the ARIA wiring between them. |
 | `form/FieldLabel.tsx` | the caption above a field. `FormField` renders it; a caller uses it over what is not one of the library's controls. |
 | `Alert.tsx` | the box of a message that stays in the page, per tone, and whether it interrupts. |
+| `theme/ThemeProvider.tsx` | which theme is on, the class on `<html>`, and the stored choice. |
 | `hooks/useCopyToClipboard.ts` | copying a text, the moment of feedback after it, and the case where the browser has no clipboard (plain HTTP). Used by `CopyField`. |
 
 `FormField` encodes one rule worth knowing: an error replaces the hint on screen

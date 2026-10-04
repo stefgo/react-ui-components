@@ -29,6 +29,7 @@ export * from "./Tabs";
 export * from "./SideTab";
 export * from "./Badge";
 export * from "./ThemeToggle";
+export * from "./theme/ThemeProvider";
 export * from "./LoginPage";
 export * from "./Sidebar";
 export * from "./DashboardHeader";

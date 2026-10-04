@@ -80,6 +80,21 @@ is no import step to forget.
 The preset sets `darkMode: "class"`. Put `dark` on `<html>` (or any ancestor) and
 every token switches. Override it in your own config if you need something else.
 
+`ThemeProvider` does that, and remembers the choice:
+
+```tsx
+<ThemeProvider storageKey="myapp.theme">
+  <App />
+</ThemeProvider>
+
+const { theme, toggleTheme } = useTheme();
+<ThemeToggle theme={theme} onToggle={toggleTheme} />
+```
+
+- `storageKey` (required) — the `localStorage` key; the name belongs to the app
+- `defaultTheme`: `dark` (default) | `light` — what a first visit sees
+- A stored value that is neither of the two falls back to the default.
+
 ---
 
 ## Conventions
