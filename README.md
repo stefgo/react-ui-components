@@ -80,6 +80,21 @@ is no import step to forget.
 The preset sets `darkMode: "class"`. Put `dark` on `<html>` (or any ancestor) and
 every token switches. Override it in your own config if you need something else.
 
+`ThemeProvider` does that, and remembers the choice:
+
+```tsx
+<ThemeProvider storageKey="myapp.theme">
+  <App />
+</ThemeProvider>
+
+const { theme, toggleTheme } = useTheme();
+<ThemeToggle theme={theme} onToggle={toggleTheme} />
+```
+
+- `storageKey` (required) — the `localStorage` key; the name belongs to the app
+- `defaultTheme`: `dark` (default) | `light` — what a first visit sees
+- A stored value that is neither of the two falls back to the default.
+
 ---
 
 ## Conventions
@@ -198,11 +213,13 @@ token to break that link.
 | `--ruic-error-bg` | `#fef2f2` | `rgba(127, 29, 29, 0.3)` |
 | `--ruic-success` | `#16a34a` | `#4ade80` |
 | `--ruic-success-hover` | `#15803d` | same |
+| `--ruic-success-bg` | `#f0fdf4` | `rgba(20, 83, 45, 0.3)` |
 | `--ruic-warning` | `#ea580c` | `#fb923c` |
 | `--ruic-warning-hover` | `#c2410c` | same |
 | `--ruic-warning-bg` | `#ffedd5` | `rgba(124, 45, 18, 0.3)` |
 | `--ruic-info` | `#2563eb` | `#60a5fa` |
 | `--ruic-info-hover` | `#1d4ed8` | `#93c5fd` |
+| `--ruic-info-bg` | `#eff6ff` | `rgba(30, 58, 138, 0.3)` |
 | `--ruic-accent` | `#4f46e5` | `#818cf8` |
 | `--ruic-accent-hover` | `#4338ca` | same |
 | `--ruic-accent-bg` | `#eef2ff` | `rgba(49, 46, 129, 0.3)` |
@@ -342,6 +359,14 @@ Use it directly to wrap a control the library does not have:
 The rule it encodes: an error replaces the hint on screen **and** in
 `aria-describedby`, so nothing is announced that is not visible.
 
+#### `FieldLabel`
+
+The caption `FormField` puts above a control, for the places that have no such
+control: a read-only value, a list with its own buttons.
+
+- `as`: `label` (default, with `htmlFor`) | `div` | `p` | `span`
+- `required` — the asterisk; decoration only
+
 #### `Input`
 
 - `label`, `hint`, `error`, `icon`: `IconComponent`, `fullWidth`
@@ -356,6 +381,49 @@ The rule it encodes: an error replaces the hint on screen **and** in
 
 - `label`, `hint`, `error`, `rows` (default 4), `fullWidth`
 - Resizes vertically only — horizontal resizing breaks the form it sits in.
+
+#### `CopyField` and `useCopyToClipboard`
+
+A value to take away — a token, a key, a fingerprint — beside the button that
+copies it.
+
+```tsx
+<CopyField value={token} aria-label="Registration token" />
+```
+
+- `value`, `aria-label` (required — the field has no visible label of its own)
+- `labels`: `copy`, `copied`, `unavailable`
+- `classNames`: `input`, `button`, `notice`
+- A click into the field selects all of it.
+- **Without a clipboard the button selects the value and says so.** The clipboard
+  API exists in a secure context only, and a dashboard is often reached over plain
+  HTTP in a LAN; a copy button that silently does nothing there is the defect this
+  component exists to end.
+
+`useCopyToClipboard()` is the same behaviour for a text that is not a field — a
+log, a snippet in a `<pre>`:
+
+```tsx
+const { copied, unavailable, copy } = useCopyToClipboard();
+
+if (!(await copy(text))) window.getSelection()?.selectAllChildren(box.current);
+```
+
+`copy` never throws: it resolves `false` and sets `unavailable`, and selecting
+the text is left to the caller, who knows where it is.
+
+#### `NumberField`
+
+A whole number, kept as a string and clamped as it is typed.
+
+- `label`, `value: string`, `onChange(value: string)`, `min` (default 0)
+- `hint`, `error`, `placeholder`, `disabled`
+- Anything below `min`, and an emptied field, becomes `min`.
+
+#### `SectionHeader`
+
+- `title`, `titleAs` (default `h3`), `children` — what the section controls, held
+  to a readable line length
 
 #### `Checkbox`
 
@@ -439,6 +507,21 @@ await alert({ title: "Cannot delete the last user", description: "Create a secon
   returning `false` keeps it open without a message
 - `alert()` — one button (`okLabel`, default `OK`), resolves when closed
 
+#### `Alert`
+
+A message that stays in the page: a read that failed, a save the server
+refused, the result of a test.
+
+```tsx
+<Alert title="Could not load the users">{message}</Alert>
+<Alert tone="success" title={`Delivered (HTTP ${status})`} />
+```
+
+- `tone`: `error` (default) | `success` | `warning` | `info` | `neutral`
+- `title`, `children` — the detail below it, or the whole message without one
+- `icon` — replaces the tone's icon; `null` shows none
+- An error interrupts (`role="alert"`); every other tone waits (`role="status"`).
+
 #### `Toast`
 
 Needs a provider, like confirmations: toasts are raised from event handlers
@@ -474,6 +557,19 @@ devices and is announced inconsistently.
 ---
 
 ### Layout and navigation
+
+#### `EntityHeader`
+
+The head of a page about one thing: its name, a few badges, its actions, and
+details below.
+
+- `title`, `titleAs`, `leading`, `meta`, `actions`, `alert`
+- `details` / `detailGroups`, each detail `visibility: 'always' | 'expanded'`
+- `value` / `defaultValue` / `onChange` / `persist` — whether the details are open
+- `actionsBelow` — on a narrow screen the actions take the last line; for a header
+  with a row of buttons rather than one menu trigger
+- On a narrow screen the badges take a line of their own below the title and the
+  actions, so a long title keeps the width of the row.
 
 #### `Collapsible`
 
@@ -516,6 +612,24 @@ no modal `footer` — the wizard brings its own).
 - **Only the current step is rendered, so the step contents' state belongs to
   the caller.** A step holding its inputs in its own `useState` loses them on
   Back; hold the form data above the wizard and Back/Next come for free.
+
+#### `SideTab`
+
+One tab of a column of them — the sections of a settings page. `useTabs` owns
+the behaviour and leaves the look to the caller; this is the look three apps drew
+identically.
+
+```tsx
+const tabs = useTabs({ tabs: ['general', 'retention'], orientation: 'vertical' });
+
+<TabList tabs={tabs} aria-label="Settings sections" className="flex flex-col">
+  <SideTab tabs={tabs} value="general" icon={Globe}>General</SideTab>
+  <SideTab tabs={tabs} value="retention" icon={Clock} trailing={unsavedMarker}>Retention</SideTab>
+</TabList>
+```
+
+- `tabs`, `value`, `icon`, `children`
+- `trailing` — after the name: a marker for unsaved changes, a count
 
 #### `Sidebar` and `BottomNav`
 
@@ -628,6 +742,35 @@ const columns: DataColumnDef<Client>[] = [
 
 `tableDef` and `listColumns` keep working. Passed next to `columns` they are
 ignored, with a warning.
+
+#### The layout every list shares
+
+The two blocks of a list row, the actions column and the paging are the same in
+every list of an app, so they are spelled once:
+
+```tsx
+const columns: DataColumnDef<Client>[] = [
+    { header: 'Host', accessorKey: 'hostname', sortable: true },
+    actionsColumn((c) => <DataAction rowId={c.id} … />),
+];
+
+<DataMultiView
+    columns={columns}
+    listGroups={listGroups()}
+    pagination={listPagination(PAGE_SIZE.page)}
+    …
+/>
+```
+
+- `listGroups(contentClassName?)` — the content block and the actions block
+- `actionsColumn(render, { header?, listClassName? })` — one set of buttons for
+  both views, in the block `ACTIONS_GROUP`
+- `PAGE_SIZE.page` (20) for a list that is a page of its own, `PAGE_SIZE.embedded`
+  (10) for one below a header or inside a tab; `listPagination(size)` hides the bar
+  while one page holds everything
+- For a tree: `treeListGroups()`, `treeActionsColumn(render)` and `{...TREE_ONLY}`
+  spread onto a view that offers no other mode — the tree table where it fits,
+  the list by itself where it does not
 
 ---
 

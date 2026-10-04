@@ -21,11 +21,13 @@
   --ruic-error-bg:      #fef2f2;
   --ruic-success:       #16a34a;
   --ruic-success-hover: #15803d;
+  --ruic-success-bg:    #f0fdf4;
   --ruic-warning:       #ea580c;
   --ruic-warning-hover: #c2410c;
   --ruic-warning-bg:    #ffedd5;
   --ruic-info:          #2563eb;
   --ruic-info-hover:    #1d4ed8;
+  --ruic-info-bg:       #eff6ff;
   --ruic-accent:        #4f46e5;
   --ruic-accent-hover:  #4338ca;
   --ruic-accent-bg:     #eef2ff;
@@ -101,10 +103,12 @@
   --ruic-error:      #f87171;
   --ruic-error-bg:   rgba(127, 29, 29, 0.3);
   --ruic-success:    #4ade80;
+  --ruic-success-bg: rgba(20, 83, 45, 0.3);
   --ruic-warning:    #fb923c;
   --ruic-warning-bg: rgba(124, 45, 18, 0.3);
   --ruic-info:       #60a5fa;
   --ruic-info-hover: #93c5fd;
+  --ruic-info-bg:    rgba(30, 58, 138, 0.3);
   --ruic-accent:     #818cf8;
   --ruic-accent-bg:  rgba(49, 46, 129, 0.3);
 

@@ -51,6 +51,7 @@ const GROUPS = [
 
             { name: "success", light: "#16a34a", dark: "#4ade80" },
             { name: "success-hover", light: "#15803d" },
+            { name: "success-bg", light: "#f0fdf4", dark: "rgba(20, 83, 45, 0.3)" },
 
             { name: "warning", light: "#ea580c", dark: "#fb923c" },
             { name: "warning-hover", light: "#c2410c" },
@@ -60,6 +61,7 @@ const GROUPS = [
             // The dark value is the former `info-light`, which existed only
             // because FileBrowser needed a lighter hover on a dark surface.
             { name: "info-hover", light: "#1d4ed8", dark: "#93c5fd" },
+            { name: "info-bg", light: "#eff6ff", dark: "rgba(30, 58, 138, 0.3)" },
 
             { name: "accent", light: "#4f46e5", dark: "#818cf8" },
             { name: "accent-hover", light: "#4338ca" },

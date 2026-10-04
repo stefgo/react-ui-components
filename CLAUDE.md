@@ -81,6 +81,10 @@ The preset does three things: adds the library's dist files to Tailwind's `conte
 | `CollapsibleRegion.tsx` | the open/close animation of a disclosure, without its trigger. Used by `Collapsible` and `EntityHeader`. |
 | `ConfirmDialog.tsx` | the buttons, busy state and single-button notice of every confirmation. `confirm/ConfirmProvider.tsx` renders it for `useConfirm()` and adds the queue and the error shown inside it. |
 | `form/FormField.tsx` + `form/useFieldIds.ts` + `form/FieldMessages.tsx` | label, hint, error and the ARIA wiring between them. |
+| `form/FieldLabel.tsx` | the caption above a field. `FormField` renders it; a caller uses it over what is not one of the library's controls. |
+| `Alert.tsx` | the box of a message that stays in the page, per tone, and whether it interrupts. |
+| `theme/ThemeProvider.tsx` | which theme is on, the class on `<html>`, and the stored choice. |
+| `hooks/useCopyToClipboard.ts` | copying a text, the moment of feedback after it, and the case where the browser has no clipboard (plain HTTP). Used by `CopyField`. |
 
 `FormField` encodes one rule worth knowing: an error replaces the hint on screen
 **and** in `aria-describedby`, so nothing is announced that is not visible. It
@@ -255,10 +259,12 @@ instead of a base class. The pieces live in `src/data/`:
 | `usePaginationState.ts` | resolves controlled vs. uncontrolled page state |
 | `useSortColumns.ts`, `useTreeExpansion.ts` | the views' own state |
 | `DataViewFrame.tsx` | container, scroll area, pagination bar |
+| `listLayout.tsx` | the row blocks, actions column and paging every list of an app shares |
 
 **The whole folder is internal.** `index.ts` re-exports only `data/types` and
 the two option interfaces a caller actually passes as props (`SortOptions`,
-`TreeExpansionOptions` with `TreeKey`). The views are the API; the pipeline
+`TreeExpansionOptions` with `TreeKey`) and `data/listLayout`, which is nothing
+but values a caller passes as props. The views are the API; the pipeline
 behind them is not, so it can be reshaped without a breaking change. Nothing in
 `src/data/` has a story either — it is covered by vitest, not by eye.
 
