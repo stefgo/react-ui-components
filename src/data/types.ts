@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { PaginationControlsClassNames } from '../PaginationControls';
-import type { PersistOptions } from '../types';
+import type { Controllable, PersistOptions } from '../types';
 
 export interface DataViewClassNames {
     contentWrapper?: string;
@@ -62,6 +62,23 @@ export interface PaginationProps {
     autoResetPage?: boolean;
 }
 
+/** What `keyField` yields: the identity of a row. */
+export type RowKey = string | number;
+
+/**
+ * Rows that can be picked, for an action on several at once.
+ *
+ * The selection is a set of row keys, so it survives sorting, paging and a
+ * filter: a picked row that is not on screen stays picked. A caller that wants
+ * it to follow a filter owns the state and drops the keys it no longer shows.
+ */
+export interface SelectionOptions<T> extends Controllable<ReadonlySet<RowKey>> {
+    /** Which rows carry a checkbox. Default: all of them. */
+    isSelectable?: (item: T) => boolean;
+    /** The accessible name of a row's checkbox. Default: "Select row". */
+    rowLabel?: (item: T) => string;
+}
+
 export interface BaseDataViewProps<T> {
     /**
      * The complete data set. Do not pre-slice it: the view sorts before it takes
@@ -95,6 +112,9 @@ export interface BaseDataViewProps<T> {
      * arrow is a new value on every render.
      */
     filterKey?: string | number;
+
+    /** A checkbox in front of every row. Leave out `value` and the view owns the selection. */
+    selection?: SelectionOptions<T>;
 
     classNames?: DataViewClassNames;
 }

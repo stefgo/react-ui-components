@@ -31,6 +31,11 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {};
 
+/** With `showLabels` the label is on screen and names the tab; a long one is cut off. */
+export const WithLabels: Story = {
+    args: { showLabels: true },
+};
+
 export const TwoItems: Story = {
     args: { items: meta.args.items.slice(0, 2) },
 };

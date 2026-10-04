@@ -8,6 +8,7 @@ import { useSortColumns, type SortOptions } from './data/useSortColumns';
 import { useTreeExpansion, type TreeExpansionOptions } from './data/useTreeExpansion';
 import { SortIcon } from './data/SortIcon';
 import { DataViewFrame } from './data/DataViewFrame';
+import { SelectionCheckbox } from './data/SelectionCheckbox';
 import { flattenTree } from './data/tree';
 import { cn } from './utils';
 import { FOCUS_RING } from './focus';
@@ -46,7 +47,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
     // page, and their children are expanded underneath regardless of the page
     // size. Counting rendered rows instead would make a page's length depend on
     // what happens to be expanded.
-    const { rows, placeholder, getKey, getRowClass, rowActivationProps, interactionClasses, pagination } = useDataView(props, comparator);
+    const { rows, placeholder, getKey, getRowClass, rowActivationProps, interactionClasses, pagination, selection } = useDataView(props, comparator);
 
     const { expandedKeys, allExpanded, toggleRow, toggleAll } = useTreeExpansion({
         data: props.data,
@@ -64,6 +65,11 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                 <table className={cn("w-full text-left border-collapse", classNames?.table)}>
                     <thead className={cn("sticky top-0 bg-table-header z-sticky", classNames?.thead)}>
                         <tr className={cn("border-b border-border", classNames?.headerRow)}>
+                            {selection && (
+                                <th scope="col" className={cn("w-px pl-6 pr-0 py-2", classNames?.th)}>
+                                    <span className="sr-only">Select</span>
+                                </th>
+                            )}
                             {itemDef.map((col, idx) => {
                                 const sortable = isSortable(col);
                                 return (
@@ -128,7 +134,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                         {placeholder ? (
                             <tr>
                                 <td
-                                    colSpan={itemDef.length}
+                                    colSpan={itemDef.length + (selection ? 1 : 0)}
                                     className={cn("px-6 py-8 text-center text-text-muted", classNames?.placeholderTd)}
                                 >
                                     {placeholder}
@@ -157,6 +163,11 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                             classNames?.tr,
                                         )}
                                     >
+                                        {selection && (
+                                            <td className={cn("w-px pl-6 pr-0 py-2", classNames?.td)}>
+                                                <SelectionCheckbox item={item} selection={selection} />
+                                            </td>
+                                        )}
                                         {itemDef.map((col, idx) => {
                                             const cellClass = typeof col.tableCellClassName === 'function'
                                                 ? col.tableCellClassName(item)
