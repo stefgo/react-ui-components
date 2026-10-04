@@ -144,6 +144,21 @@ export const TreeAsList: Story = {
 };
 
 /**
+ * `selection` puts a checkbox in front of every row and a line above them:
+ * "select all" picks what the search leaves, on every page, and
+ * `selectionActions` is offered while something is picked.
+ */
+export const WithSelection: Story = {
+    args: {
+        searchable: true,
+        searchPlaceholder: 'Search clients…',
+        searchFilter: (c: DemoClient, q: string) => c.hostname.toLowerCase().includes(q.toLowerCase()),
+        selection: { rowLabel: (c: DemoClient) => `Select ${c.hostname}` },
+        selectionActions: (selected) => <Button size="sm" variant="secondary">Run {selected.size} now</Button>,
+    },
+};
+
+/**
  * `columns` describes every column once: the heading is the list label, and one
  * `render` serves both views. `tableDef` and `listColumns` ask for the same
  * column twice instead.

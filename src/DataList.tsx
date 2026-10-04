@@ -5,6 +5,7 @@ import { useDataView } from './data/useDataView';
 import { useTreeExpansion, type TreeExpansionOptions } from './data/useTreeExpansion';
 import { flattenTree } from './data/tree';
 import { DataViewFrame } from './data/DataViewFrame';
+import { SelectionCheckbox } from './data/SelectionCheckbox';
 import { cn } from './utils';
 import { FOCUS_RING } from './focus';
 
@@ -63,7 +64,7 @@ function resolveContent<T>(col: DataListDef<T>, item: T): ReactNode {
 export const DataList = <T,>(props: DataListProps<T>) => {
     const { columns: columnsProp, getChildren, expanded, indentSize = 20, classNames, className } = props;
     // No comparator — the caller's order is kept, at every level of a tree.
-    const { rows, placeholder, getKey, getRowClass, rowActivationProps, interactionClasses, pagination } = useDataView(props);
+    const { rows, placeholder, getKey, getRowClass, rowActivationProps, interactionClasses, pagination, selection } = useDataView(props);
 
     const { expandedKeys, toggleRow } = useTreeExpansion({
         data: props.data,
@@ -134,14 +135,19 @@ export const DataList = <T,>(props: DataListProps<T>) => {
                                     classNames?.row
                                 )}
                             >
-                                {getChildren ? (
+                                {getChildren || selection ? (
                                     <div className="flex items-start gap-2">
+                                        {selection && (
+                                            <span className="shrink-0 w-4 mt-1">
+                                                <SelectionCheckbox item={item} selection={selection} />
+                                            </span>
+                                        )}
                                         {/*
                                             As in the tree table: a leaf holds the
                                             indent open with an inert span, not with a
                                             disabled button that says nothing.
                                         */}
-                                        {hasChildren ? (
+                                        {!getChildren ? null : hasChildren ? (
                                             <button
                                                 type="button"
                                                 aria-expanded={isExpanded}

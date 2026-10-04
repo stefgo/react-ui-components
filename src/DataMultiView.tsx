@@ -4,7 +4,9 @@ import { Card, CardClassNames } from './Card';
 import { DataTable, DataTableDef, DataTableClassNames } from './DataTable';
 import { DataList, DataListColumnDef, DataListClassNames } from './DataList';
 import { DataTreeTable, DataTreeTableClassNames } from './DataTreeTable';
-import { BaseDataViewProps } from './data/types';
+import { BaseDataViewProps, type RowKey, type SelectionOptions } from './data/types';
+import { selectAllState, toggleAll } from './data/selection';
+import { Checkbox } from './Checkbox';
 import { toListColumns, toTableDef, type DataColumnDef, type DataListGroupDef } from './data/columns';
 import type { SortOptions } from './data/useSortColumns';
 import type { TreeExpansionOptions } from './data/useTreeExpansion';
@@ -27,6 +29,18 @@ export interface DataMultiViewClassNames {
     searchBar?: string;
     /** The wrapper of `searchActions`, at the right end of the search bar. */
     searchActionsWrapper?: string;
+    /** The line with "select all", the count and `selectionActions`. */
+    selectionBar?: string;
+}
+
+export interface MultiViewSelectionOptions<T> extends SelectionOptions<T> {
+    /**
+     * What the selection line says while something is picked. Default:
+     * "3 selected", the number of picked keys -- which in a tree counts a
+     * parent next to its children, so a caller that picks both says what the
+     * selection amounts to instead.
+     */
+    label?: (selected: ReadonlySet<RowKey>) => string;
 }
 
 export interface DataMultiViewProps<T> {
@@ -90,7 +104,21 @@ export interface DataMultiViewProps<T> {
     search?: Controllable<string>;
     /** Which view is shown. Leave it out and the view owns it. */
     viewMode?: ViewModeOptions;
+    /**
+     * A checkbox in front of every row, in all three views, and a line above
+     * them with "select all" and the count. "Select all" picks what the search
+     * leaves, on every page; in a tree those are the root rows. Leave out
+     * `value` and the view owns the selection.
+     */
+    selection?: MultiViewSelectionOptions<T>;
+    /**
+     * What can be done with the picked rows, shown in the selection line while
+     * at least one is picked. Called with their keys.
+     */
+    selectionActions?: (selected: ReadonlySet<RowKey>) => ReactNode;
 }
+
+const NO_SELECTION: ReadonlySet<RowKey> = new Set();
 
 export type ViewMode = 'table' | 'list' | 'tree';
 
@@ -117,6 +145,8 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         search,
         viewMode,
         pagination,
+        selection,
+        selectionActions,
         ...sharedProps
     } = props;
 
@@ -135,6 +165,36 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
             ? (item: T) => searchFilter(item, searchQuery)
             : undefined
     ), [searchable, searchFilter, searchQuery]);
+
+    // Held here rather than in the view underneath: the line above the rows
+    // needs it, and switching between table and list must not empty it.
+    const [selected, setSelected] = useControllableState<ReadonlySet<RowKey>>({
+        value: selection?.value,
+        defaultValue: selection?.defaultValue,
+        onChange: selection?.onChange,
+        fallback: NO_SELECTION,
+    });
+    const { data, keyField } = props;
+    const isSelectable = selection?.isSelectable;
+    // What "select all" picks: the rows the search leaves, not the page of them
+    // that is on screen -- an action on "everything that matches" must not stop
+    // at the page break.
+    const selectAllKeys = useMemo(() => {
+        if (!selection) return [];
+        const keyOf = (item: T): RowKey => (
+            typeof keyField === 'function' ? keyField(item) : item[keyField] as unknown as RowKey
+        );
+        return (filter ? data.filter(filter) : data)
+            .filter((item) => isSelectable?.(item) ?? true)
+            .map(keyOf);
+    }, [selection, data, keyField, filter, isSelectable]);
+    const allState = selectAllState(selectAllKeys, selected);
+    const rowSelection = useMemo<SelectionOptions<T> | undefined>(() => (selection ? {
+        value: selected,
+        onChange: setSelected,
+        isSelectable: selection.isSelectable,
+        rowLabel: selection.rowLabel,
+    } : undefined), [selection, selected, setSelected]);
 
     const paginationMode = typeof pagination === 'object' ? pagination.mode : undefined;
     useEffect(() => {
@@ -249,6 +309,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         // included — one owner, so the row count and the page numbers cannot
         // disagree.
         pagination,
+        selection: rowSelection,
     };
 
     return (
@@ -290,6 +351,25 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                     {searchActions && (
                         <div className={cn("flex items-center gap-2 shrink-0", classNames?.searchActionsWrapper)}>
                             {searchActions}
+                        </div>
+                    )}
+                </div>
+            )}
+            {selection && (
+                <div className={cn(
+                    "px-5 py-2 border-b border-border flex flex-wrap items-center gap-x-3 gap-y-2 min-h-[2.75rem]",
+                    classNames?.selectionBar
+                )}>
+                    <Checkbox
+                        label={selected.size === 0 ? 'Select all' : selection.label?.(selected) ?? `${selected.size} selected`}
+                        checked={allState === 'all'}
+                        indeterminate={allState === 'some'}
+                        disabled={selectAllKeys.length === 0}
+                        onChange={() => setSelected((prev) => toggleAll(prev, selectAllKeys))}
+                    />
+                    {selected.size > 0 && selectionActions && (
+                        <div className="ml-auto flex flex-wrap items-center gap-2">
+                            {selectionActions(selected)}
                         </div>
                     )}
                 </div>

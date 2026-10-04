@@ -5,6 +5,7 @@ import { useDataView } from './data/useDataView';
 import { useSortColumns, type SortOptions } from './data/useSortColumns';
 import { SortIcon } from './data/SortIcon';
 import { DataViewFrame } from './data/DataViewFrame';
+import { SelectionCheckbox } from './data/SelectionCheckbox';
 import { cn } from './utils';
 import { FOCUS_RING } from './focus';
 
@@ -49,7 +50,7 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
     const { sortColumns, comparator, handleSortClick, sortStateOf } = useSortColumns({ itemDef, sort });
     // Sort across everything first, then take the page — the other order sorts
     // only the rows that happen to be on screen.
-    const { rows, placeholder, getKey, getRowClass, rowActivationProps, interactionClasses, pagination } = useDataView(props, comparator);
+    const { rows, placeholder, getKey, getRowClass, rowActivationProps, interactionClasses, pagination, selection } = useDataView(props, comparator);
 
     return (
         <DataViewFrame className={className} classNames={classNames} pagination={pagination}>
@@ -57,6 +58,11 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
                 <table className={cn("w-full text-left border-collapse", classNames?.table)}>
                     <thead className={cn("sticky top-0 bg-table-header z-sticky", classNames?.thead)}>
                         <tr className={cn("border-b border-border", classNames?.headerRow)}>
+                            {selection && (
+                                <th scope="col" className={cn("w-px pl-6 pr-0 py-2", classNames?.th)}>
+                                    <span className="sr-only">Select</span>
+                                </th>
+                            )}
                             {itemDef.map((col, idx) => {
                                 const sortable = isSortable(col);
                                 return (
@@ -103,7 +109,7 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
                     <tbody className={cn("divide-y divide-border", classNames?.tbody)}>
                         {placeholder ? (
                             <tr>
-                                <td colSpan={itemDef.length} className={cn("px-6 py-8 text-center text-text-muted", classNames?.placeholderTd)}>
+                                <td colSpan={itemDef.length + (selection ? 1 : 0)} className={cn("px-6 py-8 text-center text-text-muted", classNames?.placeholderTd)}>
                                     {placeholder}
                                 </td>
                             </tr>
@@ -125,6 +131,11 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
                                             classNames?.tr
                                         )}
                                     >
+                                        {selection && (
+                                            <td className={cn("w-px pl-6 pr-0 py-2", classNames?.td)}>
+                                                <SelectionCheckbox item={item} selection={selection} />
+                                            </td>
+                                        )}
                                         {itemDef.map((col, idx) => {
                                             const cellClass = typeof col.tableCellClassName === 'function'
                                                 ? col.tableCellClassName(item)

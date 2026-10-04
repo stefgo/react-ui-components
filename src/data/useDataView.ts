@@ -1,5 +1,7 @@
 import { KeyboardEvent, MouseEvent, ReactNode, useCallback, useEffect, useMemo } from 'react';
-import { BaseDataViewProps, Comparator } from './types';
+import { BaseDataViewProps, Comparator, RowKey } from './types';
+import { toggleKey } from './selection';
+import { useControllableState } from '../hooks/useControllableState';
 import { runDataPipeline } from './pipeline';
 import { usePaginationState } from './usePaginationState';
 import { FOCUS_RING_INSET } from '../focus';
@@ -31,6 +33,16 @@ function startedOnAControl(event: { target: EventTarget | null; currentTarget: E
     return !!control && control !== event.currentTarget;
 }
 
+/** What a view needs to draw a row's checkbox. */
+export interface RowSelection<T> {
+    isSelectable: (item: T) => boolean;
+    isSelected: (item: T) => boolean;
+    toggle: (item: T) => void;
+    label: (item: T) => string;
+}
+
+const NO_SELECTION: ReadonlySet<RowKey> = new Set();
+
 /** What a clickable row spreads onto its element. Empty when `onRowClick` is unset. */
 export interface RowActivationProps {
     tabIndex?: number;
@@ -53,6 +65,8 @@ export interface UseDataViewResult<T> {
     interactionClasses: string;
     /** null when the caller did not ask for pagination. */
     pagination: PaginationView | null;
+    /** null when the rows cannot be picked. */
+    selection: RowSelection<T> | null;
 }
 
 /**
@@ -96,6 +110,22 @@ export function useDataView<T>(
         if (typeof keyField === 'function') return keyField(item);
         return item[keyField] as unknown as string | number;
     }, [keyField]);
+
+    const selectionOptions = props.selection;
+    const [selected, setSelected] = useControllableState<ReadonlySet<RowKey>>({
+        value: selectionOptions?.value,
+        defaultValue: selectionOptions?.defaultValue,
+        onChange: selectionOptions?.onChange,
+        fallback: NO_SELECTION,
+    });
+    const isSelectable = selectionOptions?.isSelectable;
+    const rowLabel = selectionOptions?.rowLabel;
+    const selection = useMemo<RowSelection<T> | null>(() => (selectionOptions ? {
+        isSelectable: (item) => isSelectable?.(item) ?? true,
+        isSelected: (item) => selected.has(getKey(item)),
+        toggle: (item) => setSelected((prev) => toggleKey(prev, getKey(item))),
+        label: (item) => rowLabel?.(item) ?? 'Select row',
+    } : null), [selectionOptions, isSelectable, rowLabel, selected, setSelected, getKey]);
 
     const getRowClass = useCallback((item: T): string => (
         typeof rowClassName === 'function' ? rowClassName(item) : (rowClassName ?? '')
@@ -149,5 +179,5 @@ export function useDataView<T>(
         onPageSizeChange: (size) => pagination.setState({ page: 1, pageSize: size }),
     } : null;
 
-    return { rows: result.rows, placeholder, getKey, getRowClass, rowActivationProps, interactionClasses, pagination: paginationView };
+    return { rows: result.rows, placeholder, getKey, getRowClass, rowActivationProps, interactionClasses, pagination: paginationView, selection };
 }
