@@ -60,6 +60,8 @@ export interface DashboardProps {
 
     /** Heading and icon of the mobile overflow sheet. */
     mobileMore?: MobileMoreConfig;
+    /** Write each entry's label under its icon in the mobile bottom navigation. */
+    bottomNavLabels?: boolean;
 
     isSidebarCollapsed: boolean;
     onToggleSidebar: () => void;
@@ -86,6 +88,7 @@ export const Dashboard = ({
     currentPath,
     children,
     mobileMore,
+    bottomNavLabels,
     isSidebarCollapsed,
     onToggleSidebar,
     headerLeftActions,
@@ -182,7 +185,7 @@ export const Dashboard = ({
                     classNames={classNames?.sidebar}
                 />
             }
-            bottomNav={<BottomNav items={bottomNavItems} classNames={classNames?.bottomNav} />}
+            bottomNav={<BottomNav items={bottomNavItems} showLabels={bottomNavLabels} classNames={classNames?.bottomNav} />}
         >
             {children}
             <MobileMoreSheet
