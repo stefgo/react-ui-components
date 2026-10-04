@@ -81,6 +81,7 @@ The preset does three things: adds the library's dist files to Tailwind's `conte
 | `CollapsibleRegion.tsx` | the open/close animation of a disclosure, without its trigger. Used by `Collapsible` and `EntityHeader`. |
 | `ConfirmDialog.tsx` | the buttons, busy state and single-button notice of every confirmation. `confirm/ConfirmProvider.tsx` renders it for `useConfirm()` and adds the queue and the error shown inside it. |
 | `form/FormField.tsx` + `form/useFieldIds.ts` + `form/FieldMessages.tsx` | label, hint, error and the ARIA wiring between them. |
+| `hooks/useCopyToClipboard.ts` | copying a text, the moment of feedback after it, and the case where the browser has no clipboard (plain HTTP). Used by `CopyField`. |
 
 `FormField` encodes one rule worth knowing: an error replaces the hint on screen
 **and** in `aria-describedby`, so nothing is announced that is not visible. It

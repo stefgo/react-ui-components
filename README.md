@@ -357,6 +357,36 @@ The rule it encodes: an error replaces the hint on screen **and** in
 - `label`, `hint`, `error`, `rows` (default 4), `fullWidth`
 - Resizes vertically only — horizontal resizing breaks the form it sits in.
 
+#### `CopyField` and `useCopyToClipboard`
+
+A value to take away — a token, a key, a fingerprint — beside the button that
+copies it.
+
+```tsx
+<CopyField value={token} aria-label="Registration token" />
+```
+
+- `value`, `aria-label` (required — the field has no visible label of its own)
+- `labels`: `copy`, `copied`, `unavailable`
+- `classNames`: `input`, `button`, `notice`
+- A click into the field selects all of it.
+- **Without a clipboard the button selects the value and says so.** The clipboard
+  API exists in a secure context only, and a dashboard is often reached over plain
+  HTTP in a LAN; a copy button that silently does nothing there is the defect this
+  component exists to end.
+
+`useCopyToClipboard()` is the same behaviour for a text that is not a field — a
+log, a snippet in a `<pre>`:
+
+```tsx
+const { copied, unavailable, copy } = useCopyToClipboard();
+
+if (!(await copy(text))) window.getSelection()?.selectAllChildren(box.current);
+```
+
+`copy` never throws: it resolves `false` and sets `unavailable`, and selecting
+the text is left to the caller, who knows where it is.
+
 #### `Checkbox`
 
 - `label`, `hint`, `error`, `indeterminate`
