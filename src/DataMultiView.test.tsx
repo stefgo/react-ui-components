@@ -63,4 +63,26 @@ describe('DataMultiView', () => {
         expect(screen.queryByText('Legacy')).not.toBeInTheDocument();
         expect(warn).toHaveBeenCalledWith(expect.stringContaining('columns replaces tableDef'));
     });
+
+    it('keeps the children of a tree in the list view', async () => {
+        interface Node { id: string; name: string; children?: Node[] }
+        const tree: Node[] = [{ id: 'web', name: 'web', children: [{ id: 'web@a', name: 'host-a' }] }];
+        const treeColumns: DataColumnDef<Node>[] = [{ header: 'Name', accessorKey: 'name' }];
+
+        render(
+            <DataMultiView
+                data={tree}
+                keyField="id"
+                columns={treeColumns}
+                getChildren={(node) => node.children}
+                treeExpanded={{ all: true }}
+                viewMode={{ value: 'list' }}
+            />,
+        );
+
+        // The list a narrow screen is shown instead of the tree table: a flat list
+        // of the roots would have lost this row.
+        expect(screen.queryByRole('table')).not.toBeInTheDocument();
+        expect(screen.getByText('host-a')).toBeInTheDocument();
+    });
 });

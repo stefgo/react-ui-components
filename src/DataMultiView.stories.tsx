@@ -126,6 +126,24 @@ export const TreeView: Story = {
 };
 
 /**
+ * A tree in the list view, which is what a narrow screen is shown instead of
+ * the tree table: the children stay under their row, indented, behind the same
+ * expand button.
+ */
+export const TreeAsList: Story = {
+    args: {
+        data: clientTree,
+        getChildren,
+        treeExpanded: { all: true },
+        tableDef: undefined,
+        listColumns: undefined,
+        columns,
+        listGroups: [{ id: 'content', grow: true }, { id: 'actions' }],
+        viewMode: { defaultValue: 'list' },
+    },
+};
+
+/**
  * `columns` describes every column once: the heading is the list label, and one
  * `render` serves both views. `tableDef` and `listColumns` ask for the same
  * column twice instead.

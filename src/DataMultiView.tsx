@@ -34,6 +34,12 @@ export interface DataMultiViewProps<T> {
     extraActions?: ReactNode;
     className?: string;
     data: T[];
+    /**
+     * Makes the view a tree: the table becomes a tree table, and the list view
+     * -- which a narrow screen is shown instead -- indents the children under
+     * their row. Give the tree `columns` (or `listColumns`), or a narrow screen
+     * has only the tree table to scroll sideways.
+     */
     getChildren?: (item: T) => T[] | undefined | null;
     /**
      * Every column once, for the table and the list view alike. Use it instead
@@ -289,9 +295,15 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                 </div>
             )}
             {effectiveViewMode === 'list' ? (
+                // A tree stays a tree in the list view: on a narrow screen the
+                // list is what the tree table turns into, and a flat list of its
+                // roots would have dropped every child row.
                 <DataList
                     {...containerProps}
                     columns={listColumns}
+                    getChildren={getChildren}
+                    expanded={treeExpanded}
+                    indentSize={treeTableIndentSize}
                     classNames={classNames?.list}
                 />
             ) : effectiveViewMode === 'tree' && hasTreeView ? (
