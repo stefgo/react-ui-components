@@ -226,4 +226,9 @@ describe('DataMultiView', () => {
             expect(screen.getByRole('checkbox', { name: '1 selected' })).not.toBePartiallyChecked();
         });
     });
+
+    it('names the search field, so it can be found and focused', () => {
+        render(<DataMultiView data={data} keyField="id" columns={columns} searchable searchPlaceholder="Search clients…" />);
+        expect(screen.getByRole('searchbox', { name: 'Search clients…' })).toBeInTheDocument();
+    });
 });

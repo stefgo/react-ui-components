@@ -330,8 +330,17 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                         FOCUS_RING_WITHIN
                     )}>
                         <Search size={14} className="text-text-muted shrink-0" />
+                        {/*
+                            A searchbox by role, named by its placeholder: a page
+                            can find the search of the list on screen -- to focus
+                            it from a shortcut -- without a ref through every list.
+                            Not `type="search"`, which brings a clear button of the
+                            browser's next to ours.
+                        */}
                         <input
                             type="text"
+                            role="searchbox"
+                            aria-label={searchPlaceholder}
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
                             placeholder={searchPlaceholder}
