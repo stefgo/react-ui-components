@@ -659,6 +659,35 @@ const columns: DataColumnDef<Client>[] = [
 `tableDef` and `listColumns` keep working. Passed next to `columns` they are
 ignored, with a warning.
 
+#### The layout every list shares
+
+The two blocks of a list row, the actions column and the paging are the same in
+every list of an app, so they are spelled once:
+
+```tsx
+const columns: DataColumnDef<Client>[] = [
+    { header: 'Host', accessorKey: 'hostname', sortable: true },
+    actionsColumn((c) => <DataAction rowId={c.id} … />),
+];
+
+<DataMultiView
+    columns={columns}
+    listGroups={listGroups()}
+    pagination={listPagination(PAGE_SIZE.page)}
+    …
+/>
+```
+
+- `listGroups(contentClassName?)` — the content block and the actions block
+- `actionsColumn(render, { header?, listClassName? })` — one set of buttons for
+  both views, in the block `ACTIONS_GROUP`
+- `PAGE_SIZE.page` (20) for a list that is a page of its own, `PAGE_SIZE.embedded`
+  (10) for one below a header or inside a tab; `listPagination(size)` hides the bar
+  while one page holds everything
+- For a tree: `treeListGroups()`, `treeActionsColumn(render)` and `{...TREE_ONLY}`
+  spread onto a view that offers no other mode — the tree table where it fits,
+  the list by itself where it does not
+
 ---
 
 ### Pagination

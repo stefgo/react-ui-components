@@ -256,10 +256,12 @@ instead of a base class. The pieces live in `src/data/`:
 | `usePaginationState.ts` | resolves controlled vs. uncontrolled page state |
 | `useSortColumns.ts`, `useTreeExpansion.ts` | the views' own state |
 | `DataViewFrame.tsx` | container, scroll area, pagination bar |
+| `listLayout.tsx` | the row blocks, actions column and paging every list of an app shares |
 
 **The whole folder is internal.** `index.ts` re-exports only `data/types` and
 the two option interfaces a caller actually passes as props (`SortOptions`,
-`TreeExpansionOptions` with `TreeKey`). The views are the API; the pipeline
+`TreeExpansionOptions` with `TreeKey`) and `data/listLayout`, which is nothing
+but values a caller passes as props. The views are the API; the pipeline
 behind them is not, so it can be reshaped without a breaking change. Nothing in
 `src/data/` has a story either — it is covered by vitest, not by eye.
 
