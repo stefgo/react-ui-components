@@ -1,3 +1,19 @@
+# [4.6.0](https://github.com/stefgo/react-ui-components/compare/v4.5.0...v4.6.0) (2026-10-04)
+
+
+### Features
+
+* Add Alert, with a background token for success and info ([5ec35b8](https://github.com/stefgo/react-ui-components/commit/5ec35b886068d42d53387b7f0b20be1f29224910))
+* Add CopyField and useCopyToClipboard ([ae7bf2d](https://github.com/stefgo/react-ui-components/commit/ae7bf2dc554fc8f360ff0f9b6a21419f2bca2ad5))
+* Add the layout every list of an app shares ([8bcf546](https://github.com/stefgo/react-ui-components/commit/8bcf546e3120200c1647b1f738730768d385cfb8))
+* Add the pieces a settings page is made of ([b4ce844](https://github.com/stefgo/react-ui-components/commit/b4ce844e5cb36acb643b4b1d1c81af4006a0aaac))
+* Add ThemeProvider and useTheme ([e2018ee](https://github.com/stefgo/react-ui-components/commit/e2018eefda8dced86bdd32cc433cbf6330915495))
+* Give the entity header's badges a line of their own on a narrow screen ([089da3b](https://github.com/stefgo/react-ui-components/commit/089da3b9481cf23fba9ba4a7c7261faa95d18526))
+* Keep a tree's children in the list view ([d5a0b5d](https://github.com/stefgo/react-ui-components/commit/d5a0b5daf9dc520c1f7c926a61eaef16e55cfeea))
+* Let the rows of a data view be selected ([768046c](https://github.com/stefgo/react-ui-components/commit/768046cdea33eb52018da9198cfce9bb6eb5e54a))
+* Name the search field of a data view as a searchbox ([1c6991b](https://github.com/stefgo/react-ui-components/commit/1c6991b25b4159c7f69ece352141a51d66bf4c28))
+* Show labels under the icons of the bottom navigation ([e6a968b](https://github.com/stefgo/react-ui-components/commit/e6a968b1f017d1a48ace8954a6b8af48b781102e))
+
 # [4.5.0](https://github.com/stefgo/react-ui-components/compare/v4.4.0...v4.5.0) (2026-10-03)
 
 
