@@ -198,11 +198,13 @@ token to break that link.
 | `--ruic-error-bg` | `#fef2f2` | `rgba(127, 29, 29, 0.3)` |
 | `--ruic-success` | `#16a34a` | `#4ade80` |
 | `--ruic-success-hover` | `#15803d` | same |
+| `--ruic-success-bg` | `#f0fdf4` | `rgba(20, 83, 45, 0.3)` |
 | `--ruic-warning` | `#ea580c` | `#fb923c` |
 | `--ruic-warning-hover` | `#c2410c` | same |
 | `--ruic-warning-bg` | `#ffedd5` | `rgba(124, 45, 18, 0.3)` |
 | `--ruic-info` | `#2563eb` | `#60a5fa` |
 | `--ruic-info-hover` | `#1d4ed8` | `#93c5fd` |
+| `--ruic-info-bg` | `#eff6ff` | `rgba(30, 58, 138, 0.3)` |
 | `--ruic-accent` | `#4f46e5` | `#818cf8` |
 | `--ruic-accent-hover` | `#4338ca` | same |
 | `--ruic-accent-bg` | `#eef2ff` | `rgba(49, 46, 129, 0.3)` |
@@ -489,6 +491,21 @@ await alert({ title: "Cannot delete the last user", description: "Create a secon
   shows the error's message inside it, next to the button that retries;
   returning `false` keeps it open without a message
 - `alert()` — one button (`okLabel`, default `OK`), resolves when closed
+
+#### `Alert`
+
+A message that stays in the page: a read that failed, a save the server
+refused, the result of a test.
+
+```tsx
+<Alert title="Could not load the users">{message}</Alert>
+<Alert tone="success" title={`Delivered (HTTP ${status})`} />
+```
+
+- `tone`: `error` (default) | `success` | `warning` | `info` | `neutral`
+- `title`, `children` — the detail below it, or the whole message without one
+- `icon` — replaces the tone's icon; `null` shows none
+- An error interrupts (`role="alert"`); every other tone waits (`role="status"`).
 
 #### `Toast`
 

@@ -43,6 +43,7 @@ module.exports = {
         success: {
           DEFAULT: t("success"),
           hover: t("success-hover"),
+          bg: t("success-bg"),
         },
         warning: {
           DEFAULT: t("warning"),
@@ -52,6 +53,7 @@ module.exports = {
         info: {
           DEFAULT: t("info"),
           hover: t("info-hover"),
+          bg: t("info-bg"),
         },
         accent: {
           DEFAULT: t("accent"),

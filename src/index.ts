@@ -64,6 +64,7 @@ export * from "./Dashboard";
 export * from "./StatusDot";
 export * from "./LoadingIndicator";
 export * from "./EmptyState";
+export * from "./Alert";
 export * from "./ConnectionBanner";
 export * from "./ManualRun";
 export * from "./utils";
