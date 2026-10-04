@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { useFieldIds, type FieldIds } from './useFieldIds';
 import { FieldMessages } from './FieldMessages';
+import { FieldLabel } from './FieldLabel';
 import { cn } from '../utils';
 
 export interface FormFieldClassNames {
@@ -59,22 +60,20 @@ export const FormField = ({
     const isInline = layout === 'inline';
 
     const labelElement = label && (
-        <label
-            htmlFor={ids.id}
-            className={cn(
-                isInline
-                    ? "text-sm text-text-primary cursor-pointer select-none"
-                    : "block text-xs font-bold text-text-muted uppercase mb-1.5 ml-1",
-                classNames?.label
-            )}
-        >
-            {label}
-            {/*
-                The asterisk is decoration: `required` on the control is what
-                assistive technology reads, and hearing "star" adds nothing to it.
-            */}
-            {required && <span className="text-error" aria-hidden="true"> *</span>}
-        </label>
+        isInline ? (
+            <label
+                htmlFor={ids.id}
+                className={cn("text-sm text-text-primary cursor-pointer select-none", classNames?.label)}
+            >
+                {label}
+                {/* Decoration, like the one `FieldLabel` draws: `required` on the control is what is read. */}
+                {required && <span className="text-error" aria-hidden="true"> *</span>}
+            </label>
+        ) : (
+            <FieldLabel htmlFor={ids.id} required={required} className={classNames?.label}>
+                {label}
+            </FieldLabel>
+        )
     );
 
     const control = (

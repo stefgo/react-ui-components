@@ -342,6 +342,14 @@ Use it directly to wrap a control the library does not have:
 The rule it encodes: an error replaces the hint on screen **and** in
 `aria-describedby`, so nothing is announced that is not visible.
 
+#### `FieldLabel`
+
+The caption `FormField` puts above a control, for the places that have no such
+control: a read-only value, a list with its own buttons.
+
+- `as`: `label` (default, with `htmlFor`) | `div` | `p` | `span`
+- `required` — the asterisk; decoration only
+
 #### `Input`
 
 - `label`, `hint`, `error`, `icon`: `IconComponent`, `fullWidth`
@@ -386,6 +394,19 @@ if (!(await copy(text))) window.getSelection()?.selectAllChildren(box.current);
 
 `copy` never throws: it resolves `false` and sets `unavailable`, and selecting
 the text is left to the caller, who knows where it is.
+
+#### `NumberField`
+
+A whole number, kept as a string and clamped as it is typed.
+
+- `label`, `value: string`, `onChange(value: string)`, `min` (default 0)
+- `hint`, `error`, `placeholder`, `disabled`
+- Anything below `min`, and an emptied field, becomes `min`.
+
+#### `SectionHeader`
+
+- `title`, `titleAs` (default `h3`), `children` — what the section controls, held
+  to a readable line length
 
 #### `Checkbox`
 
@@ -559,6 +580,24 @@ no modal `footer` — the wizard brings its own).
 - **Only the current step is rendered, so the step contents' state belongs to
   the caller.** A step holding its inputs in its own `useState` loses them on
   Back; hold the form data above the wizard and Back/Next come for free.
+
+#### `SideTab`
+
+One tab of a column of them — the sections of a settings page. `useTabs` owns
+the behaviour and leaves the look to the caller; this is the look three apps drew
+identically.
+
+```tsx
+const tabs = useTabs({ tabs: ['general', 'retention'], orientation: 'vertical' });
+
+<TabList tabs={tabs} aria-label="Settings sections" className="flex flex-col">
+  <SideTab tabs={tabs} value="general" icon={Globe}>General</SideTab>
+  <SideTab tabs={tabs} value="retention" icon={Clock} trailing={unsavedMarker}>Retention</SideTab>
+</TabList>
+```
+
+- `tabs`, `value`, `icon`, `children`
+- `trailing` — after the name: a marker for unsaved changes, a count
 
 #### `Sidebar` and `BottomNav`
 
