@@ -1,3 +1,10 @@
+# [4.7.0](https://github.com/stefgo/react-ui-components/compare/v4.6.0...v4.7.0) (2026-10-05)
+
+
+### Features
+
+* Move "select all" into the column header and the selection actions into the card header ([8343f84](https://github.com/stefgo/react-ui-components/commit/8343f8472efeb4d5b8232835df6b96fd9f0d6269))
+
 # [4.6.0](https://github.com/stefgo/react-ui-components/compare/v4.5.0...v4.6.0) (2026-10-04)
 
 
