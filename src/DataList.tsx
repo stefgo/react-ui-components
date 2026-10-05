@@ -130,7 +130,7 @@ export const DataList = <T,>(props: DataListProps<T>) => {
                                 style={depth > 0 ? { paddingLeft: `${20 + depth * indentSize}px` } : undefined}
                                 className={cn(
                                     "px-5 py-2 transition-colors group",
-                                    interactionClasses,
+                                    interactionClasses(item),
                                     getRowClass(item),
                                     classNames?.row
                                 )}

@@ -126,7 +126,7 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
                                         {...rowActivationProps(item)}
                                         className={cn(
                                             "transition-colors group",
-                                            interactionClasses,
+                                            interactionClasses(item),
                                             getRowClass(item),
                                             classNames?.tr
                                         )}

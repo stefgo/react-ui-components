@@ -52,7 +52,10 @@ export interface RowSelection<T> {
 
 const NO_SELECTION: ReadonlySet<RowKey> = new Set();
 
-/** What a clickable row spreads onto its element. Empty when `onRowClick` is unset. */
+/**
+ * What a clickable row spreads onto its element. Empty when `onRowClick` is unset
+ * or `isRowClickable` turns the row down.
+ */
 export interface RowActivationProps {
     tabIndex?: number;
     onClick?: (event: MouseEvent<HTMLElement>) => void;
@@ -71,7 +74,8 @@ export interface UseDataViewResult<T> {
      * and fires on Enter or Space, not on click alone.
      */
     rowActivationProps: (item: T) => RowActivationProps;
-    interactionClasses: string;
+    /** Pointer, hover and focus ring of a clickable row; empty for any other. */
+    interactionClasses: (item: T) => string;
     /** null when the caller did not ask for pagination. */
     pagination: PaginationView | null;
     /** null when the rows cannot be picked. */
@@ -88,7 +92,7 @@ export function useDataView<T>(
     props: BaseDataViewProps<T>,
     comparator?: Comparator<T>,
 ): UseDataViewResult<T> {
-    const { data, keyField, rowClassName, onRowClick, isLoading, filter, filterKey } = props;
+    const { data, keyField, rowClassName, onRowClick, isRowClickable, isLoading, filter, filterKey } = props;
     const { loadingMessage = 'Loading...', emptyMessage = 'No items found' } = props;
     const noResultsMessage = props.noResultsMessage ?? emptyMessage;
 
@@ -153,8 +157,14 @@ export function useDataView<T>(
         typeof rowClassName === 'function' ? rowClassName(item) : (rowClassName ?? '')
     ), [rowClassName]);
 
+    // One answer for the handlers and the classes: a row that shows a pointer
+    // and does nothing, or takes the focus and ignores Enter, is the bug.
+    const isClickable = useCallback((item: T): boolean => (
+        !!onRowClick && (isRowClickable?.(item) ?? true)
+    ), [onRowClick, isRowClickable]);
+
     const rowActivationProps = useCallback((item: T): RowActivationProps => {
-        if (!onRowClick) return {};
+        if (!onRowClick || !isClickable(item)) return {};
         return {
             tabIndex: 0,
             // A row action, a link, a checkbox in a cell: their click bubbles
@@ -174,14 +184,14 @@ export function useDataView<T>(
                 onRowClick(item);
             },
         };
-    }, [onRowClick]);
+    }, [onRowClick, isClickable]);
 
     // No `role="button"`: it would replace the row semantics that let a screen
     // reader announce the column a cell belongs to. Focusable and operable is
     // what the row is missing, not a different role.
-    const interactionClasses = onRowClick
-        ? cn('cursor-pointer hover:bg-table-row-hover', FOCUS_RING_INSET)
-        : '';
+    const interactionClasses = useCallback((item: T): string => (
+        isClickable(item) ? cn('cursor-pointer hover:bg-table-row-hover', FOCUS_RING_INSET) : ''
+    ), [isClickable]);
 
     const placeholder = isLoading ? loadingMessage
         : result.rows.length > 0 ? null

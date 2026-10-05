@@ -95,6 +95,12 @@ export interface BaseDataViewProps<T> {
     className?: string;
     rowClassName?: string | ((item: T) => string);
     onRowClick?: (item: T) => void;
+    /**
+     * Which rows `onRowClick` applies to. A row it turns down is left alone: no
+     * pointer, no hover, not in the tab order. Leave it out and every row is
+     * clickable.
+     */
+    isRowClickable?: (item: T) => boolean;
 
     /**
      * `true` turns on paging with the defaults; an object configures it.

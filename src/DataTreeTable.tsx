@@ -158,7 +158,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                         {...rowActivationProps(item)}
                                         className={cn(
                                             "transition-colors group",
-                                            interactionClasses,
+                                            interactionClasses(item),
                                             getRowClass(item),
                                             classNames?.tr,
                                         )}

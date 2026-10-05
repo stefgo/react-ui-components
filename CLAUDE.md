@@ -291,7 +291,9 @@ the row — once, for all three views. It makes the row focusable and fires on
 Enter or Space, and it ignores both clicks and keystrokes that started on a
 control *inside* the row: a row action, a link, a checkbox in a cell. The row
 deliberately keeps its `row` role instead of taking `role="button"`, which would
-cost the reader the column a cell belongs to.
+cost the reader the column a cell belongs to. `isRowClickable` narrows it to some
+rows; the handlers and `interactionClasses(item)` ask the same function, so a row
+never shows a pointer it does not act on.
 
 ### Theming (three tiers)
 
