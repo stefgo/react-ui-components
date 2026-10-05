@@ -699,6 +699,10 @@ row with `onRowClick` is focusable. Clicks and keystrokes that start on a contro
 *inside* a row — a `DataAction` menu, a link, a checkbox in a cell — belong to
 that control and no longer fire `onRowClick` as well.
 
+Where only some rows lead somewhere — the leaves of a tree, say — `isRowClickable`
+names them. A row it turns down gets no pointer and no hover, and stays out of the
+tab order.
+
 New `classNames` slot on both tables: `sortButton`, for the header's button.
 
 #### `DataMultiView<T>`

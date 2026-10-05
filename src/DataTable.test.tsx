@@ -94,6 +94,31 @@ describe('DataTable', () => {
         }
     });
 
+    it('leaves a row that isRowClickable turns down alone', async () => {
+        const onRowClick = vi.fn();
+        render(
+            <DataTable
+                data={data}
+                keyField="id"
+                itemDef={itemDef}
+                onRowClick={onRowClick}
+                isRowClickable={(item) => item.id !== data[0].id}
+            />
+        );
+
+        const [firstRow, secondRow] = screen.getAllByRole('row').slice(1);
+        expect(firstRow).not.toHaveAttribute('tabindex');
+        expect(firstRow).not.toHaveClass('cursor-pointer');
+        expect(secondRow).toHaveAttribute('tabindex', '0');
+        expect(secondRow).toHaveClass('cursor-pointer');
+
+        await userEvent.click(firstRow);
+        expect(onRowClick).not.toHaveBeenCalled();
+
+        await userEvent.click(secondRow);
+        expect(onRowClick).toHaveBeenCalledWith(data[1]);
+    });
+
     it('does not fire the row when a control inside it is used', async () => {
         const onRowClick = vi.fn();
         const onInner = vi.fn();

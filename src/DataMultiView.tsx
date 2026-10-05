@@ -79,6 +79,8 @@ export interface DataMultiViewProps<T> {
     sort?: SortOptions;
     rowClassName?: string | ((item: T) => string);
     onRowClick?: (item: T) => void;
+    /** Which rows `onRowClick` applies to. Leave it out and every row is clickable. */
+    isRowClickable?: (item: T) => boolean;
     /** Derived from the data views so the two shapes cannot drift apart. */
     pagination?: BaseDataViewProps<T>['pagination'];
     /** Shown when a filter removed everything. Falls back to `emptyMessage`. */
