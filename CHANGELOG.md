@@ -1,3 +1,10 @@
+# [4.8.0](https://github.com/stefgo/react-ui-components/compare/v4.7.0...v4.8.0) (2026-10-05)
+
+
+### Features
+
+* Add isRowClickable to limit onRowClick to some rows ([e414eec](https://github.com/stefgo/react-ui-components/commit/e414eecd7eb027e7cb4e7b9d06017ea40dec57db))
+
 # [4.7.0](https://github.com/stefgo/react-ui-components/compare/v4.6.0...v4.7.0) (2026-10-05)
 
 
