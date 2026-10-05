@@ -144,9 +144,11 @@ export const TreeAsList: Story = {
 };
 
 /**
- * `selection` puts a checkbox in front of every row and a line above them:
- * "select all" picks what the search leaves, on every page, and
- * `selectionActions` is offered while something is picked.
+ * `selection` puts a checkbox in front of every row and "select all" in the
+ * header of that column: it picks what the search leaves, on every page. The
+ * list view has no header row and so no "select all". `selectionActions` is
+ * offered in the card's header while something is picked, and the count then
+ * follows the title in brackets.
  */
 export const WithSelection: Story = {
     args: {

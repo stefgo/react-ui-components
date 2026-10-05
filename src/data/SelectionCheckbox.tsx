@@ -24,3 +24,22 @@ export const SelectionCheckbox = <T,>({ item, selection }: SelectionCheckboxProp
         />
     );
 };
+
+export interface SelectAllCheckboxProps<T> {
+    selection: RowSelection<T>;
+}
+
+/**
+ * The checkbox in the header of the selection column, for the views that have a
+ * header row. It picks what the filter leaves on every page, not the page on
+ * screen.
+ */
+export const SelectAllCheckbox = <T,>({ selection }: SelectAllCheckboxProps<T>) => (
+    <Checkbox
+        aria-label="Select all"
+        checked={selection.allState === 'all'}
+        indeterminate={selection.allState === 'some'}
+        disabled={!selection.hasCandidates}
+        onChange={selection.toggleAll}
+    />
+);
