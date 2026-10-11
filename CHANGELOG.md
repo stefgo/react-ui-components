@@ -1,3 +1,84 @@
+## [4.9.0](https://github.com/stefgo/react-ui-components/compare/v4.8.0...v4.9.0) (2026-10-11)
+
+### Stat cards line up across a row
+
+In a row of `StatCard`s the label, the value and the line below it now sit at the same
+height in every card. A label that wraps moves the values of the whole row down instead of
+only its own, and a card without a `sub` keeps the line free. Nothing has a fixed height:
+each line is as tall as the tallest one in the row.
+
+This works when the cards are direct children of a grid, which is how they are normally
+laid out, and needs no change there. Two things to check on an upgrade:
+
+- A card now takes three rows of that grid. Anything that is not a `StatCard` in the same
+  grid needs `row-span-3` to stay as tall as the cards.
+- `classNames.labelWrapper` is gone, together with the element it styled. Remove it where
+  it is passed.
+
+A row in which no card has a `sub` is a little lower than before: most of the space that
+was kept below the value for a line that was not there is no longer kept.
+
+### Filters in the search bar match the search
+
+A `Select` passed to `DataMultiView` as `searchActions` now has the shape of the search
+next to it: the same height, rounding, border and background. Until now it arrived as a
+form field, and each list restyled it by hand or left the two looking unrelated.
+
+The page size below a list has the same shape, so the controls above and below the rows
+read as one set. It also has the library's own arrow now instead of the browser's.
+
+The same look is available anywhere as `<Select variant="pill">`, for a row of filters
+outside a list. In the search bar, `variant="field"` gives the form field back.
+
+An upgrade needs nothing. Classes that were passed to a select in the search bar to make
+it a pill can be removed; left in place they change nothing.
+
+### A card's actions stay at the top of its header
+
+The action of a `Card` -- and with it the view toggle and the `extraActions` of a
+`DataMultiView` -- is now aligned with the top of the header. Next to a title of several
+lines it used to sit at the title's middle. A title of one line still sits level with a
+button beside it, so the usual header looks as it did.
+
+A long title no longer pushes the action out of the card: it takes the room that is left,
+with a gap to the action, and can be cut short with `truncate`.
+
+An upgrade needs nothing. Classes that were passed as `classNames.header` to get this
+(`items-start`, a gap, `min-w-0` on the title) can be removed.
+
+### A badge stays on one line
+
+The text of a `Badge` no longer wraps. In a narrow table column a label of two words used
+to break into two lines and turn the pill into a block; now the badge keeps its shape and
+the column makes room for it.
+
+An upgrade needs nothing. A badge that is meant to wrap takes `className="whitespace-normal"`.
+
+### A status dot tells a warning from an error
+
+A `StatusDot` with the tone `warning` is now amber, yellow in the dark theme. It used the
+orange of a warning's text, which at the size of a dot could not be told from the red of an
+error. The tone `unknown` is a filled grey dot now, no longer an empty circle.
+
+An upgrade needs nothing; a dot that was set to `warning` or `unknown` looks different.
+
+### Releases
+
+Releases are now produced by the release workflow all stefgo projects share. A version can
+be tried as a beta before it is released, and every release is described here by hand, above
+the list of commits.
+
+### Features
+
+* **Select:** Add a pill variant and use it around the data views ([81d8510](https://github.com/stefgo/react-ui-components/commit/81d85107ccd29c69cc9af3ac4f96a07cd2ff489e))
+* **StatCard:** Line up label, value and sub across a row of cards ([d597b7d](https://github.com/stefgo/react-ui-components/commit/d597b7dd222795f04d233c248881025b463c3875))
+
+### Bug Fixes
+
+* **Badge:** Keep the text on one line ([38e5dc2](https://github.com/stefgo/react-ui-components/commit/38e5dc25d641e190fbd4b54c2090399a187f8ff5))
+* **Card:** Keep the action at the top of the header ([2cb19ca](https://github.com/stefgo/react-ui-components/commit/2cb19ca506a3d7be4898b109d5d070d049545799))
+* **StatusDot:** Tell a warning from an error ([1823653](https://github.com/stefgo/react-ui-components/commit/1823653edd48d804833f58136c709f57eaf87393))
+
 # [4.8.0](https://github.com/stefgo/react-ui-components/compare/v4.7.0...v4.8.0) (2026-10-05)
 
 
@@ -198,196 +279,6 @@ Teil der oeffentlichen Oberflaeche und koennen nicht mehr unbemerkt geaendert
 werden.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-* ActionMenu nimmt `anchor` (ein Rechteck) statt `position`
-({x, y, top}); useActionMenu liefert entsprechend `menuState.anchor`.
-ActionButton setzt kein `title` mehr – der sichtbare Hinweis kommt aus
-einem echten Tooltip, der zugaengliche Name weiterhin aus aria-label.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-* Collapsible nutzt value/defaultValue/onChange statt
-expanded/initiallyExpanded/onExpandedChange. DataMultiView nutzt
-search={{...}} und viewMode={{..., storageKey}} statt defaultSearchValue,
-onSearchChange und viewModeStorageKey; treeTableDefaultExpanded heisst
-treeExpanded={{ all }}. DataTable und DataTreeTable nutzen sort={{
-defaultValue, storageKey }} statt defaultSort und sortStorageKey;
-DataTreeTable zusaetzlich expanded={{...}} statt defaultExpanded.
-useSortColumns und useTreeExpansion nehmen ihre Optionen entsprechend.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-* **forms:** `InputClassNames.inputWrapper` und
-`SelectClassNames.selectWrapper` heissen einheitlich `control`.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-* `icon` erwartet die Komponente statt des Elements
-(`icon={Save}` statt `icon={<Save size={16} />}`) bei Button, Input,
-Sidebar, BottomNav, StatCard, Dashboard.mobileMore und MobileMoreSheet.
-`ActionButton.size` ist 'sm' | 'md' | 'lg' statt einer Zahl.
-`classNames.root` und `containerClassName` entfallen zugunsten von
-`className`. `ActionMenuClassNames` und `DataActionClassNames.menu`
-entfallen. `BadgeClassNames` entfaellt, da `root` sein einziger Slot war.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-* Die -dark-Tokens und -Klassen entfallen ersatzlos. Wer
---ruic-bg-card-dark gesetzt hat, setzt jetzt --ruic-bg-card im .dark-Block; wer
-bg-card-dark als Klasse nutzt, nutzt bg-card. Das Preset setzt darkMode selbst
-auf "class". Badge variant "gray" heisst "neutral". --ruic-info-light entfaellt
-zugunsten des Dark-Werts von --ruic-info-hover. Die Radien-Stufen sm bis xl
-haben andere Werte als Tailwinds Standard.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-* DashboardPage.content entfaellt - Seiteninhalte gehoeren in
-die Routen des Consumers und werden Dashboard als children uebergeben. Die
-Legacy-Props mobileMoreMenu und mobileMenuOverlay entfallen ersatzlos; Titel
-und Icon des Mobile-Sheets kommen ueber die neue Prop mobileMore, die
-Einordnung ueber nav.placement: 'mobile-more'. Passt keine Seite auf den
-aktuellen Pfad, wird nichts mehr hervorgehoben statt auf die erste Seite
-zurueckzufallen - Consumer brauchen eine eigene Catch-all-Route.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-* DataMultiViewProps.listDef entfaellt. Die Feldkonfiguration
-der Listenansicht steht in listColumns; der Typ DataListDef bleibt
-unveraendert exportiert.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-* usePagination hat eine neue Signatur und Rueckgabe.
-usePagination(items, size) wird zu usePagination({ pageSize: size }) ohne
-das Datenargument; currentItems, totalPages, totalItems, goToPage, nextPage
-und prevPage entfallen. Die Zeilen kommen nicht mehr aus dem Hook, sondern
-bleiben vollstaendig bei der View.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-* Die Props von PaginationControls heissen wie im Rest der
-neuen API -- currentPage -> page, itemsPerPage -> pageSize,
-onItemsPerPageChange -> onPageSizeChange. Die Komponente blendet sich nicht
-mehr automatisch bei bis zu 10 Eintraegen aus; wer das will, setzt
-hideOnSinglePage.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-* searchFilter wird nicht mehr auf die Daten angewandt, bevor
-sie an die View gehen. Wer sich darauf verlassen hat, dass data bereits
-gefiltert ankommt -- etwa in einem eigenen rowClassName oder onRowClick --
-bekommt jetzt die ungefilterte Menge zu sehen. Extern gefilterte Aufrufer
-(onSearchChange) sind nicht betroffen.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-* Die pagination-Prop hat eine neue Form. currentPage,
-totalPages, itemsPerPage, totalItems, onPageChange, onItemsPerPageChange,
-sliceInternally und renderControls entfallen ersatzlos. data ist im
-Client-Modus immer die Gesamtmenge, nicht mehr die aktuelle Seite. Die
-Umstellung ist nicht stillschweigend moeglich: die alte und die neue Form
-haben kein gemeinsames Pflichtfeld, TypeScript meldet jede Aufrufstelle.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-* AbstractDataView wird nicht mehr exportiert. Wer davon
-abgeleitet hat, baut die View als Funktionskomponente mit useDataView und
-DataViewFrame. Die Typen BaseDataViewProps und DataViewClassNames bleiben
-unter demselben Namen importierbar.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-
-# [3.0.0-beta.4](https://github.com/stefgo/react-ui-components/compare/v3.0.0-beta.3...v3.0.0-beta.4) (2026-09-07)
-
-
-### Bug Fixes
-
-* **a11y:** Fokusring der letzten Zeile nicht mehr an der Card-Rundung beschnitten ([7a5ea32](https://github.com/stefgo/react-ui-components/commit/7a5ea327ce0319e42b8c5c7e2055960a7be1665d))
-
-
-### Features
-
-* **Modal:** Escape abschaltbar machen ([dee15cd](https://github.com/stefgo/react-ui-components/commit/dee15cdc8a5ca590eb9727ef82ae2f55c238b59e))
-* **Wizard:** Mehrschrittige Abläufe als Stepper und Wizard ([3561435](https://github.com/stefgo/react-ui-components/commit/3561435b3ce2475e0c2df2949942679f17d711d3))
-
-# [3.0.0-beta.3](https://github.com/stefgo/react-ui-components/compare/v3.0.0-beta.2...v3.0.0-beta.3) (2026-09-03)
-
-
-* feat(data)!: Datenschicht-Interna nicht mehr exportieren ([6a2ea8c](https://github.com/stefgo/react-ui-components/commit/6a2ea8cf008ff0f3a2f2677a163e42b95f9ca0e1))
-
-
-### Bug Fixes
-
-* **a11y:** Prevent focus stealing from closed ActionMenu and Dashboard on mount ([06277e8](https://github.com/stefgo/react-ui-components/commit/06277e80211f14e0a0a033d7c6a0ef9d82e889d4))
-* **Button:** Correct focus outline for secondary variant ([7d24627](https://github.com/stefgo/react-ui-components/commit/7d246275ffb01ad6fa5287d055288574c4a6b945))
-* **DataMultiView:** Improve focus visibility for toggle button ([213f232](https://github.com/stefgo/react-ui-components/commit/213f232a9b6b6b5eb025faa76760854d9ef7bc16))
-
-
-### Features
-
-* **a11y:** Fokusring als Konstanten, Button um Outline-Varianten ergänzt ([6b54b1a](https://github.com/stefgo/react-ui-components/commit/6b54b1a75cc09ad9362248290b4149a03e145b14))
-
-
-### BREAKING CHANGES
-
-* DataViewFrame, SortIcon, useDataView sowie die reinen
-Pipeline-, Sortier- und Tree-Funktionen (runDataPipeline, buildComparator,
-nextSortColumns, readStoredSort, isSortable, flattenTree,
-collectExpandableKeys) sind nicht mehr Teil der öffentlichen API.
-Öffentlich bleiben die Views und die Prop-Typen aus data/types sowie
-SortOptions, TreeExpansionOptions und TreeKey.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-
-# [3.0.0-beta.2](https://github.com/stefgo/react-ui-components/compare/v3.0.0-beta.1...v3.0.0-beta.2) (2026-09-01)
-
-
-* fix(api)!: jede Props-Schnittstelle exportieren ([b2dd537](https://github.com/stefgo/react-ui-components/commit/b2dd537ca500752366f062d94dba31017cc3d178))
-
-
-### Features
-
-* **card:** Padding-Prop statt eigener DataCard-Komponente ([e2fc57a](https://github.com/stefgo/react-ui-components/commit/e2fc57a0ad57528afa1599494912731638331bab))
-
-
-### BREAKING CHANGES
-
-* Nur additiv fuer Konsumenten, aber die Typen sind ab jetzt
-Teil der oeffentlichen Oberflaeche und koennen nicht mehr unbemerkt geaendert
-werden.
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
-
-# [3.0.0-beta.1](https://github.com/stefgo/react-ui-components/compare/v2.16.1...v3.0.0-beta.1) (2026-09-01)
-
-
-* feat(dashboard)!: Routing an den Consumer zurueckgeben ([8a9918f](https://github.com/stefgo/react-ui-components/commit/8a9918f9f5c22a2b74569338b518455d585de685))
-* feat(data-views)!: neue Pagination-API, Pipeline in useDataView ([1ecee8e](https://github.com/stefgo/react-ui-components/commit/1ecee8ec25cd16bb75da2144738261dff08aa0d5))
-* feat(hooks)!: usePagination liefert nur noch den Seitenzustand ([7a8b9e3](https://github.com/stefgo/react-ui-components/commit/7a8b9e384a3e3626b3977226ffe5c10b5617a7b2))
-* feat(pagination)!: hideOnSinglePage, pageSizeOptions, unbekannte Gesamtzahl, a11y ([7e37f45](https://github.com/stefgo/react-ui-components/commit/7e37f45e282df4c29f8f2580baf6dcb8e237293c))
-* refactor(api)!: Icons, Groessen und className auf je eine Konvention ([ac2dcf4](https://github.com/stefgo/react-ui-components/commit/ac2dcf450f07399113971f2e49552d53fe4c6ee5))
-* refactor(data-views)!: AbstractDataView-Klasse entfernen ([ee5f11a](https://github.com/stefgo/react-ui-components/commit/ee5f11a85d0d0769c5f28fc0ba393e592a2e6e62))
-* refactor(multi-view)!: Suchfilter an die View durchreichen ([5d49a5c](https://github.com/stefgo/react-ui-components/commit/5d49a5cfc22aafe692777d8c9ce46de5780c1d43))
-* refactor(multi-view)!: totes listDef-Prop entfernen ([d2f231e](https://github.com/stefgo/react-ui-components/commit/d2f231e267ec7063e2b1b3ab04e265d3a75b73df))
-* refactor(state)!: eine Konvention fuer kontrollierten und unkontrollierten Zustand ([2460722](https://github.com/stefgo/react-ui-components/commit/2460722ba1c357e136d328c177581f1af635dcbb))
-* refactor(tokens)!: ein Token pro Rolle statt zwei, plus Radien- und Motion-Skala ([8f680c8](https://github.com/stefgo/react-ui-components/commit/8f680c8fb9f767b60985d1d63451fa17e720185c)), closes [#f9fafb](https://github.com/stefgo/react-ui-components/issues/f9fafb)
-
-
-### Bug Fixes
-
-* **build:** main und module auf die tatsaechlich gebauten Dateien zeigen ([7ee38b9](https://github.com/stefgo/react-ui-components/commit/7ee38b9e6158d413649c521f15cb5f01990a4128))
-* **data-table:** Aktionsspalte fuer Screenreader benennen ([6b3782a](https://github.com/stefgo/react-ui-components/commit/6b3782ab5f11201f273343dab43490839d89305f))
-* **data-views:** Datenansichten per Tastatur bedienbar machen ([5dcaddf](https://github.com/stefgo/react-ui-components/commit/5dcaddf6c7390b5b90393858c0255a2c606ea7ec))
-* **file-browser:** Effekt meldet den Pfad ohne veralteten Callback ([84d463e](https://github.com/stefgo/react-ui-components/commit/84d463e08b941a3f48657ce940b4ff35f087341b))
-* pin npm version to ensure compatibility between CI workflows ([c7a25ce](https://github.com/stefgo/react-ui-components/commit/c7a25ced8e0a0a2662887b0f23e8cfc937e65bf3))
-* **radio:** required-Zustand ARIA-konform auszeichnen ([5a13e99](https://github.com/stefgo/react-ui-components/commit/5a13e99d139213abcf2c879e7203653998ced7d3))
-* **tokens:** Farbliterale aus Preset und BottomNav entfernen ([702396e](https://github.com/stefgo/react-ui-components/commit/702396ef03d7098f3f23277fe448085e78cf60cc))
-* **tree:** defaultExpanded auch fuer nachgeladene Daten ([7d489fc](https://github.com/stefgo/react-ui-components/commit/7d489fcc4f2ceec3293588aaf66071ce13c4465a))
-
-
-### Code Refactoring
-
-* **forms:** Label-, Hint- und Fehlerlogik in FormField zusammenfuehren ([91f435d](https://github.com/stefgo/react-ui-components/commit/91f435d551c4f248998b2079d6531f7efb2cc6d2))
-
-
-### Features
-
-* **a11y:** Tastatur- und Screenreader-Unterstuetzung, Tokens aus einer Quelle ([0a68009](https://github.com/stefgo/react-ui-components/commit/0a6800989819f05944588f469e0a38a48bad92c1))
-* **data:** Pipeline fuer Filter, Sortierung und Paging ([80fab1a](https://github.com/stefgo/react-ui-components/commit/80fab1a42571af926ab859638b50ceabc4b8fa74))
-* Modal, Toast, Tooltip, Checkbox, Radio, Switch und Textarea ([9dfba0c](https://github.com/stefgo/react-ui-components/commit/9dfba0cb30e02c9640ad5821154c4a58d68a2d58))
-* **release:** add workflow for publishing package with checks and builds ([0cdb8b6](https://github.com/stefgo/react-ui-components/commit/0cdb8b651af453120464cfa9e5ce08e24ebd1282))
-
-
-### BREAKING CHANGES
-
 * ActionMenu nimmt `anchor` (ein Rechteck) statt `position`
 ({x, y, top}); useActionMenu liefert entsprechend `menuState.anchor`.
 ActionButton setzt kein `title` mehr – der sichtbare Hinweis kommt aus
