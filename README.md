@@ -381,6 +381,9 @@ control: a read-only value, a list with its own buttons.
 #### `Select`
 
 - `label`, `hint`, `error`, `options`: `{ value, label, disabled? }[]`, `fullWidth`
+- `variant`: `field` (default) | `pill` — `pill` is for a row of filters and has the
+  shape of the search in `DataMultiView`. A select passed as that view's
+  `searchActions` is a pill without being told; `variant="field"` turns it back.
 - `classNames`: `label`, `control`, `select`, `error`, `hint`
 
 #### `Textarea`

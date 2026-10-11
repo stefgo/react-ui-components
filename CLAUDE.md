@@ -79,6 +79,7 @@ The preset does three things: adds the library's dist files to Tailwind's `conte
 | `CollapsibleRegion.tsx` | the open/close animation of a disclosure, without its trigger. Used by `Collapsible` and `EntityHeader`. |
 | `ConfirmDialog.tsx` | the buttons, busy state and single-button notice of every confirmation. `confirm/ConfirmProvider.tsx` renders it for `useConfirm()` and adds the queue and the error shown inside it. |
 | `form/FormField.tsx` + `form/useFieldIds.ts` + `form/FieldMessages.tsx` | label, hint, error and the ARIA wiring between them. |
+| `form/fieldVariant.ts` | the look of a pill (`PILL_SURFACE`) and the context that hands `pill` to a `Select` in `DataMultiView`'s `searchActions`. The search pill and the variant both read it; a caller never rebuilds it from classes. |
 | `form/FieldLabel.tsx` | the caption above a field. `FormField` renders it; a caller uses it over what is not one of the library's controls. |
 | `Alert.tsx` | the box of a message that stays in the page, per tone, and whether it interrupts. |
 | `theme/ThemeProvider.tsx` | which theme is on, the class on `<html>`, and the stored choice. |

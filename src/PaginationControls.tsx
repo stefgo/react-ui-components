@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Select } from './Select';
 import { cn } from './utils';
 import { FOCUS_RING } from './focus';
 
@@ -53,20 +54,20 @@ export const PaginationControls = ({
         )}>
             <div className={cn("flex items-center gap-2 text-sm text-text-secondary", classNames?.infoWrapper)}>
                 <label htmlFor={selectId}>Rows per page:</label>
-                <select
+                {/*
+                    A pill like the filters in the search bar above the rows: the
+                    bar is a row of controls around the list, not a form. The
+                    label beside it names it through the id.
+                */}
+                <Select
                     id={selectId}
+                    variant="pill"
+                    fullWidth={false}
                     value={pageSize}
                     onChange={(e) => onPageSizeChange(Number(e.target.value))}
-                    className={cn(
-                        "bg-input-bg border border-input-border text-text-primary text-sm rounded-sm focus-visible:border-primary block p-1",
-                        FOCUS_RING,
-                        classNames?.select
-                    )}
-                >
-                    {pageSizeOptions.map(size => (
-                        <option key={size} value={size}>{size}</option>
-                    ))}
-                </select>
+                    options={pageSizeOptions.map(size => ({ value: size, label: String(size) }))}
+                    classNames={{ select: classNames?.select }}
+                />
                 <span className={cn("ml-2", classNames?.pageInfo)}>
                     {firstOnPage} - {lastOnPage}{totalKnown && ` of ${totalItems}`}
                 </span>

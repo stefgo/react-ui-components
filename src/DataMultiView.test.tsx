@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import type { RowKey } from './data/types';
 import { DataMultiView } from './DataMultiView';
+import { Select } from './Select';
 import type { DataColumnDef } from './data/columns';
 
 interface Row {
@@ -265,5 +266,27 @@ describe('DataMultiView', () => {
     it('names the search field, so it can be found and focused', () => {
         render(<DataMultiView data={data} keyField="id" columns={columns} searchable searchPlaceholder="Search clients…" />);
         expect(screen.getByRole('searchbox', { name: 'Search clients…' })).toBeInTheDocument();
+    });
+
+    // A filter next to the search is one row of controls with it, not a form
+    // field beside a pill -- without every caller styling it by hand.
+    it('shapes a select in the search bar like the search', () => {
+        const options = [{ value: 'all', label: 'All' }];
+        render(
+            <DataMultiView
+                data={data}
+                keyField="id"
+                columns={columns}
+                searchable
+                searchActions={
+                    <>
+                        <Select aria-label="Filter" options={options} />
+                        <Select aria-label="Form field" options={options} variant="field" />
+                    </>
+                }
+            />
+        );
+        expect(screen.getByRole('combobox', { name: 'Filter' })).toHaveClass('rounded-full');
+        expect(screen.getByRole('combobox', { name: 'Form field' })).toHaveClass('rounded-md');
     });
 });

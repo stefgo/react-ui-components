@@ -8,6 +8,7 @@ import { DataListColumnDef } from './DataList';
 import { Badge } from './Badge';
 import { DataAction } from './DataAction';
 import { Button } from './Button';
+import { Select } from './Select';
 import { clients, clientTree, getChildren, DemoClient } from '../.storybook/fixtures';
 
 const statusVariant = { online: 'success', degraded: 'warning', offline: 'error' } as const;
@@ -112,7 +113,19 @@ export const WithSearchActions: Story = {
         searchable: true,
         searchPlaceholder: 'Search clients…',
         searchFilter: (c: DemoClient, q: string) => c.hostname.toLowerCase().includes(q.toLowerCase()),
-        searchActions: <Button size="sm" variant="secondary">Online only</Button>,
+        searchActions: (
+            <>
+                <Select
+                    aria-label="Filter by state"
+                    fullWidth={false}
+                    options={[
+                        { value: 'all', label: 'All clients' },
+                        { value: 'online', label: 'Online only' },
+                    ]}
+                />
+                <Button size="sm" variant="secondary">Export</Button>
+            </>
+        ),
     },
 };
 

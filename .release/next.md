@@ -28,6 +28,21 @@ laid out, and needs no change there. Two things to check on an upgrade:
 A row in which no card has a `sub` is a little lower than before: most of the space that
 was kept below the value for a line that was not there is no longer kept.
 
+### Filters in the search bar match the search
+
+A `Select` passed to `DataMultiView` as `searchActions` now has the shape of the search
+next to it: the same height, rounding, border and background. Until now it arrived as a
+form field, and each list restyled it by hand or left the two looking unrelated.
+
+The page size below a list has the same shape, so the controls above and below the rows
+read as one set. It also has the library's own arrow now instead of the browser's.
+
+The same look is available anywhere as `<Select variant="pill">`, for a row of filters
+outside a list. In the search bar, `variant="field"` gives the form field back.
+
+An upgrade needs nothing. Classes that were passed to a select in the search bar to make
+it a pill can be removed; left in place they change nothing.
+
 ### Releases
 
 Releases are now produced by the release workflow all stefgo projects share. A version can

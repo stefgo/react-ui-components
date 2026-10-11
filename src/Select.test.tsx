@@ -33,4 +33,24 @@ describe('Select', () => {
         render(<Select label="Schedule" options={options} hint="Runs in local time" />);
         expect(screen.getByRole('combobox')).toHaveAccessibleDescription('Runs in local time');
     });
+
+    it('is a form field unless it is asked to be a pill', () => {
+        render(
+            <>
+                <Select aria-label="Field" options={options} />
+                <Select aria-label="Pill" options={options} variant="pill" />
+            </>
+        );
+        expect(screen.getByRole('combobox', { name: 'Field' })).toHaveClass('rounded-md');
+        expect(screen.getByRole('combobox', { name: 'Pill' })).toHaveClass('rounded-full');
+    });
+
+    // The variant brings a border colour of its own, after which the error's has to come.
+    it('keeps the error border as a pill', () => {
+        render(<Select aria-label="Pill" options={options} variant="pill" error="Pick one" />);
+
+        const field = screen.getByRole('combobox', { name: 'Pill' });
+        expect(field).toHaveClass('border-error');
+        expect(field).not.toHaveClass('border-border');
+    });
 });
