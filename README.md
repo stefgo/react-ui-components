@@ -313,6 +313,12 @@ Every component takes `classNames` for its named inner elements.
 
 - `label`, `value`, `sub`, `icon`: `IconComponent`, `onClick`
 - Renders a real `<button>` when `onClick` is given, so it is reachable by keyboard.
+- `classNames`: `label`, `value`, `iconWrapper`, `icon`, `sub`
+- Label, value and `sub` line up across a row of cards, whatever wraps and whichever card
+  has no `sub`. That needs the cards to be **direct children of a grid**
+  (`grid grid-cols-…`); each card takes three of its rows (CSS subgrid). Anything else in
+  the same grid fills one of the three unless it is given `row-span-3` too. Outside a grid
+  a card lays itself out alone.
 
 #### `ActionButton`
 
