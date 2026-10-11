@@ -43,6 +43,19 @@ outside a list. In the search bar, `variant="field"` gives the form field back.
 An upgrade needs nothing. Classes that were passed to a select in the search bar to make
 it a pill can be removed; left in place they change nothing.
 
+### A card's actions stay at the top of its header
+
+The action of a `Card` -- and with it the view toggle and the `extraActions` of a
+`DataMultiView` -- is now aligned with the top of the header. Next to a title of several
+lines it used to sit at the title's middle. A title of one line still sits level with a
+button beside it, so the usual header looks as it did.
+
+A long title no longer pushes the action out of the card: it takes the room that is left,
+with a gap to the action, and can be cut short with `truncate`.
+
+An upgrade needs nothing. Classes that were passed as `classNames.header` to get this
+(`items-start`, a gap, `min-w-0` on the title) can be removed.
+
 ### Releases
 
 Releases are now produced by the release workflow all stefgo projects share. A version can
