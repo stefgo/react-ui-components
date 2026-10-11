@@ -64,6 +64,14 @@ the column makes room for it.
 
 An upgrade needs nothing. A badge that is meant to wrap takes `className="whitespace-normal"`.
 
+### A status dot tells a warning from an error
+
+A `StatusDot` with the tone `warning` is now amber, yellow in the dark theme. It used the
+orange of a warning's text, which at the size of a dot could not be told from the red of an
+error. The tone `unknown` is a filled grey dot now, no longer an empty circle.
+
+An upgrade needs nothing; a dot that was set to `warning` or `unknown` looks different.
+
 ### Releases
 
 Releases are now produced by the release workflow all stefgo projects share. A version can
