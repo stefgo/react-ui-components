@@ -56,6 +56,14 @@ with a gap to the action, and can be cut short with `truncate`.
 An upgrade needs nothing. Classes that were passed as `classNames.header` to get this
 (`items-start`, a gap, `min-w-0` on the title) can be removed.
 
+### A badge stays on one line
+
+The text of a `Badge` no longer wraps. In a narrow table column a label of two words used
+to break into two lines and turn the pill into a block; now the badge keeps its shape and
+the column makes room for it.
+
+An upgrade needs nothing. A badge that is meant to wrap takes `className="whitespace-normal"`.
+
 ### Releases
 
 Releases are now produced by the release workflow all stefgo projects share. A version can
