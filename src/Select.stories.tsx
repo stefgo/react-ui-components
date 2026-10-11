@@ -29,3 +29,11 @@ export const States: Story = {
         </div>
     ),
 };
+
+/**
+ * For a row of filters. In the search bar of a `DataMultiView` a select is one
+ * without being told.
+ */
+export const Pill: Story = {
+    args: { label: undefined, 'aria-label': 'Schedule', variant: 'pill', fullWidth: false },
+};

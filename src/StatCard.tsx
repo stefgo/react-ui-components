@@ -7,7 +7,6 @@ import { FOCUS_RING } from './focus';
 const STAT_ICON_SIZE = 24;
 
 export interface StatCardClassNames {
-    labelWrapper?: string;
     label?: string;
     value?: string;
     iconWrapper?: string;
@@ -64,6 +63,17 @@ export const StatCard = ({ label, value, sub, icon: Icon, onClick, selected, cla
             aria-pressed={onClick && selected !== undefined && !rest.role ? selected : undefined}
             {...rest}
             className={cn(
+                // Label, value and sub are three rows the card borrows from the
+                // grid it sits in (`row-span-3` + subgrid), so each of them is as
+                // tall as the tallest one in the row of cards and all three line
+                // up across the row -- by content, with no height set anywhere.
+                // Outside a grid, subgrid falls back to rows of the card's own.
+                // The rows touch (`gap-y-0`) and the spacing is a margin on the
+                // content, or a row nobody fills would still cost the parent's gap.
+                // Half of that gap stays below the value when no card in the row
+                // has a `sub` (measured in Chrome): an empty last row is never
+                // lower than the card's bottom padding.
+                "grid row-span-3 grid-rows-subgrid grid-cols-[1fr_auto] gap-y-0",
                 "bg-statcard-bg p-6 rounded-lg border border-border shadow-sm hover:shadow-md transition h-full",
                 onClick
                     ? cn('w-full text-left cursor-pointer hover:border-border active:scale-[0.98]', FOCUS_RING)
@@ -74,21 +84,18 @@ export const StatCard = ({ label, value, sub, icon: Icon, onClick, selected, cla
                 className
             )}
         >
-            <div className={cn("flex justify-between items-start mb-4", classNames?.labelWrapper)}>
-                {/*
-                    Spans, not <p>/<h3>: a clickable card renders a <button>, whose
-                    content model is phrasing content only. A stat value is also not
-                    a document heading — it would only pollute the page outline.
-                */}
-                <div>
-                    <span className={cn("block text-sm font-medium text-text-muted uppercase tracking-wide", classNames?.label)}>{label}</span>
-                    <span className={cn("block text-3xl font-bold text-text-primary mt-1", classNames?.value)}>{value}</span>
-                </div>
-                <div className={cn("p-3 rounded-lg bg-statcard-icon-bg text-text-secondary", classNames?.iconWrapper)} aria-hidden="true">
-                    <Icon size={STAT_ICON_SIZE} className={cn(classNames?.icon)} />
-                </div>
-            </div>
-            {sub && <div className={cn("text-xs font-medium text-text-muted", classNames?.sub)}>{sub}</div>}
+            {/*
+                Spans, not <p>/<h3>/<div>: a clickable card renders a <button>, whose
+                content model is phrasing content only. A stat value is also not
+                a document heading — it would only pollute the page outline.
+                All four are direct children: a subgrid lines up nothing deeper.
+            */}
+            <span className={cn("col-start-1 row-start-1 text-sm font-medium text-text-muted uppercase tracking-wide", classNames?.label)}>{label}</span>
+            <span className={cn("col-start-1 row-start-2 text-3xl font-bold text-text-primary mt-1", classNames?.value)}>{value}</span>
+            <span className={cn("col-start-2 row-start-1 row-span-2 self-start p-3 rounded-lg bg-statcard-icon-bg text-text-secondary", classNames?.iconWrapper)} aria-hidden="true">
+                <Icon size={STAT_ICON_SIZE} className={cn(classNames?.icon)} />
+            </span>
+            {sub && <span className={cn("col-start-1 col-span-2 row-start-3 mt-4 text-xs font-medium text-text-muted", classNames?.sub)}>{sub}</span>}
         </Tag>
     );
 };

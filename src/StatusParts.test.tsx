@@ -59,6 +59,20 @@ describe('StatusDot', () => {
         expect(screen.queryByRole('img')).not.toBeInTheDocument();
         expect(container.firstChild).toHaveAttribute('aria-hidden', 'true');
     });
+
+    it('shows a warning in a colour that is not the error\'s', () => {
+        const { container, rerender } = render(<StatusDot tone="warning" />);
+        expect((container.firstChild as HTMLElement).className).toMatch(/bg-badge-dot-warning/);
+
+        rerender(<StatusDot tone="error" />);
+        expect((container.firstChild as HTMLElement).className).toMatch(/bg-badge-dot-error/);
+    });
+
+    it('fills the dot of a state nobody knows', () => {
+        const { container } = render(<StatusDot tone="unknown" />);
+        expect((container.firstChild as HTMLElement).className).toMatch(/bg-text-muted/);
+        expect((container.firstChild as HTMLElement).className).not.toMatch(/border/);
+    });
 });
 
 describe('StatusDotProvider', () => {

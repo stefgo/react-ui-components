@@ -42,15 +42,13 @@ Storybook has a **side-by-side** theme mode that renders a story in light and
 dark at once. Judge colour changes there, never in a consumer.
 
 `.github/workflows/ci.yml` (**Check Code**) runs commitlint, `tokens:check`, lint,
-test, build, the entry-point check and Storybook — on every push to a topic branch,
-on pull requests, and again via `workflow_call` from the release workflow. The checks
-live in one file so the two paths cannot drift apart. `main` and `dev` are deliberately
-absent from the push trigger: `release.yml` calls this workflow itself, and listing
-them would run everything twice.
+test, build, the entry-point check and Storybook — on every push, on pull requests, and
+again via `workflow_call` from the release workflow. The checks live in one file so the
+two paths cannot drift apart.
 
 **`npm install` points git at `.githooks/`** (the `prepare` script). Two hooks live
 there: `commit-msg` runs commitlint, and `pre-push` refuses any branch but `main` and
-`dev` — on those two, a push *is* a release.
+`dev`; topic branches stay local.
 
 ## Architecture
 
@@ -81,6 +79,7 @@ The preset does three things: adds the library's dist files to Tailwind's `conte
 | `CollapsibleRegion.tsx` | the open/close animation of a disclosure, without its trigger. Used by `Collapsible` and `EntityHeader`. |
 | `ConfirmDialog.tsx` | the buttons, busy state and single-button notice of every confirmation. `confirm/ConfirmProvider.tsx` renders it for `useConfirm()` and adds the queue and the error shown inside it. |
 | `form/FormField.tsx` + `form/useFieldIds.ts` + `form/FieldMessages.tsx` | label, hint, error and the ARIA wiring between them. |
+| `form/fieldVariant.ts` | the look of a pill (`PILL_SURFACE`) and the context that hands `pill` to a `Select` in `DataMultiView`'s `searchActions`. The search pill and the variant both read it; a caller never rebuilds it from classes. |
 | `form/FieldLabel.tsx` | the caption above a field. `FormField` renders it; a caller uses it over what is not one of the library's controls. |
 | `Alert.tsx` | the box of a message that stays in the page, per tone, and whether it interrupts. |
 | `theme/ThemeProvider.tsx` | which theme is on, the class on `<html>`, and the stored choice. |
@@ -345,13 +344,29 @@ from here on is English.
 
 ### Release
 
-`semantic-release` publishes automatically from two branches: `main` gives a stable
-release, `dev` gives a prerelease on the `beta` dist-tag (`3.0.0-beta.1`, installed
-with `npm i @stefgo/react-ui-components@beta`). Breaking work goes to `dev` first so
-a consumer can migrate against a real published version instead of against `main`.
-PRs merge to `dev` → `main`.
+`semantic-release` publishes from two branches, **on request**: `release.yml`
+(**Create Release**) is `workflow_dispatch` only. On `main` it gives a stable release,
+on `dev` a prerelease on the `beta` dist-tag (`3.0.0-beta.1`, installed with
+`npm i @stefgo/react-ui-components@beta`). A push to either branch runs the checks and
+publishes nothing. Breaking work goes to `dev` first so a consumer can migrate against
+a real published version instead of against `main`.
 
-**The commit message is the only input the version comes from,** so it is checked
+The workflow calls [stefgo/release-workflows](https://github.com/stefgo/release-workflows),
+which carries semantic-release and its configuration for every stefgo project. There is
+no `release` entry in `package.json` and no semantic-release package installed here.
+
+- Inputs: `dry_run` (default on) shows the next version and the complete notes and
+  changes nothing; `bump` (`auto` | `patch` | `minor` | `major`) takes the step from the
+  commit types or is the step itself, whatever the commits say.
+- **Every release needs hand-written notes in `.release/next.md`** — what is new, what a
+  consumer has to change. They go above the generated list of commits; without them the
+  workflow refuses. A beta keeps the text, the release from `main` empties the file.
+  Write it as part of the change that deserves a sentence, not at release time.
+- **`dev` is merged into `main` with its history — never squashed or rebased** — and
+  `main` back into `dev` before the next beta. The workflow checks both and refuses
+  otherwise.
+
+**With `bump: auto` the commit message is the only input the version comes from,** so it is checked
 like code — but by `.githooks/commit-msg`, not by CI. The commitlint step in `ci.yml`
 is bound to `pull_request`, and this repository is maintained without pull requests
 (the history is local merges of `dev` into `main`), so it never fired. A `Fix:`
@@ -382,7 +397,7 @@ Three details worth keeping:
   tags to find the last release, and commitlint needs the PR's commit range.
 
 - `cancel-in-progress` in `ci.yml` is off for `main` and `dev` for the same reason.
-  On those refs the checks only ever run as the called job of a release, and
+  On those refs the checks also run as the called job of a release, and
   cancelling them would produce exactly the half-finished run the line above avoids.
 
 The release job has no build step of its own — `prepublishOnly` builds the tarball,
@@ -395,3 +410,22 @@ sibling project drifted up to two majors behind that way — so `dependabot-auto
 (**Merge Dependency Updates**) puts it into auto-merge, gated by its own `ci.yml` run. It
 needs *Allow auto-merge* enabled in the repository settings. npm is deliberately not
 covered; security updates arrive without configuration.
+
+#### The release notes are part of the commit
+
+Before every commit, read `.release/next.md` and bring it up to date with what the commit
+changes — in the same commit, not at release time.
+
+- A commit that changes what a user sees or has to do — a feature, a fix, a changed
+  default, a renamed setting, anything an upgrade needs — is reflected in the text. A
+  `feat`, `fix` or `perf` commit that leaves the file untouched needs a reason.
+- A commit that changes nothing for a user (`ci`, `test`, `refactor`, `docs`, `chore`,
+  most of `build`) leaves the file alone. No line is added for the sake of it.
+- Revise the text as a whole instead of appending a line per commit: it describes the
+  release, not its history. Merge what belongs together, and remove a sentence a later
+  commit made untrue — a feature taken back before the release is not in its notes.
+- Write for someone who uses the project, in their terms: what is new, why it matters,
+  what an upgrade needs. No file names and no internals; the list of commits below the
+  text already names every change.
+- The text goes below the HTML comment at the top of the file, with `###` headings. If
+  the file holds only the comment, the text starts with this commit.

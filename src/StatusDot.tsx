@@ -48,14 +48,16 @@ export const StatusDotProvider = ({ live, children }: StatusDotProviderProps) =>
     <LiveContext.Provider value={live}>{children}</LiveContext.Provider>
 );
 
+// Warning and error take the colours made for a dot: `warning` is nearly the brand orange
+// and, a few pixels wide, cannot be told from `error`.
 const TONES: Record<StatusDotTone, string> = {
     success: 'bg-success shadow-glow-success',
-    warning: 'bg-warning',
+    warning: 'bg-badge-dot-warning',
     info: 'bg-info',
-    error: 'bg-error',
+    error: 'bg-badge-dot-error',
     accent: 'bg-accent',
     neutral: 'bg-border',
-    unknown: 'bg-transparent border border-text-muted'
+    unknown: 'bg-text-muted'
 };
 
 /**

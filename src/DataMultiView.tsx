@@ -12,6 +12,7 @@ import { useControllableState } from './hooks/useControllableState';
 import { usePersistentState } from './hooks/usePersistentState';
 import type { Controllable, Persistable } from './types';
 import { cn } from './utils';
+import { FieldVariantContext, PILL_SURFACE } from './form/fieldVariant';
 import { FOCUS_RING, FOCUS_RING_INSET, FOCUS_RING_NONE, FOCUS_RING_WITHIN } from './focus';
 
 export interface DataMultiViewClassNames {
@@ -93,7 +94,8 @@ export interface DataMultiViewProps<T> {
     /**
      * Controls that narrow the same list the search does — a filter select, for
      * example — rendered at the right end of the search bar. Only shown while
-     * `searchable` is set, since that is when the bar exists.
+     * `searchable` is set, since that is when the bar exists. A `Select` in here
+     * takes the shape of the search (`variant="pill"`) unless it names another.
      */
     searchActions?: ReactNode;
     /** Filter function for internal filtering. Receives each item and the current query string. */
@@ -335,7 +337,8 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                         button. The input suppresses its own.
                     */}
                     <div className={cn(
-                        "flex flex-1 min-w-0 items-center gap-2 px-3 py-1 rounded-full border border-border bg-app-bg",
+                        "flex flex-1 min-w-0 items-center gap-2 px-3 py-1",
+                        PILL_SURFACE,
                         FOCUS_RING_WITHIN
                     )}>
                         <Search size={14} className="text-text-muted shrink-0" />
@@ -368,7 +371,9 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                     </div>
                     {searchActions && (
                         <div className={cn("flex items-center gap-2 shrink-0", classNames?.searchActionsWrapper)}>
-                            {searchActions}
+                            <FieldVariantContext.Provider value="pill">
+                                {searchActions}
+                            </FieldVariantContext.Provider>
                         </div>
                     )}
                 </div>

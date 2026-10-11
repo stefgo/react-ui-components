@@ -5,10 +5,7 @@ current_branch=$(git symbolic-ref --short HEAD)
 
 # Allow the push only from the two long-lived branches. Topic branches stay
 # local -- which is the lived state anyway: the remote knows main and dev only.
-#
-# For this repository more hangs on that than tidiness: release.yml releases on
-# every push to main or dev (dev as a beta prerelease). A topic branch pushed by
-# accident produces none, a dev pushed by accident very much does.
+# A push releases nothing; release.yml is started by hand.
 case "$current_branch" in
   main|dev)
     exit 0

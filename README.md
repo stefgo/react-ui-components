@@ -313,6 +313,12 @@ Every component takes `classNames` for its named inner elements.
 
 - `label`, `value`, `sub`, `icon`: `IconComponent`, `onClick`
 - Renders a real `<button>` when `onClick` is given, so it is reachable by keyboard.
+- `classNames`: `label`, `value`, `iconWrapper`, `icon`, `sub`
+- Label, value and `sub` line up across a row of cards, whatever wraps and whichever card
+  has no `sub`. That needs the cards to be **direct children of a grid**
+  (`grid grid-cols-…`); each card takes three of its rows (CSS subgrid). Anything else in
+  the same grid fills one of the three unless it is given `row-span-3` too. Outside a grid
+  a card lays itself out alone.
 
 #### `ActionButton`
 
@@ -375,6 +381,9 @@ control: a read-only value, a list with its own buttons.
 #### `Select`
 
 - `label`, `hint`, `error`, `options`: `{ value, label, disabled? }[]`, `fullWidth`
+- `variant`: `field` (default) | `pill` — `pill` is for a row of filters and has the
+  shape of the search in `DataMultiView`. A select passed as that view's
+  `searchActions` is a pill without being told; `variant="field"` turns it back.
 - `classNames`: `label`, `control`, `select`, `error`, `hint`
 
 #### `Textarea`

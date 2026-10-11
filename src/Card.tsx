@@ -45,12 +45,16 @@ export const Card = ({ children, title, action, titleAs: TitleTag = 'h3', paddin
             )}
         >
             {showHeader && (
+                // The action stays at the top: next to a title of several lines it
+                // would otherwise drift to the title's middle. The title centres
+                // itself instead, which only shows where the action is the taller
+                // of the two -- one line of text next to a button.
                 <div className={cn(
-                    "px-5 py-4 border-b border-border flex justify-between items-center bg-card-header rounded-t-lg",
+                    "px-5 py-4 border-b border-border flex justify-between items-start gap-4 bg-card-header rounded-t-lg",
                     classNames?.header
                 )}>
-                    {title && <TitleTag className={cn("font-semibold text-text-primary flex items-center gap-2", classNames?.headerTitle)}>{title}</TitleTag>}
-                    {action && <div className={cn(classNames?.headerAction)}>{action}</div>}
+                    {title && <TitleTag className={cn("font-semibold text-text-primary flex items-center gap-2 min-w-0 self-center", classNames?.headerTitle)}>{title}</TitleTag>}
+                    {action && <div className={cn("shrink-0", classNames?.headerAction)}>{action}</div>}
                 </div>
             )}
             {padding === 'none'

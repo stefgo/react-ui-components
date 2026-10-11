@@ -29,6 +29,24 @@ export const Row: Story = {
     ),
 };
 
+/**
+ * Label, value and sub sit on the same three lines in every card of a row,
+ * however much each card has to say: a label that wraps pushes the values of
+ * the whole row down, and a card without a `sub` leaves its line empty. The
+ * cards have to be direct children of the grid for that. Narrow the viewport
+ * and each row of cards lines up for itself.
+ */
+export const AlignedRow: Story = {
+    render: () => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <StatCard label="Clients" value="12" sub="3 offline" icon={Monitor} />
+            <StatCard label="Total transferred this month" value="1 284 GiB" sub="Across all repositories and clients, including the ones that are paused" icon={HardDrive} />
+            <StatCard label="Snapshots" value="1204" icon={Server} />
+            <StatCard label="Jobs" value="48" sub="Configurations" icon={HardDrive} onClick={() => {}} />
+        </div>
+    ),
+};
+
 /** Long values must not break the layout. */
 export const LongContent: Story = {
     args: { label: 'Total transferred this month', value: '1 284 902 GiB', sub: 'Across all repositories and clients' },
