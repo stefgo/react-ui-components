@@ -132,7 +132,7 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
                                         )}
                                     >
                                         {selection && (
-                                            <td className={cn("w-px pl-6 pr-0 py-2", classNames?.td)}>
+                                            <td className={cn("w-px pl-6 pr-0 py-2 text-sm", classNames?.td)}>
                                                 <SelectionCheckbox item={item} selection={selection} />
                                             </td>
                                         )}
@@ -141,7 +141,7 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
                                                 ? col.tableCellClassName(item)
                                                 : (col.tableCellClassName ?? '');
                                             return (
-                                                <td key={idx} className={cn("px-6 py-2 text-text-primary", cellClass, classNames?.td)}>
+                                                <td key={idx} className={cn("px-6 py-2 text-sm text-text-primary", cellClass, classNames?.td)}>
                                                     {cellContent(col)}
                                                 </td>
                                             );

@@ -164,7 +164,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                         )}
                                     >
                                         {selection && (
-                                            <td className={cn("w-px pl-6 pr-0 py-2", classNames?.td)}>
+                                            <td className={cn("w-px pl-6 pr-0 py-2 text-sm", classNames?.td)}>
                                                 <SelectionCheckbox item={item} selection={selection} />
                                             </td>
                                         )}
@@ -178,7 +178,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                                     <td
                                                         key={idx}
                                                         style={{ paddingLeft: `${24 + depth * indentSize}px` }}
-                                                        className={cn("px-6 py-2 whitespace-nowrap text-text-primary", cellClass, classNames?.td)}
+                                                        className={cn("px-6 py-2 text-sm whitespace-nowrap text-text-primary", cellClass, classNames?.td)}
                                                     >
                                                         <div className="flex items-center gap-2">
                                                             {/*
@@ -219,7 +219,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                             }
 
                                             return (
-                                                <td key={idx} className={cn("px-6 py-2 whitespace-nowrap text-text-primary", cellClass, classNames?.td)}>
+                                                <td key={idx} className={cn("px-6 py-2 text-sm whitespace-nowrap text-text-primary", cellClass, classNames?.td)}>
                                                     {cellContent(col)}
                                                 </td>
                                             );
