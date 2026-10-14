@@ -1,3 +1,26 @@
+## [4.9.1](https://github.com/stefgo/react-ui-components/compare/v4.9.0...v4.9.1) (2026-10-14)
+
+### Wrapped text in a table sits 20px apart
+
+A cell of `DataTable` and `DataTreeTable` now has the small text size (`text-sm`) as its
+own. Text that wraps inside a cell used to take the cell's inherited line height of 24px,
+even where the column set `text-sm` on an inline element; two lines now sit 20px apart,
+the line height of `text-sm`.
+
+Two things change with it:
+
+- A row whose cells hold inline text is 4px lower than before: the cell's own line height
+  set its height, not the text's.
+- Text in a cell that sets no size of its own is 14px instead of 16px. A column that wants
+  another size keeps setting it through `cellClassName`; it replaces the cell's.
+
+An upgrade needs nothing. A `text-sm` passed to a column's `cellClassName` only to get this
+size can stay; it changes nothing.
+
+### Bug Fixes
+
+* **data-table:** Give table cells the small text size so wrapped lines sit 20px apart ([f9587bc](https://github.com/stefgo/react-ui-components/commit/f9587bcc50cbccc42d8a76661d082d025831c0f3))
+
 ## [4.9.0](https://github.com/stefgo/react-ui-components/compare/v4.8.0...v4.9.0) (2026-10-11)
 
 ### Stat cards line up across a row
