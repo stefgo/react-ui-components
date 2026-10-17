@@ -144,7 +144,15 @@ export const DataList = <T,>(props: DataListProps<T>) => {
                                             and the gap up to the content. A click that misses
                                             the box lands here and does not open the row. The
                                             negative margins take that space over without
-                                            moving anything.
+                                            moving anything; they mirror the row's `py-2`
+                                            and `paddingLeft` and the `gap-2` after the box,
+                                            and `pt-3` puts the box where `mt-1` did.
+
+                                            The inner `w-4` holds the box's width open where
+                                            the row cannot be picked and the box is missing,
+                                            or that row's content would start 16px further
+                                            left than its neighbours'. On the outer span it
+                                            would include the paddings.
                                         */}
                                         {selection && (
                                             <span
@@ -152,7 +160,9 @@ export const DataList = <T,>(props: DataListProps<T>) => {
                                                 style={{ marginLeft: `-${paddingLeft}px`, paddingLeft: `${paddingLeft}px` }}
                                                 className="shrink-0 self-stretch -my-2 pt-3 pb-2 -mr-2 pr-2 cursor-default"
                                             >
-                                                <SelectionCheckbox item={item} selection={selection} />
+                                                <span className="block w-4">
+                                                    <SelectionCheckbox item={item} selection={selection} />
+                                                </span>
                                             </span>
                                         )}
                                         {/*
