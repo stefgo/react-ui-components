@@ -20,10 +20,11 @@ whether it acts on what the list shows or on what is picked.
   something, or acting on the rows the search and the filters leave.
 - **`selectionActions`** now have a bar of their own between the search and the
   rows. The bar is there before the first pick, so a pick no longer pushes the
-  rows down, and its actions end at the same right edge as the header's. While
-  nothing is picked it can show a hint (`selection.hint`); once something is, it
-  counts the picks. The count no longer follows the title, except for a view
-  that has `selection.label` but no `selectionActions`.
+  rows down. While nothing is picked it can show a hint (`selection.hint`); once
+  something is, it counts the picks. The count no longer follows the title,
+  except for a view that has `selection.label` but no `selectionActions`.
+- The header's actions, the search's and the selection bar's now end at one
+  right edge; the search's used to stand 4px further right.
 
 ### A click beside a row's checkbox no longer opens the row
 
@@ -36,7 +37,9 @@ the row's margin around the checkbox. Both look as before.
 ### Upgrading
 
 Rename `extraActions` to `globalActions` and `extraActionsWrapper` to
-`globalActionsWrapper` — TypeScript points at each. Buttons that acted on the
+`globalActionsWrapper` — TypeScript points at each. The slot now wraps the view
+toggle and the actions together and already lets them wrap, so a `flex-wrap`
+passed to it can go. Buttons that acted on the
 picked rows from the header move into `selectionActions`, and should be disabled
 while the set they are called with is empty. The README has a section *Migrating
 from 4.x to 5.0*.

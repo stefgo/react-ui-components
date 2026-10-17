@@ -878,11 +878,15 @@ selection. TypeScript points at every call site of the rename.
 ### 1. `extraActions` is `globalActions`
 
 ```diff
-- <DataMultiView extraActions={<Button>New client</Button>} classNames={{ extraActionsWrapper: 'flex-wrap' }} … />
-+ <DataMultiView globalActions={<Button>New client</Button>} classNames={{ globalActionsWrapper: 'flex-wrap' }} … />
+- <DataMultiView extraActions={<Button>New client</Button>} classNames={{ extraActionsWrapper: 'gap-2' }} … />
++ <DataMultiView globalActions={<Button>New client</Button>} classNames={{ globalActionsWrapper: 'gap-2' }} … />
 ```
 
 The name says what belongs there: what does not depend on the selection.
+
+The slot is the one wrapper of the view toggle and the actions now, where there
+used to be two, and it already wraps (`flex-wrap`) and aligns to the right. A
+class passed only to make the actions wrap can go.
 
 ### 2. `selectionActions` have a bar of their own
 

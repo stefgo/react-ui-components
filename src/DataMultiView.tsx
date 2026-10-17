@@ -34,8 +34,9 @@ export interface DataMultiViewClassNames {
     /** The wrapper of `selectionActions`, at the right end of the selection bar. */
     selectionActionsWrapper?: string;
     /**
-     * What is picked, counted: at the left end of the selection bar, or in
-     * brackets behind the title where there is no bar.
+     * The text about the selection. In the selection bar, at its left end:
+     * the count of what is picked, or `selection.hint` while nothing is.
+     * Where there is no bar: the count in brackets behind the title.
      */
     selectionCount?: string;
 }
@@ -195,8 +196,8 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
             : undefined
     ), [searchable, searchFilter, searchQuery]);
 
-    // Held here rather than in the view underneath: the header needs it, and
-    // switching between table and list must not empty it.
+    // Held here rather than in the view underneath: the selection bar (or the
+    // title) counts it, and switching between table and list must not empty it.
     const [selected, setSelected] = useControllableState<ReadonlySet<RowKey>>({
         value: selection?.value,
         defaultValue: selection?.defaultValue,
@@ -319,11 +320,13 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
             role="group"
             aria-label="Selection"
             className={cn(
-                // `pr-5` is the header's: the last action ends where the last
-                // of the header's does, so the two rows read as one column.
-                // `pb-3` keeps the gap down to the line as wide as the one up
-                // to the search, which is `pb-1` of the search plus `pt-2`.
-                "pl-4 pr-5 pt-2 pb-3 border-b border-border bg-card-header flex flex-wrap items-center gap-x-4 gap-y-2",
+                // `pl-4` and `pr-5` are the search's: the count starts where
+                // the search field does, and the last action ends where the
+                // last of the header's and the search's do.
+                "pl-4 pr-5 pb-3 border-b border-border bg-card-header flex flex-wrap items-center gap-x-4 gap-y-2",
+                // 12px above and below. Below a search that is its `pb-1` plus
+                // `pt-2`; below the header's line the bar has to bring all of it.
+                searchable ? "pt-2" : "pt-3",
                 classNames?.selectionBar
             )}
         >
@@ -372,7 +375,9 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         <Card padding="none" className={cn("overflow-hidden flex flex-col h-full", className)} classNames={{ ...classNames?.card, ...classNames?.header, header: cn(classNames?.card?.header, classNames?.header?.header, searchable && 'border-b-0 pb-1') }} title={titleCount ? <>{title}{' '}{titleCount}</> : title} action={headerAction}>
             {searchable && (
                 <div className={cn(
-                    "px-4 py-2 bg-card-header flex items-center gap-3",
+                    // `pr-5` is the header's, so `searchActions` end at the same
+                    // right edge as `globalActions` above them.
+                    "pl-4 pr-5 py-2 bg-card-header flex items-center gap-3",
                     // The selection bar below continues it: no line between the two,
                     // and the same gap as between the header and the search, which
                     // also gives the search only `pb-1`.
