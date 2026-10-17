@@ -38,3 +38,27 @@ export const Paginated: Story = { args: { pagination: { defaultValue: { pageSize
 export const Loading: Story = { args: { data: [], isLoading: true } };
 export const Empty: Story = { args: { data: [], emptyMessage: 'Nothing here yet.' } };
 export const Clickable: Story = { args: { onRowClick: (c) => alert(c.hostname) } };
+
+/**
+ * Every value of a row starts at one edge, however long the labels are. The
+ * labels' column is as wide as the longest of them, up to 40% of the row;
+ * beyond that a label wraps, and so does a value that does not fit.
+ */
+export const LongLabels: Story = {
+    args: {
+        data: clients.slice(0, 3),
+        columns: [
+            {
+                grow: true,
+                fields: [
+                    { accessorKey: 'hostname', listLabel: null },
+                    { accessorKey: 'id', listLabel: 'ID' },
+                    { accessorKey: 'lastSeen', listLabel: 'Last Auto-Update' },
+                    { listLabel: 'A label long enough to wrap', listItemRender: (c) => `${c.jobs} jobs` },
+                    { listLabel: 'Fingerprint', listItemRender: (c) => `sha256:${c.id.repeat(12)}` },
+                ],
+            },
+        ],
+    },
+    decorators: [(Story) => <div className="max-w-sm"><Story /></div>],
+};

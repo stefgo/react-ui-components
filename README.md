@@ -872,8 +872,9 @@ rows would make a page's length depend on what is expanded.
 
 ## Migrating from 4.x to 5.0
 
-One renamed prop of `DataMultiView`, and a new place for the actions of the
-selection. TypeScript points at every call site of the rename.
+One renamed prop of `DataMultiView`, a new place for the actions of the
+selection, and two slots of the list view less. TypeScript points at every call
+site of the rename and of the slots.
 
 ### 1. `extraActions` is `globalActions`
 
@@ -900,6 +901,15 @@ Buttons that acted on the picked rows from `extraActions`, switching to the
 whole list without a pick, move into `selectionActions`; their whole-list
 counterpart stays in `globalActions`. While nothing is picked the bar calls
 `selectionActions` with an empty set, so disable what has nothing to act on.
+
+### 3. The list view's fields share one grid
+
+The labels and values of a block of fields are now the cells of one grid, so
+the slots `itemWrapper` and `labelWrapper` of `DataList` (and of
+`classNames.list` in `DataMultiView`) are gone — there is no element left for
+them. `label`, `value` and a column's `list.labelClassName` stay. A
+`labelClassName` that only gave the labels a minimum width can go: the labels'
+column is as wide as the longest label now.
 
 ---
 

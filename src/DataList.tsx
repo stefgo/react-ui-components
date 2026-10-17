@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { Fragment, ReactNode } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { BaseDataViewProps, DataViewClassNames } from './data/types';
 import { useDataView } from './data/useDataView';
@@ -28,8 +28,6 @@ export interface DataListClassNames extends DataViewClassNames {
     row?: string;
     colWrapper?: string;
     column?: string;
-    itemWrapper?: string;
-    labelWrapper?: string;
     label?: string;
     value?: string;
     /** The expand button of a row with children, and the gap a leaf keeps in its place. */
@@ -79,33 +77,50 @@ export const DataList = <T,>(props: DataListProps<T>) => {
         : rows.map((item) => ({ item, depth: 0 }));
 
     const fieldsOf = (item: T) => (
-        <div className={cn("flex flex-col", columnsProp && columnsProp.length > 1 && "md:flex-row md:items-center", classNames?.colWrapper)}>
-            {columnsProp?.map((colGroup, colIdx) => (
-                <div key={colIdx} className={cn(colGroup.grow && "flex-1", colGroup.columnClassName, classNames?.column)}>
-                    {colGroup.fields
-                        .filter(def => def.listItemRender !== undefined || def.accessorKey !== undefined)
-                        .map((col, idx) => (
-                            <div key={idx} className={cn("mb-1 last:mb-0", classNames?.itemWrapper)}>
-                                {col.listLabel != null ? (
-                                    <div className={cn("flex items-start gap-2 text-sm", classNames?.labelWrapper)}>
-                                        <span className={cn(
-                                            "font-semibold text-text-muted min-w-[100px] shrink-0",
-                                            col.listLabelClassName,
-                                            classNames?.label
-                                        )}>
-                                            {col.listLabel}:
-                                        </span>
-                                        <div className={cn("flex-1 overflow-hidden", classNames?.value)}>
-                                            {resolveContent(col, item)}
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className={cn(classNames?.value)}>{resolveContent(col, item)}</div>
-                                )}
-                            </div>
+        <div className={cn("flex flex-col [container-type:inline-size]", columnsProp && columnsProp.length > 1 && "md:flex-row md:items-center", classNames?.colWrapper)}>
+            {columnsProp?.map((colGroup, colIdx) => {
+                const fields = colGroup.fields.filter(def => def.listItemRender !== undefined || def.accessorKey !== undefined);
+                const labelled = fields.some(def => def.listLabel != null);
+                return (
+                    <div
+                        key={colIdx}
+                        className={cn(
+                            /*
+                                One grid for all fields of a block, so every value starts at
+                                the same edge. The labels' column is as wide as the longest
+                                label, up to 40% of the row; a longer label wraps instead
+                                of pushing its value aside. The `0` lets the values' column
+                                get narrower than what it holds, so a value wraps too.
+                                A field without a label spans both columns.
+
+                                The 40% are of the row (`cqw`, the container being the
+                                wrapper above), not of the block: a block beside another
+                                is as wide as its content, and 40% of that would wrap a
+                                label that fits.
+                            */
+                            labelled && "grid grid-cols-[fit-content(40cqw)_minmax(0,1fr)] gap-x-2 gap-y-1 items-start",
+                            colGroup.grow && "flex-1",
+                            colGroup.columnClassName,
+                            classNames?.column,
+                        )}
+                    >
+                        {fields.map((col, idx) => !labelled ? (
+                            <div key={idx} className={cn("mb-1 last:mb-0", classNames?.value)}>{resolveContent(col, item)}</div>
+                        ) : col.listLabel != null ? (
+                            <Fragment key={idx}>
+                                <span className={cn("text-sm font-semibold text-text-muted", col.listLabelClassName, classNames?.label)}>
+                                    {col.listLabel}:
+                                </span>
+                                <div className={cn("text-sm min-w-0 break-words", classNames?.value)}>
+                                    {resolveContent(col, item)}
+                                </div>
+                            </Fragment>
+                        ) : (
+                            <div key={idx} className={cn("col-span-2 min-w-0", classNames?.value)}>{resolveContent(col, item)}</div>
                         ))}
-                </div>
-            ))}
+                    </div>
+                );
+            })}
         </div>
     );
 

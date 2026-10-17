@@ -34,6 +34,14 @@ now belongs to the selection column and is left out of the row's click: what
 lands there neither opens the row nor picks it. The list view does the same with
 the row's margin around the checkbox. Both look as before.
 
+### A list's labels line up and wrap
+
+In the list view, every value of a row now starts at one edge. The labels take
+as much room as the longest of them needs, up to 40% of the row; a longer label
+wraps instead of pushing its value aside, and a value that does not fit wraps
+too. Before, a label wider than 100px moved its own value to the right, and a
+label never wrapped, so on a narrow screen it ran out of the row.
+
 ### Upgrading
 
 Rename `extraActions` to `globalActions` and `extraActionsWrapper` to
@@ -41,5 +49,6 @@ Rename `extraActions` to `globalActions` and `extraActionsWrapper` to
 toggle and the actions together and already lets them wrap, so a `flex-wrap`
 passed to it can go. Buttons that acted on the
 picked rows from the header move into `selectionActions`, and should be disabled
-while the set they are called with is empty. The README has a section *Migrating
-from 4.x to 5.0*.
+while the set they are called with is empty. The list view's slots `itemWrapper`
+and `labelWrapper` are gone; a `labelClassName` that only gave the labels a
+minimum width can go too. The README has a section *Migrating from 4.x to 5.0*.
