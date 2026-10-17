@@ -24,13 +24,19 @@ export interface DataMultiViewClassNames {
     table?: DataTableClassNames;
     list?: DataListClassNames;
     treeTable?: DataTreeTableClassNames;
-    extraActionsWrapper?: string;
+    /** The wrapper of the view toggle and `globalActions`, in the header. */
+    globalActionsWrapper?: string;
     searchBar?: string;
     /** The wrapper of `searchActions`, at the right end of the search bar. */
     searchActionsWrapper?: string;
-    /** `selectionActions`, in the header while something is picked. */
+    /** The line between the search and the rows that holds `selectionActions`. */
+    selectionBar?: string;
+    /** The wrapper of `selectionActions`, at the right end of the selection bar. */
     selectionActionsWrapper?: string;
-    /** The count of what is picked, in brackets behind the title. */
+    /**
+     * What is picked, counted: at the left end of the selection bar, or in
+     * brackets behind the title where there is no bar.
+     */
     selectionCount?: string;
 }
 
@@ -40,14 +46,26 @@ export interface MultiViewSelectionOptions<T> extends SelectionOptions<T> {
      * With `selectionActions` the default is "3 selected", the number of
      * picked keys -- which in a tree counts a parent next to its children, so
      * a caller that picks both says what the selection amounts to instead.
-     * Without them, the count is shown only where this is given.
+     * Without them, the count is shown only where this is given, in brackets
+     * behind the title.
      */
     label?: (selected: ReadonlySet<RowKey>) => string;
+    /**
+     * What the selection bar says while nothing is picked. Only shown with
+     * `selectionActions`; without it the bar holds just the disabled actions.
+     */
+    hint?: string;
 }
 
 export interface DataMultiViewProps<T> {
     title?: ReactNode;
-    extraActions?: ReactNode;
+    /**
+     * The actions in the card's header, next to the view toggle: everything
+     * that does not depend on the selection -- creating something, or acting
+     * on what the list shows. What acts on the picked rows belongs in
+     * `selectionActions`, so that no button changes its reach with a pick.
+     */
+    globalActions?: ReactNode;
     className?: string;
     data: T[];
     /**
@@ -118,9 +136,13 @@ export interface DataMultiViewProps<T> {
      */
     selection?: MultiViewSelectionOptions<T>;
     /**
-     * What can be done with the picked rows, shown in the card's header while
-     * at least one is picked; their count then follows the title in brackets.
-     * Called with their keys.
+     * What can be done with the picked rows. They stand in a bar of their own
+     * between the search and the rows, which is there whether something is
+     * picked or not: the first pick must not move the row under the pointer.
+     * While nothing is picked the bar shows `selection.hint`, if given, and the
+     * caller disables what has nothing to act on; once something is, the bar
+     * counts the picks. The actions end at the same right edge as the
+     * header's. Called with the picked keys.
      */
     selectionActions?: (selected: ReadonlySet<RowKey>) => ReactNode;
 }
@@ -134,7 +156,7 @@ export type ViewModeOptions = Persistable<ViewMode>;
 export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     const {
         title,
-        extraActions,
+        globalActions,
         className = '',
         columns,
         listGroups,
@@ -286,28 +308,49 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     ) : null;
 
     const hasPicks = !!selection && selected.size > 0;
-    const selectionHeader = hasPicks && selectionActions ? (
-        <div className={cn("flex flex-wrap items-center justify-end gap-2", classNames?.selectionActionsWrapper)}>
-            {selectionActions(selected)}
+    const pickedLabel = hasPicks ? (selection?.label?.(selected) ?? `${selected.size} selected`) : null;
+
+    // Its own line rather than a place in the header: a button in the header
+    // acts on what the list shows, one in here on what is picked, and none of
+    // them changes its reach with a pick. Always there once it has actions, so
+    // the first pick does not push the rows down.
+    const selectionBar = selection && selectionActions ? (
+        <div
+            role="group"
+            aria-label="Selection"
+            className={cn(
+                // `pr-5` is the header's: the last action ends where the last
+                // of the header's does, so the two rows read as one column.
+                "pl-4 pr-5 py-2 border-b border-border bg-card-header flex flex-wrap items-center gap-x-4 gap-y-2",
+                classNames?.selectionBar
+            )}
+        >
+            <span
+                className={cn("text-sm", hasPicks ? "font-medium text-text-primary" : "text-text-muted", classNames?.selectionCount)}
+                aria-live="polite"
+            >
+                {pickedLabel ?? selection.hint}
+            </span>
+            {/* At the right end, so that the count on the left does not move them. */}
+            <div className={cn("ml-auto flex flex-wrap items-center justify-end gap-2", classNames?.selectionActionsWrapper)}>
+                {selectionActions(selected)}
+            </div>
         </div>
     ) : null;
-    // Behind the title, in brackets: it is the title's rows that are counted.
-    // Only where the caller does something with what is picked -- it brings
-    // actions, or says what the selection amounts to -- or the number would
-    // lead nowhere.
-    const selectionCount = hasPicks && (selectionActions || selection.label) ? (
+
+    // Without a bar, a caller that says what the selection amounts to has it
+    // counted behind the title, in brackets: it is the title's rows that are
+    // counted. Without that either, the number would lead nowhere.
+    const titleCount = hasPicks && !selectionActions && selection?.label ? (
         <span className={cn("font-normal text-text-secondary", classNames?.selectionCount)} aria-live="polite">
-            ({selection.label?.(selected) ?? `${selected.size} selected`})
+            ({pickedLabel})
         </span>
     ) : null;
 
     const headerAction = (
-        <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2">
-            {selectionHeader}
-            <div className={cn("flex items-center gap-3", classNames?.extraActionsWrapper)}>
-                {viewToggle}
-                {extraActions}
-            </div>
+        <div className={cn("flex flex-wrap items-center justify-end gap-3", classNames?.globalActionsWrapper)}>
+            {viewToggle}
+            {globalActions}
         </div>
     );
 
@@ -324,7 +367,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     };
 
     return (
-        <Card padding="none" className={cn("overflow-hidden flex flex-col h-full", className)} classNames={{ ...classNames?.card, ...classNames?.header, header: cn(selection && 'flex-wrap gap-x-4 gap-y-2', classNames?.card?.header, classNames?.header?.header, searchable && 'border-b-0 pb-1') }} title={selectionCount ? <>{title}{' '}{selectionCount}</> : title} action={headerAction}>
+        <Card padding="none" className={cn("overflow-hidden flex flex-col h-full", className)} classNames={{ ...classNames?.card, ...classNames?.header, header: cn(classNames?.card?.header, classNames?.header?.header, searchable && 'border-b-0 pb-1') }} title={titleCount ? <>{title}{' '}{titleCount}</> : title} action={headerAction}>
             {searchable && (
                 <div className={cn(
                     "px-4 py-2 border-b border-border bg-card-header flex items-center gap-3",
@@ -378,6 +421,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
                     )}
                 </div>
             )}
+            {selectionBar}
             {effectiveViewMode === 'list' ? (
                 // A tree stays a tree in the list view: on a narrow screen the
                 // list is what the tree table turns into, and a flat list of its

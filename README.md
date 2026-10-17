@@ -723,6 +723,7 @@ Switches between table, list and tree view.
 - `search`: `Controllable<string>` + `searchable` / `searchFilter`
 - `viewMode`: `Controllable<'table' | 'list' | 'tree'>` + `storageKey`
 - `treeExpanded`, `sort`, `pagination`
+- `globalActions`: the header's actions; `selection` + `selectionActions`: the bar of the picked rows
 
 `columns` takes a `DataColumnDef<T>[]` and replaces `tableDef` and
 `listColumns`, which ask for the same column twice. The heading is also the list
@@ -755,6 +756,30 @@ const columns: DataColumnDef<Client>[] = [
 
 `tableDef` and `listColumns` keep working. Passed next to `columns` they are
 ignored, with a warning.
+
+**Two places for actions.** A button acts either on what the list shows or on
+what is picked, and where it stands says which:
+
+```tsx
+<DataMultiView
+    globalActions={<Button size="sm" icon={RefreshCw} onClick={checkShown}>Check all</Button>}
+    selection={{ value: picked, onChange: setPicked, rowLabel: (c) => `Select ${c.hostname}` }}
+    selectionActions={(selected) => (
+        <Button size="sm" disabled={selected.size === 0} onClick={() => restart(selected)}>Restart</Button>
+    )}
+    …
+/>
+```
+
+- `globalActions` sit in the header, next to the view toggle: creating
+  something, or acting on the rows the search and the filters leave.
+- `selectionActions` sit in a bar between the search and the rows. The bar is
+  there before the first pick, so the pick does not push the rows down; while
+  nothing is picked it shows `selection.hint`, if given, and the caller disables
+  its buttons. Once something is, it counts the picks (`selection.label`, or
+  "3 selected"). Its actions end at the same right edge as the header's.
+- No button should change its reach with a pick. A check of everything and a
+  check of the picked rows are two buttons, one in each place.
 
 #### The layout every list shares
 
@@ -842,6 +867,35 @@ up from `searchFilter`.
 **Trees.** `DataTreeTable` pages its **root nodes**: `totalItems` counts roots,
 and the children of the roots on a page are shown with them. Counting rendered
 rows would make a page's length depend on what is expanded.
+
+---
+
+## Migrating from 4.x to 5.0
+
+One renamed prop of `DataMultiView`, and a new place for the actions of the
+selection. TypeScript points at every call site of the rename.
+
+### 1. `extraActions` is `globalActions`
+
+```diff
+- <DataMultiView extraActions={<Button>New client</Button>} classNames={{ extraActionsWrapper: 'flex-wrap' }} … />
++ <DataMultiView globalActions={<Button>New client</Button>} classNames={{ globalActionsWrapper: 'flex-wrap' }} … />
+```
+
+The name says what belongs there: what does not depend on the selection.
+
+### 2. `selectionActions` have a bar of their own
+
+They used to join the header while something was picked. They now stand in a
+bar between the search and the rows, which is there before the first pick and
+counts the picks itself — the count no longer follows the title. A caller that
+passes `selection.label` without `selectionActions` still has it in brackets
+behind the title.
+
+Buttons that acted on the picked rows from `extraActions`, switching to the
+whole list without a pick, move into `selectionActions`; their whole-list
+counterpart stays in `globalActions`. While nothing is picked the bar calls
+`selectionActions` with an empty set, so disable what has nothing to act on.
 
 ---
 

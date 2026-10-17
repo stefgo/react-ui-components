@@ -178,6 +178,12 @@ describe('conventions', () => {
         expect(matches(/\bcontainerClassName\b/)).toEqual([]);
     });
 
+    it('has no extraActions', () => {
+        // Renamed to `globalActions` in 5.0: the header holds what does not
+        // depend on the selection, and the name has to say so.
+        expect(matches(/\bextraActions/)).toEqual([]);
+    });
+
     it('declares components as plain functions, not React.FC', () => {
         expect(matches(/:\s*React\.FC<|:\s*FC</)).toEqual([]);
     });
