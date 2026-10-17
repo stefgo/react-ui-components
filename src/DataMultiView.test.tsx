@@ -205,6 +205,19 @@ describe('DataMultiView', () => {
             expect(onRowClick).toHaveBeenCalledTimes(1);
         });
 
+        it('does not open the row on a click beside the checkbox in the list view', async () => {
+            const user = userEvent.setup();
+            const onRowClick = vi.fn();
+            render(<DataMultiView data={data} keyField="id" columns={nameColumns} viewMode={{ value: 'list' }} selection={{ rowLabel }} onRowClick={onRowClick} />);
+
+            const area = screen.getByRole('checkbox', { name: 'Select alpha' }).closest('[data-selection-cell]')!;
+            await user.click(area);
+            expect(onRowClick).not.toHaveBeenCalled();
+
+            await user.click(screen.getByText('alpha'));
+            expect(onRowClick).toHaveBeenCalledTimes(1);
+        });
+
         it('selects all the search leaves, on every page, and clears them again', async () => {
             const user = userEvent.setup();
             const onChange = vi.fn();

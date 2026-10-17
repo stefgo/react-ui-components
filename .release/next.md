@@ -30,7 +30,8 @@ whether it acts on what the list shows or on what is picked.
 In a clickable table, a click that missed the small checkbox but landed in its
 column, or in the gap up to the first column, used to open the row. That space
 now belongs to the selection column and is left out of the row's click: what
-lands there neither opens the row nor picks it. The table looks as before.
+lands there neither opens the row nor picks it. The list view does the same with
+the row's margin around the checkbox. Both look as before.
 
 ### Upgrading
 

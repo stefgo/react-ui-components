@@ -122,12 +122,13 @@ export const DataList = <T,>(props: DataListProps<T>) => {
                         const children = getChildren?.(item);
                         const hasChildren = !!(children && children.length > 0);
                         const isExpanded = expandedKeys.has(key);
+                        const paddingLeft = 20 + depth * indentSize;
 
                         return (
                             <div
                                 key={key}
                                 {...rowActivationProps(item)}
-                                style={depth > 0 ? { paddingLeft: `${20 + depth * indentSize}px` } : undefined}
+                                style={depth > 0 ? { paddingLeft: `${paddingLeft}px` } : undefined}
                                 className={cn(
                                     "px-5 py-2 transition-colors group",
                                     interactionClasses(item),
@@ -137,8 +138,20 @@ export const DataList = <T,>(props: DataListProps<T>) => {
                             >
                                 {getChildren || selection ? (
                                     <div className="flex items-start gap-2">
+                                        {/*
+                                            As in the table, the space around the checkbox
+                                            belongs to it: the row's padding up to its edges
+                                            and the gap up to the content. A click that misses
+                                            the box lands here and does not open the row. The
+                                            negative margins take that space over without
+                                            moving anything.
+                                        */}
                                         {selection && (
-                                            <span data-selection-cell className="shrink-0 w-4 mt-1 cursor-default">
+                                            <span
+                                                data-selection-cell
+                                                style={{ marginLeft: `-${paddingLeft}px`, paddingLeft: `${paddingLeft}px` }}
+                                                className="shrink-0 self-stretch -my-2 pt-3 pb-2 -mr-2 pr-2 cursor-default"
+                                            >
                                                 <SelectionCheckbox item={item} selection={selection} />
                                             </span>
                                         )}
