@@ -321,7 +321,9 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
             className={cn(
                 // `pr-5` is the header's: the last action ends where the last
                 // of the header's does, so the two rows read as one column.
-                "pl-4 pr-5 py-2 border-b border-border bg-card-header flex flex-wrap items-center gap-x-4 gap-y-2",
+                // `pb-3` keeps the gap down to the line as wide as the one up
+                // to the search, which is `pb-1` of the search plus `pt-2`.
+                "pl-4 pr-5 pt-2 pb-3 border-b border-border bg-card-header flex flex-wrap items-center gap-x-4 gap-y-2",
                 classNames?.selectionBar
             )}
         >
@@ -370,7 +372,11 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
         <Card padding="none" className={cn("overflow-hidden flex flex-col h-full", className)} classNames={{ ...classNames?.card, ...classNames?.header, header: cn(classNames?.card?.header, classNames?.header?.header, searchable && 'border-b-0 pb-1') }} title={titleCount ? <>{title}{' '}{titleCount}</> : title} action={headerAction}>
             {searchable && (
                 <div className={cn(
-                    "px-4 py-2 border-b border-border bg-card-header flex items-center gap-3",
+                    "px-4 py-2 bg-card-header flex items-center gap-3",
+                    // The selection bar below continues it: no line between the two,
+                    // and the same gap as between the header and the search, which
+                    // also gives the search only `pb-1`.
+                    selectionBar ? "pb-1" : "border-b border-border",
                     classNames?.searchBar
                 )}>
                     {/*
