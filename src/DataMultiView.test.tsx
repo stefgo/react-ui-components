@@ -191,6 +191,20 @@ describe('DataMultiView', () => {
             expect(onRowClick).not.toHaveBeenCalled();
         });
 
+        it('does not open the row on a click that misses the checkbox but hits its cell', async () => {
+            const user = userEvent.setup();
+            const onRowClick = vi.fn();
+            render(<DataMultiView data={data} keyField="id" columns={nameColumns} selection={{ rowLabel }} onRowClick={onRowClick} />);
+
+            const cell = screen.getByRole('checkbox', { name: 'Select alpha' }).closest('td')!;
+            await user.click(cell);
+            expect(onRowClick).not.toHaveBeenCalled();
+
+            // The other cells still open it.
+            await user.click(screen.getByText('alpha'));
+            expect(onRowClick).toHaveBeenCalledTimes(1);
+        });
+
         it('selects all the search leaves, on every page, and clears them again', async () => {
             const user = userEvent.setup();
             const onChange = vi.fn();

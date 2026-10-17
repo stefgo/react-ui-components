@@ -138,7 +138,7 @@ export const DataList = <T,>(props: DataListProps<T>) => {
                                 {getChildren || selection ? (
                                     <div className="flex items-start gap-2">
                                         {selection && (
-                                            <span className="shrink-0 w-4 mt-1">
+                                            <span data-selection-cell className="shrink-0 w-4 mt-1 cursor-default">
                                                 <SelectionCheckbox item={item} selection={selection} />
                                             </span>
                                         )}

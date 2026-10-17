@@ -25,6 +25,13 @@ whether it acts on what the list shows or on what is picked.
   counts the picks. The count no longer follows the title, except for a view
   that has `selection.label` but no `selectionActions`.
 
+### A click beside a row's checkbox no longer opens the row
+
+In a clickable table, a click that missed the small checkbox but landed in its
+column, or in the gap up to the first column, used to open the row. That space
+now belongs to the selection column and is left out of the row's click: what
+lands there neither opens the row nor picks it. The table looks as before.
+
 ### Upgrading
 
 Rename `extraActions` to `globalActions` and `extraActionsWrapper` to

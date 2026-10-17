@@ -48,6 +48,9 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
     // size. Counting rendered rows instead would make a page's length depend on
     // what happens to be expanded.
     const { rows, placeholder, getKey, getRowClass, rowActivationProps, interactionClasses, pagination, selection } = useDataView(props, comparator);
+    // As in the table: the gap between the checkbox and the first column belongs
+    // to the selection cell, so a click in it does not open the row.
+    const afterSelection = selection ? 'pl-0' : '';
 
     const { expandedKeys, allExpanded, toggleRow, toggleAll } = useTreeExpansion({
         data: props.data,
@@ -66,7 +69,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                     <thead className={cn("sticky top-0 bg-table-header z-sticky", classNames?.thead)}>
                         <tr className={cn("border-b border-border", classNames?.headerRow)}>
                             {selection && (
-                                <th scope="col" className={cn("w-px pl-6 pr-0 py-2", classNames?.th)}>
+                                <th scope="col" className={cn("w-px px-6 py-2", classNames?.th)}>
                                     <SelectAllCheckbox selection={selection} />
                                 </th>
                             )}
@@ -79,6 +82,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                         aria-sort={sortable ? sortStateOf(idx) : undefined}
                                         className={cn(
                                             "px-6 py-2 text-xs font-medium text-text-muted uppercase tracking-wider",
+                                            idx === 0 && afterSelection,
                                             col.tableHeaderClassName,
                                             classNames?.th,
                                         )}
@@ -164,7 +168,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                         )}
                                     >
                                         {selection && (
-                                            <td className={cn("w-px pl-6 pr-0 py-2 text-sm", classNames?.td)}>
+                                            <td data-selection-cell className={cn("w-px px-6 py-2 text-sm cursor-default", classNames?.td)}>
                                                 <SelectionCheckbox item={item} selection={selection} />
                                             </td>
                                         )}
@@ -177,7 +181,7 @@ export const DataTreeTable = <T,>(props: DataTreeTableProps<T>) => {
                                                 return (
                                                     <td
                                                         key={idx}
-                                                        style={{ paddingLeft: `${24 + depth * indentSize}px` }}
+                                                        style={{ paddingLeft: `${(selection ? 0 : 24) + depth * indentSize}px` }}
                                                         className={cn("px-6 py-2 text-sm whitespace-nowrap text-text-primary", cellClass, classNames?.td)}
                                                     >
                                                         <div className="flex items-center gap-2">
