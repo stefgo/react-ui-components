@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { Fragment, ReactNode } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { BaseDataViewProps, DataViewClassNames } from './data/types';
 import { useDataView } from './data/useDataView';
@@ -28,8 +28,6 @@ export interface DataListClassNames extends DataViewClassNames {
     row?: string;
     colWrapper?: string;
     column?: string;
-    itemWrapper?: string;
-    labelWrapper?: string;
     label?: string;
     value?: string;
     /** The expand button of a row with children, and the gap a leaf keeps in its place. */
@@ -79,33 +77,50 @@ export const DataList = <T,>(props: DataListProps<T>) => {
         : rows.map((item) => ({ item, depth: 0 }));
 
     const fieldsOf = (item: T) => (
-        <div className={cn("flex flex-col", columnsProp && columnsProp.length > 1 && "md:flex-row md:items-center", classNames?.colWrapper)}>
-            {columnsProp?.map((colGroup, colIdx) => (
-                <div key={colIdx} className={cn(colGroup.grow && "flex-1", colGroup.columnClassName, classNames?.column)}>
-                    {colGroup.fields
-                        .filter(def => def.listItemRender !== undefined || def.accessorKey !== undefined)
-                        .map((col, idx) => (
-                            <div key={idx} className={cn("mb-1 last:mb-0", classNames?.itemWrapper)}>
-                                {col.listLabel != null ? (
-                                    <div className={cn("flex items-start gap-2 text-sm", classNames?.labelWrapper)}>
-                                        <span className={cn(
-                                            "font-semibold text-text-muted min-w-[100px] shrink-0",
-                                            col.listLabelClassName,
-                                            classNames?.label
-                                        )}>
-                                            {col.listLabel}:
-                                        </span>
-                                        <div className={cn("flex-1 overflow-hidden", classNames?.value)}>
-                                            {resolveContent(col, item)}
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className={cn(classNames?.value)}>{resolveContent(col, item)}</div>
-                                )}
-                            </div>
+        <div className={cn("flex flex-col [container-type:inline-size]", columnsProp && columnsProp.length > 1 && "md:flex-row md:items-center", classNames?.colWrapper)}>
+            {columnsProp?.map((colGroup, colIdx) => {
+                const fields = colGroup.fields.filter(def => def.listItemRender !== undefined || def.accessorKey !== undefined);
+                const labelled = fields.some(def => def.listLabel != null);
+                return (
+                    <div
+                        key={colIdx}
+                        className={cn(
+                            /*
+                                One grid for all fields of a block, so every value starts at
+                                the same edge. The labels' column is as wide as the longest
+                                label, up to 40% of the row; a longer label wraps instead
+                                of pushing its value aside. The `0` lets the values' column
+                                get narrower than what it holds, so a value wraps too.
+                                A field without a label spans both columns.
+
+                                The 40% are of the row (`cqw`, the container being the
+                                wrapper above), not of the block: a block beside another
+                                is as wide as its content, and 40% of that would wrap a
+                                label that fits.
+                            */
+                            labelled && "grid grid-cols-[fit-content(40cqw)_minmax(0,1fr)] gap-x-2 gap-y-1 items-start",
+                            colGroup.grow && "flex-1",
+                            colGroup.columnClassName,
+                            classNames?.column,
+                        )}
+                    >
+                        {fields.map((col, idx) => !labelled ? (
+                            <div key={idx} className={cn("mb-1 last:mb-0", classNames?.value)}>{resolveContent(col, item)}</div>
+                        ) : col.listLabel != null ? (
+                            <Fragment key={idx}>
+                                <span className={cn("text-sm font-semibold text-text-muted", col.listLabelClassName, classNames?.label)}>
+                                    {col.listLabel}:
+                                </span>
+                                <div className={cn("text-sm min-w-0 break-words", classNames?.value)}>
+                                    {resolveContent(col, item)}
+                                </div>
+                            </Fragment>
+                        ) : (
+                            <div key={idx} className={cn("col-span-2 min-w-0", classNames?.value)}>{resolveContent(col, item)}</div>
                         ))}
-                </div>
-            ))}
+                    </div>
+                );
+            })}
         </div>
     );
 
@@ -122,12 +137,13 @@ export const DataList = <T,>(props: DataListProps<T>) => {
                         const children = getChildren?.(item);
                         const hasChildren = !!(children && children.length > 0);
                         const isExpanded = expandedKeys.has(key);
+                        const paddingLeft = 20 + depth * indentSize;
 
                         return (
                             <div
                                 key={key}
                                 {...rowActivationProps(item)}
-                                style={depth > 0 ? { paddingLeft: `${20 + depth * indentSize}px` } : undefined}
+                                style={depth > 0 ? { paddingLeft: `${paddingLeft}px` } : undefined}
                                 className={cn(
                                     "px-5 py-2 transition-colors group",
                                     interactionClasses(item),
@@ -137,9 +153,31 @@ export const DataList = <T,>(props: DataListProps<T>) => {
                             >
                                 {getChildren || selection ? (
                                     <div className="flex items-start gap-2">
+                                        {/*
+                                            As in the table, the space around the checkbox
+                                            belongs to it: the row's padding up to its edges
+                                            and the gap up to the content. A click that misses
+                                            the box lands here and does not open the row. The
+                                            negative margins take that space over without
+                                            moving anything; they mirror the row's `py-2`
+                                            and `paddingLeft` and the `gap-2` after the box,
+                                            and `pt-3` puts the box where `mt-1` did.
+
+                                            The inner `w-4` holds the box's width open where
+                                            the row cannot be picked and the box is missing,
+                                            or that row's content would start 16px further
+                                            left than its neighbours'. On the outer span it
+                                            would include the paddings.
+                                        */}
                                         {selection && (
-                                            <span className="shrink-0 w-4 mt-1">
-                                                <SelectionCheckbox item={item} selection={selection} />
+                                            <span
+                                                data-selection-cell
+                                                style={{ marginLeft: `-${paddingLeft}px`, paddingLeft: `${paddingLeft}px` }}
+                                                className="shrink-0 self-stretch -my-2 pt-3 pb-2 -mr-2 pr-2 cursor-default"
+                                            >
+                                                <span className="block w-4">
+                                                    <SelectionCheckbox item={item} selection={selection} />
+                                                </span>
                                             </span>
                                         )}
                                         {/*

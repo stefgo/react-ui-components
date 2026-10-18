@@ -22,8 +22,12 @@ export interface PaginationView {
 /**
  * Anything inside a row that is a control in its own right. A click on one of
  * these is that control's click, not the row's.
+ *
+ * `[data-selection-cell]` is the cell around a row's checkbox: a click that
+ * misses the small box but lands in its cell was aimed at the box, so it does
+ * not open the row either.
  */
-const INTERACTIVE_DESCENDANT = 'button, a[href], input, select, textarea, [role="button"], [role="menuitem"]';
+const INTERACTIVE_DESCENDANT = 'button, a[href], input, select, textarea, [role="button"], [role="menuitem"], [data-selection-cell]';
 
 /** True when the event started on a control inside the row rather than on the row. */
 function startedOnAControl(event: { target: EventTarget | null; currentTarget: EventTarget | null }): boolean {

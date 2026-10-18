@@ -75,3 +75,34 @@ describe('DataList as a tree', () => {
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
 });
+
+describe('DataList fields', () => {
+    const host = [{ id: 'web', name: 'web', version: '1.2.3' }];
+    type Host = (typeof host)[number];
+
+    it('puts every label and value of a block side by side in one container', () => {
+        // The values line up because they share one grid; that needs them to be its children.
+        const fields: DataListColumnDef<Host>[] = [{
+            fields: [
+                { accessorKey: 'name', listLabel: null },
+                { accessorKey: 'id', listLabel: 'ID' },
+                { accessorKey: 'version', listLabel: 'A long label' },
+            ],
+        }];
+        render(<DataList data={host} keyField="id" columns={fields} />);
+
+        const block = screen.getByText('ID:').parentElement!;
+        expect(Array.from(block.children).map((el) => el.textContent))
+            .toEqual(['web', 'ID:', 'web', 'A long label:', '1.2.3']);
+    });
+
+    it('still hands the slots and a label class to their elements', () => {
+        const fields: DataListColumnDef<Host>[] = [{
+            fields: [{ accessorKey: 'version', listLabel: 'Version', listLabelClassName: 'from-column' }],
+        }];
+        render(<DataList data={host} keyField="id" columns={fields} classNames={{ label: 'slot-label', value: 'slot-value' }} />);
+
+        expect(screen.getByText('Version:')).toHaveClass('from-column', 'slot-label');
+        expect(screen.getByText('1.2.3')).toHaveClass('slot-value');
+    });
+});

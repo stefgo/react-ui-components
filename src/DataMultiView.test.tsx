@@ -100,18 +100,55 @@ describe('DataMultiView', () => {
             expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
         });
 
-        it('picks a row, counts it and offers the actions only then', async () => {
+        it('has a bar for the selection before anything is picked', () => {
+            render(<DataMultiView title="Rows" data={data} keyField="id" columns={nameColumns} selection={{ rowLabel }} selectionActions={actions} />);
+
+            const bar = screen.getByRole('group', { name: 'Selection' });
+            expect(within(bar).queryByText(/selected/)).not.toBeInTheDocument();
+            expect(within(bar).getByRole('button', { name: 'Update 0' })).toBeInTheDocument();
+        });
+
+        it('picks a row and counts it in the bar, not behind the title', async () => {
             const user = userEvent.setup();
             render(<DataMultiView title="Rows" data={data} keyField="id" columns={nameColumns} selection={{ rowLabel }} selectionActions={actions} />);
 
-            expect(screen.getByRole('heading', { name: 'Rows' })).toBeInTheDocument();
-            expect(screen.queryByRole('button', { name: /Update/ })).not.toBeInTheDocument();
             await user.click(screen.getByRole('checkbox', { name: 'Select alpha' }));
 
             expect(screen.getByRole('checkbox', { name: 'Select alpha' })).toBeChecked();
             expect(screen.getByRole('checkbox', { name: 'Select all' })).toBePartiallyChecked();
-            expect(screen.getByRole('heading', { name: 'Rows (1 selected)' })).toBeInTheDocument();
-            expect(screen.getByRole('button', { name: 'Update 1' })).toBeInTheDocument();
+            const bar = screen.getByRole('group', { name: 'Selection' });
+            expect(within(bar).getByText('1 selected')).toBeInTheDocument();
+            expect(within(bar).getByRole('button', { name: 'Update 1' })).toBeInTheDocument();
+            expect(screen.getByRole('heading', { name: 'Rows' })).toBeInTheDocument();
+        });
+
+        it('says the caller\'s hint while nothing is picked', () => {
+            render(
+                <DataMultiView
+                    data={data}
+                    keyField="id"
+                    columns={nameColumns}
+                    selection={{ rowLabel, hint: 'Pick containers to start or stop them' }}
+                    selectionActions={actions}
+                />,
+            );
+            expect(screen.getByText('Pick containers to start or stop them')).toBeInTheDocument();
+        });
+
+        it('keeps the global actions in the header, apart from the bar', () => {
+            render(
+                <DataMultiView
+                    data={data}
+                    keyField="id"
+                    columns={nameColumns}
+                    extraActions={<button type="button">Check all</button>}
+                    selection={{ rowLabel }}
+                    selectionActions={actions}
+                />,
+            );
+            const bar = screen.getByRole('group', { name: 'Selection' });
+            expect(screen.getByRole('button', { name: 'Check all' })).toBeInTheDocument();
+            expect(within(bar).queryByRole('button', { name: 'Check all' })).not.toBeInTheDocument();
         });
 
         it('has "select all" in the header of the column, not in a line of its own', () => {
@@ -120,15 +157,16 @@ describe('DataMultiView', () => {
             expect(header).toHaveAttribute('scope', 'col');
         });
 
-        it('says nothing in the header without an action for what is picked', async () => {
+        it('has no bar and no count without an action for what is picked', async () => {
             const user = userEvent.setup();
             render(<DataMultiView data={data} keyField="id" columns={nameColumns} selection={{ rowLabel }} />);
 
             await user.click(screen.getByRole('checkbox', { name: 'Select alpha' }));
-            expect(screen.queryByText('(1 selected)')).not.toBeInTheDocument();
+            expect(screen.queryByRole('group', { name: 'Selection' })).not.toBeInTheDocument();
+            expect(screen.queryByText(/1 selected/)).not.toBeInTheDocument();
         });
 
-        it('counts in the title for a caller that names the selection, actions or not', async () => {
+        it('counts in the title for a caller that names the selection but has no bar', async () => {
             const user = userEvent.setup();
             render(
                 <DataMultiView
@@ -151,6 +189,33 @@ describe('DataMultiView', () => {
 
             await user.click(screen.getByRole('checkbox', { name: 'Select alpha' }));
             expect(onRowClick).not.toHaveBeenCalled();
+        });
+
+        it('does not open the row on a click that misses the checkbox but hits its cell', async () => {
+            const user = userEvent.setup();
+            const onRowClick = vi.fn();
+            render(<DataMultiView data={data} keyField="id" columns={nameColumns} selection={{ rowLabel }} onRowClick={onRowClick} />);
+
+            const cell = screen.getByRole('checkbox', { name: 'Select alpha' }).closest('td')!;
+            await user.click(cell);
+            expect(onRowClick).not.toHaveBeenCalled();
+
+            // The other cells still open it.
+            await user.click(screen.getByText('alpha'));
+            expect(onRowClick).toHaveBeenCalledTimes(1);
+        });
+
+        it('does not open the row on a click beside the checkbox in the list view', async () => {
+            const user = userEvent.setup();
+            const onRowClick = vi.fn();
+            render(<DataMultiView data={data} keyField="id" columns={nameColumns} viewMode={{ value: 'list' }} selection={{ rowLabel }} onRowClick={onRowClick} />);
+
+            const area = screen.getByRole('checkbox', { name: 'Select alpha' }).closest('[data-selection-cell]')!;
+            await user.click(area);
+            expect(onRowClick).not.toHaveBeenCalled();
+
+            await user.click(screen.getByText('alpha'));
+            expect(onRowClick).toHaveBeenCalledTimes(1);
         });
 
         it('selects all the search leaves, on every page, and clears them again', async () => {
@@ -236,7 +301,7 @@ describe('DataMultiView', () => {
             );
 
             await user.click(screen.getByRole('checkbox', { name: 'Select alpha' }));
-            expect(screen.getByText('(2 containers selected)')).toBeInTheDocument();
+            expect(within(screen.getByRole('group', { name: 'Selection' })).getByText('2 containers selected')).toBeInTheDocument();
         });
 
         it('picks a child row of a tree by its own key', async () => {

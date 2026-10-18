@@ -723,6 +723,7 @@ Switches between table, list and tree view.
 - `search`: `Controllable<string>` + `searchable` / `searchFilter`
 - `viewMode`: `Controllable<'table' | 'list' | 'tree'>` + `storageKey`
 - `treeExpanded`, `sort`, `pagination`
+- `extraActions`: the header's actions; `selection` + `selectionActions`: the bar of the picked rows
 
 `columns` takes a `DataColumnDef<T>[]` and replaces `tableDef` and
 `listColumns`, which ask for the same column twice. The heading is also the list
@@ -755,6 +756,30 @@ const columns: DataColumnDef<Client>[] = [
 
 `tableDef` and `listColumns` keep working. Passed next to `columns` they are
 ignored, with a warning.
+
+**Two places for actions.** A button acts either on what the list shows or on
+what is picked, and where it stands says which:
+
+```tsx
+<DataMultiView
+    extraActions={<Button size="sm" icon={RefreshCw} onClick={checkShown}>Check all</Button>}
+    selection={{ value: picked, onChange: setPicked, rowLabel: (c) => `Select ${c.hostname}` }}
+    selectionActions={(selected) => (
+        <Button size="sm" disabled={selected.size === 0} onClick={() => restart(selected)}>Restart</Button>
+    )}
+    …
+/>
+```
+
+- `extraActions` sit in the header, next to the view toggle: creating
+  something, or acting on the rows the search and the filters leave.
+- `selectionActions` sit in a bar between the search and the rows. The bar is
+  there before the first pick, so the pick does not push the rows down; while
+  nothing is picked it shows `selection.hint`, if given, and the caller disables
+  its buttons. Once something is, it counts the picks (`selection.label`, or
+  "3 selected"). Its actions end at the same right edge as the header's.
+- No button should change its reach with a pick. A check of everything and a
+  check of the picked rows are two buttons, one in each place.
 
 #### The layout every list shares
 

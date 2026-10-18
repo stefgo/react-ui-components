@@ -51,6 +51,10 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
     // Sort across everything first, then take the page — the other order sorts
     // only the rows that happen to be on screen.
     const { rows, placeholder, getKey, getRowClass, rowActivationProps, interactionClasses, pagination, selection } = useDataView(props, comparator);
+    // The gap between the checkbox and the first column is the selection cell's
+    // right padding, not the first cell's left one: a click that lands in it was
+    // aimed at the box and must not open the row (`[data-selection-cell]`).
+    const afterSelection = selection ? 'pl-0' : '';
 
     return (
         <DataViewFrame className={className} classNames={classNames} pagination={pagination}>
@@ -59,7 +63,7 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
                     <thead className={cn("sticky top-0 bg-table-header z-sticky", classNames?.thead)}>
                         <tr className={cn("border-b border-border", classNames?.headerRow)}>
                             {selection && (
-                                <th scope="col" className={cn("w-px pl-6 pr-0 py-2", classNames?.th)}>
+                                <th scope="col" className={cn("w-px px-6 py-2", classNames?.th)}>
                                     <SelectAllCheckbox selection={selection} />
                                 </th>
                             )}
@@ -74,6 +78,7 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
                                         aria-sort={sortable ? sortStateOf(idx) : undefined}
                                         className={cn(
                                             "px-6 py-2 text-xs font-medium text-text-muted uppercase tracking-wider",
+                                            idx === 0 && afterSelection,
                                             col.tableHeaderClassName,
                                             classNames?.th
                                         )}
@@ -132,7 +137,7 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
                                         )}
                                     >
                                         {selection && (
-                                            <td className={cn("w-px pl-6 pr-0 py-2 text-sm", classNames?.td)}>
+                                            <td data-selection-cell className={cn("w-px px-6 py-2 text-sm cursor-default", classNames?.td)}>
                                                 <SelectionCheckbox item={item} selection={selection} />
                                             </td>
                                         )}
@@ -141,7 +146,7 @@ export const DataTable = <T,>(props: DataTableProps<T>) => {
                                                 ? col.tableCellClassName(item)
                                                 : (col.tableCellClassName ?? '');
                                             return (
-                                                <td key={idx} className={cn("px-6 py-2 text-sm text-text-primary", cellClass, classNames?.td)}>
+                                                <td key={idx} className={cn("px-6 py-2 text-sm text-text-primary", idx === 0 && afterSelection, cellClass, classNames?.td)}>
                                                     {cellContent(col)}
                                                 </td>
                                             );

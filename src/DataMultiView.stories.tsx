@@ -129,6 +129,10 @@ export const WithSearchActions: Story = {
     },
 };
 
+/**
+ * `extraActions` sit in the header, next to the view toggle: what does not
+ * depend on the selection.
+ */
 export const WithHeaderActions: Story = {
     args: { extraActions: <Button size="sm">New client</Button> },
 };
@@ -159,17 +163,23 @@ export const TreeAsList: Story = {
 /**
  * `selection` puts a checkbox in front of every row and "select all" in the
  * header of that column: it picks what the search leaves, on every page. The
- * list view has no header row and so no "select all". `selectionActions` is
- * offered in the card's header while something is picked, and the count then
- * follows the title in brackets.
+ * list view has no header row and so no "select all".
+ *
+ * `selectionActions` stand in a bar of their own between the search and the
+ * rows, apart from the header's `extraActions`: the header acts on what the
+ * list shows, the bar on what is picked. The bar is there before the first
+ * pick, so that the pick does not move the rows; it then counts the selection.
  */
 export const WithSelection: Story = {
     args: {
         searchable: true,
         searchPlaceholder: 'Search clients…',
         searchFilter: (c: DemoClient, q: string) => c.hostname.toLowerCase().includes(q.toLowerCase()),
+        extraActions: <Button size="sm">New client</Button>,
         selection: { rowLabel: (c: DemoClient) => `Select ${c.hostname}` },
-        selectionActions: (selected) => <Button size="sm" variant="secondary">Run {selected.size} now</Button>,
+        selectionActions: (selected) => (
+            <Button size="sm" variant="secondary" disabled={selected.size === 0}>Run now</Button>
+        ),
     },
 };
 
