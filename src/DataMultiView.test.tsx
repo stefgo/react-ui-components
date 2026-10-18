@@ -141,7 +141,7 @@ describe('DataMultiView', () => {
                     data={data}
                     keyField="id"
                     columns={nameColumns}
-                    globalActions={<button type="button">Check all</button>}
+                    extraActions={<button type="button">Check all</button>}
                     selection={{ rowLabel }}
                     selectionActions={actions}
                 />,

@@ -723,7 +723,7 @@ Switches between table, list and tree view.
 - `search`: `Controllable<string>` + `searchable` / `searchFilter`
 - `viewMode`: `Controllable<'table' | 'list' | 'tree'>` + `storageKey`
 - `treeExpanded`, `sort`, `pagination`
-- `globalActions`: the header's actions; `selection` + `selectionActions`: the bar of the picked rows
+- `extraActions`: the header's actions; `selection` + `selectionActions`: the bar of the picked rows
 
 `columns` takes a `DataColumnDef<T>[]` and replaces `tableDef` and
 `listColumns`, which ask for the same column twice. The heading is also the list
@@ -762,7 +762,7 @@ what is picked, and where it stands says which:
 
 ```tsx
 <DataMultiView
-    globalActions={<Button size="sm" icon={RefreshCw} onClick={checkShown}>Check all</Button>}
+    extraActions={<Button size="sm" icon={RefreshCw} onClick={checkShown}>Check all</Button>}
     selection={{ value: picked, onChange: setPicked, rowLabel: (c) => `Select ${c.hostname}` }}
     selectionActions={(selected) => (
         <Button size="sm" disabled={selected.size === 0} onClick={() => restart(selected)}>Restart</Button>
@@ -771,7 +771,7 @@ what is picked, and where it stands says which:
 />
 ```
 
-- `globalActions` sit in the header, next to the view toggle: creating
+- `extraActions` sit in the header, next to the view toggle: creating
   something, or acting on the rows the search and the filters leave.
 - `selectionActions` sit in a bar between the search and the rows. The bar is
   there before the first pick, so the pick does not push the rows down; while
@@ -867,49 +867,6 @@ up from `searchFilter`.
 **Trees.** `DataTreeTable` pages its **root nodes**: `totalItems` counts roots,
 and the children of the roots on a page are shown with them. Counting rendered
 rows would make a page's length depend on what is expanded.
-
----
-
-## Migrating from 4.x to 5.0
-
-One renamed prop of `DataMultiView`, a new place for the actions of the
-selection, and two slots of the list view less. TypeScript points at every call
-site of the rename and of the slots.
-
-### 1. `extraActions` is `globalActions`
-
-```diff
-- <DataMultiView extraActions={<Button>New client</Button>} classNames={{ extraActionsWrapper: 'gap-2' }} … />
-+ <DataMultiView globalActions={<Button>New client</Button>} classNames={{ globalActionsWrapper: 'gap-2' }} … />
-```
-
-The name says what belongs there: what does not depend on the selection.
-
-The slot is the one wrapper of the view toggle and the actions now, where there
-used to be two, and it already wraps (`flex-wrap`) and aligns to the right. A
-class passed only to make the actions wrap can go.
-
-### 2. `selectionActions` have a bar of their own
-
-They used to join the header while something was picked. They now stand in a
-bar between the search and the rows, which is there before the first pick and
-counts the picks itself — the count no longer follows the title. A caller that
-passes `selection.label` without `selectionActions` still has it in brackets
-behind the title.
-
-Buttons that acted on the picked rows from `extraActions`, switching to the
-whole list without a pick, move into `selectionActions`; their whole-list
-counterpart stays in `globalActions`. While nothing is picked the bar calls
-`selectionActions` with an empty set, so disable what has nothing to act on.
-
-### 3. The list view's fields share one grid
-
-The labels and values of a block of fields are now the cells of one grid, so
-the slots `itemWrapper` and `labelWrapper` of `DataList` (and of
-`classNames.list` in `DataMultiView`) are gone — there is no element left for
-them. `label`, `value` and a column's `list.labelClassName` stay. A
-`labelClassName` that only gave the labels a minimum width can go: the labels'
-column is as wide as the longest label now.
 
 ---
 

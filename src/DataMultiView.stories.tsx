@@ -130,11 +130,11 @@ export const WithSearchActions: Story = {
 };
 
 /**
- * `globalActions` sit in the header, next to the view toggle: what does not
+ * `extraActions` sit in the header, next to the view toggle: what does not
  * depend on the selection.
  */
 export const WithHeaderActions: Story = {
-    args: { globalActions: <Button size="sm">New client</Button> },
+    args: { extraActions: <Button size="sm">New client</Button> },
 };
 
 /** With `getChildren` the tree view becomes available and replaces the table toggle. */
@@ -166,7 +166,7 @@ export const TreeAsList: Story = {
  * list view has no header row and so no "select all".
  *
  * `selectionActions` stand in a bar of their own between the search and the
- * rows, apart from the header's `globalActions`: the header acts on what the
+ * rows, apart from the header's `extraActions`: the header acts on what the
  * list shows, the bar on what is picked. The bar is there before the first
  * pick, so that the pick does not move the rows; it then counts the selection.
  */
@@ -175,7 +175,7 @@ export const WithSelection: Story = {
         searchable: true,
         searchPlaceholder: 'Search clients…',
         searchFilter: (c: DemoClient, q: string) => c.hostname.toLowerCase().includes(q.toLowerCase()),
-        globalActions: <Button size="sm">New client</Button>,
+        extraActions: <Button size="sm">New client</Button>,
         selection: { rowLabel: (c: DemoClient) => `Select ${c.hostname}` },
         selectionActions: (selected) => (
             <Button size="sm" variant="secondary" disabled={selected.size === 0}>Run now</Button>

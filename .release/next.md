@@ -15,9 +15,10 @@ Nothing inside an HTML comment is published.
 `DataMultiView` now has two places for actions, and where a button stands says
 whether it acts on what the list shows or on what is picked.
 
-- **`globalActions`** replaces `extraActions` (and the slot `globalActionsWrapper`
-  replaces `extraActionsWrapper`). They sit in the header, as before: creating
-  something, or acting on the rows the search and the filters leave.
+- **`extraActions`** sit in the header, as before, and are now meant for what
+  does not depend on the selection: creating something, or acting on the rows
+  the search and the filters leave. The slot `extraActionsWrapper` wraps the
+  view toggle and the actions together and lets them wrap.
 - **`selectionActions`** now have a bar of their own between the search and the
   rows. The bar is there before the first pick, so a pick no longer pushes the
   rows down. While nothing is picked it can show a hint (`selection.hint`); once
@@ -44,11 +45,8 @@ label never wrapped, so on a narrow screen it ran out of the row.
 
 ### Upgrading
 
-Rename `extraActions` to `globalActions` and `extraActionsWrapper` to
-`globalActionsWrapper` — TypeScript points at each. The slot now wraps the view
-toggle and the actions together and already lets them wrap, so a `flex-wrap`
-passed to it can go. Buttons that acted on the
-picked rows from the header move into `selectionActions`, and should be disabled
-while the set they are called with is empty. The list view's slots `itemWrapper`
-and `labelWrapper` are gone; a `labelClassName` that only gave the labels a
-minimum width can go too. The README has a section *Migrating from 4.x to 5.0*.
+No call site has to change. Buttons in `extraActions` that act on the picked
+rows are better moved into `selectionActions`, disabled while the set they are
+called with is empty. The list view's slots `itemWrapper` and `labelWrapper` have
+no element left to style and are gone; a `labelClassName` that only gave the
+labels a minimum width can go too.

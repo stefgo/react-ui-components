@@ -24,8 +24,8 @@ export interface DataMultiViewClassNames {
     table?: DataTableClassNames;
     list?: DataListClassNames;
     treeTable?: DataTreeTableClassNames;
-    /** The wrapper of the view toggle and `globalActions`, in the header. */
-    globalActionsWrapper?: string;
+    /** The wrapper of the view toggle and `extraActions`, in the header. */
+    extraActionsWrapper?: string;
     searchBar?: string;
     /** The wrapper of `searchActions`, at the right end of the search bar. */
     searchActionsWrapper?: string;
@@ -66,7 +66,7 @@ export interface DataMultiViewProps<T> {
      * on what the list shows. What acts on the picked rows belongs in
      * `selectionActions`, so that no button changes its reach with a pick.
      */
-    globalActions?: ReactNode;
+    extraActions?: ReactNode;
     className?: string;
     data: T[];
     /**
@@ -157,7 +157,7 @@ export type ViewModeOptions = Persistable<ViewMode>;
 export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     const {
         title,
-        globalActions,
+        extraActions,
         className = '',
         columns,
         listGroups,
@@ -353,9 +353,9 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
     ) : null;
 
     const headerAction = (
-        <div className={cn("flex flex-wrap items-center justify-end gap-3", classNames?.globalActionsWrapper)}>
+        <div className={cn("flex flex-wrap items-center justify-end gap-3", classNames?.extraActionsWrapper)}>
             {viewToggle}
-            {globalActions}
+            {extraActions}
         </div>
     );
 
@@ -376,7 +376,7 @@ export const DataMultiView = <T,>(props: DataMultiViewProps<T>) => {
             {searchable && (
                 <div className={cn(
                     // `pr-5` is the header's, so `searchActions` end at the same
-                    // right edge as `globalActions` above them.
+                    // right edge as `extraActions` above them.
                     "pl-4 pr-5 py-2 bg-card-header flex items-center gap-3",
                     // The selection bar below continues it: no line between the two,
                     // and the same gap as between the header and the search, which
