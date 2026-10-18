@@ -165,20 +165,23 @@ export const TreeAsList: Story = {
  * header of that column: it picks what the search leaves, on every page. The
  * list view has no header row and so no "select all".
  *
- * `selectionActions` stand in a bar of their own between the search and the
- * rows, apart from the header's `extraActions`: the header acts on what the
- * list shows, the bar on what is picked. The bar is there before the first
- * pick, so that the pick does not move the rows; it then counts the selection.
+ * `extraActions`, given as a function, are handed what is picked: a button
+ * that acts on rows acts on all of them while nothing is picked and on the
+ * picked rows once something is, and its label says which. One that only makes
+ * sense for picked rows is disabled until there are some. The pick is counted
+ * behind the title.
  */
 export const WithSelection: Story = {
     args: {
         searchable: true,
         searchPlaceholder: 'Search clients…',
         searchFilter: (c: DemoClient, q: string) => c.hostname.toLowerCase().includes(q.toLowerCase()),
-        extraActions: <Button size="sm">New client</Button>,
         selection: { rowLabel: (c: DemoClient) => `Select ${c.hostname}` },
-        selectionActions: (selected) => (
-            <Button size="sm" variant="secondary" disabled={selected.size === 0}>Run now</Button>
+        extraActions: (selected) => (
+            <>
+                <Button size="sm">{selected.size > 0 ? 'Run selected' : 'Run all'}</Button>
+                <Button size="sm" variant="secondary" disabled={selected.size === 0}>Restart</Button>
+            </>
         ),
     },
 };
