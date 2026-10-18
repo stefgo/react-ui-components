@@ -1,3 +1,72 @@
+## [4.10.0](https://github.com/stefgo/react-ui-components/compare/v4.9.1...v4.10.0) (2026-10-18)
+
+### A data view's actions say what they act on
+
+`DataMultiView` now has two places for actions, and where a button stands says
+whether it acts on what the list shows or on what is picked.
+
+- **`extraActions`** sit in the header, as before, and are now meant for what
+  does not depend on the selection: creating something, or acting on the rows
+  the search and the filters leave. The slot `extraActionsWrapper` wraps the
+  view toggle and the actions together and lets them wrap.
+- **`selectionActions`** now have a bar of their own between the search and the
+  rows. The bar is there before the first pick, so a pick no longer pushes the
+  rows down. While nothing is picked it can show a hint (`selection.hint`); once
+  something is, it counts the picks. The count no longer follows the title,
+  except for a view that has `selection.label` but no `selectionActions`.
+- The header's actions, the search's and the selection bar's now end at one
+  right edge; the search's used to stand 4px further right.
+
+### A click beside a row's checkbox no longer opens the row
+
+In a clickable table, a click that missed the small checkbox but landed in its
+column, or in the gap up to the first column, used to open the row. That space
+now belongs to the selection column and is left out of the row's click: what
+lands there neither opens the row nor picks it. The list view does the same with
+the row's margin around the checkbox. Both look as before.
+
+### A list's labels line up and wrap
+
+In the list view, every value of a row now starts at one edge. The labels take
+as much room as the longest of them needs, up to 40% of the row; a longer label
+wraps instead of pushing its value aside, and a value that does not fit wraps
+too. Before, a label wider than 100px moved its own value to the right, and a
+label never wrapped, so on a narrow screen it ran out of the row.
+
+### Upgrading
+
+No call site has to change. Buttons in `extraActions` that act on the picked
+rows are better moved into `selectionActions`, disabled while the set they are
+called with is empty. The list view's slots `itemWrapper` and `labelWrapper` have
+no element left to style and are gone; a `labelClassName` that only gave the
+labels a minimum width can go too.
+
+### ⚠ BREAKING CHANGES
+
+* **data-list:** The slots itemWrapper and labelWrapper of DataList are
+removed; there is no element left for them.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+* **data-multi-view:** extraActions is now globalActions, and the slot
+extraActionsWrapper is now globalActionsWrapper. selectionActions no longer
+join the header but stand in the selection bar, and the count of the picks
+moved from behind the title into that bar.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+### Features
+
+* **data-list:** Line up a row's labels and let them wrap ([16f0d13](https://github.com/stefgo/react-ui-components/commit/16f0d13721db14c2804f34b0641746f1bda4739d))
+* **data-multi-view:** Give the selection's actions a bar of their own ([bcc8790](https://github.com/stefgo/react-ui-components/commit/bcc8790ed59b1b1e4ae60936c2e69c6442c4a6e8))
+
+### Bug Fixes
+
+* **data-list:** Keep a click beside a row's checkbox from opening the row ([985468f](https://github.com/stefgo/react-ui-components/commit/985468f074c762228d5e4776e5c3807998313c1d))
+* **data-list:** Keep a row that cannot be picked in line with the others ([da85c69](https://github.com/stefgo/react-ui-components/commit/da85c699c37a06e93cc9a76a6ae65852163a259e))
+* **data-multi-view:** Even out the selection bar without a search and align the right edges ([3fc482e](https://github.com/stefgo/react-ui-components/commit/3fc482eef85c045239e98ec051be552e7b42d201))
+* **data-multi-view:** Join the search and the selection bar and even out their gaps ([177d16f](https://github.com/stefgo/react-ui-components/commit/177d16f4e617fc73b3fb10fd5558d22bffcf438c))
+* **data-multi-view:** Keep a click beside a row's checkbox from opening the row ([a2778e1](https://github.com/stefgo/react-ui-components/commit/a2778e13ccc8ba2d73a3e4e3efaf1bbb36850e45))
+
 ## [4.9.1](https://github.com/stefgo/react-ui-components/compare/v4.9.0...v4.9.1) (2026-10-14)
 
 ### Wrapped text in a table sits 20px apart
