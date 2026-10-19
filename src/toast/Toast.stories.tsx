@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ToastProvider } from './ToastProvider';
 import { useToast } from './ToastProvider';
@@ -77,6 +78,53 @@ export const Limit: Story = {
     render: () => (
         <ToastProvider limit={2}>
             <Raise />
+        </ToastProvider>
+    )
+};
+
+const RunJob = () => {
+    const { show, update } = useToast();
+    const timer = useRef<ReturnType<typeof setInterval>>(undefined);
+
+    const start = (fails: boolean) => {
+        clearInterval(timer.current);
+        const max = 8;
+        let value = 0;
+        const id = show({ title: 'Pulling 8 images', duration: 0, progress: { value, max } });
+        timer.current = setInterval(() => {
+            value++;
+            const failed = fails && value > 5 ? 1 : 0;
+            if (value < max) {
+                update(id, { progress: { value, max }, description: failed ? '1 failed' : undefined });
+                return;
+            }
+            clearInterval(timer.current);
+            const done = failed
+                ? { title: 'Could not pull 1 of 8 images', description: 'pbs-node-02: manifest unknown', variant: 'warning' as const }
+                : { title: 'Pulled 8 images', description: undefined, variant: 'success' as const, duration: 5000 };
+            // Dismissed meanwhile: the outcome still has to be seen.
+            if (!update(id, { ...done, progress: undefined })) show(done);
+        }, 600);
+    };
+
+    return (
+        <div className="flex flex-wrap gap-2">
+            <Button size="sm" onClick={() => start(false)}>Run job</Button>
+            <Button size="sm" variant="secondary" onClick={() => start(true)}>Run job with a failure</Button>
+        </div>
+    );
+};
+
+/**
+ * A job reported by one toast: `progress` draws the bar, `update` moves it on
+ * and turns the toast into the outcome. It stays while the job runs and counts
+ * down once it is given a duration. Dismiss it halfway and the outcome comes
+ * as a new toast, because `update` answers `false`.
+ */
+export const Progress: Story = {
+    render: () => (
+        <ToastProvider>
+            <RunJob />
         </ToastProvider>
     )
 };

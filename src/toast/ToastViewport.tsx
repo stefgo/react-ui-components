@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AlertCircle, AlertTriangle, CheckCircle2, Info, X } from 'lucide-react';
 import { ICON_SIZE, type IconComponent } from '../types';
@@ -15,6 +15,7 @@ export interface ToastViewportClassNames {
     toast?: string;
     title?: string;
     description?: string;
+    progress?: string;
     action?: string;
     close?: string;
 }
@@ -43,6 +44,49 @@ const VARIANTS: Record<ToastVariant, { icon: IconComponent; accent: string }> = 
     error: { icon: AlertCircle, accent: 'text-error' }
 };
 
+export interface ToastProgressProps {
+    value: number;
+    max: number;
+    /** The variant's text colour; the bar fills with it. */
+    accent: string;
+    labelledBy?: string;
+    className?: string;
+}
+
+/**
+ * The bar of a toast with `progress`. The count beside it is hidden from
+ * assistive technology: the toast is a live region, and text that changes
+ * with every step would be read out at every step. The bar's value is an
+ * attribute, which a live region does not announce, so a screen reader hears
+ * the job start and end and can still ask how far it is.
+ */
+const ToastProgress = ({ value, max, accent, labelledBy, className }: ToastProgressProps) => {
+    const share = max > 0 ? Math.min(1, Math.max(0, value / max)) : 0;
+
+    return (
+        <div className={cn("mt-2 flex items-center gap-2", className)}>
+            <div
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={max}
+                aria-valuenow={value}
+                aria-valuetext={`${value} of ${max}`}
+                aria-labelledby={labelledBy}
+                aria-label={labelledBy ? undefined : 'Progress'}
+                className="h-1.5 flex-1 overflow-hidden rounded-full bg-border"
+            >
+                <div
+                    className={cn("h-full rounded-full bg-current transition-[width] duration-300", accent)}
+                    style={{ width: `${share * 100}%` }}
+                />
+            </div>
+            <span aria-hidden className="text-xs tabular-nums text-text-muted">
+                {value} / {max}
+            </span>
+        </div>
+    );
+};
+
 export interface ToastItemProps {
     toast: Toast;
     /** Stable across renders — the auto-dismiss timer depends on it. */
@@ -67,8 +111,17 @@ const ToastItem = ({ toast, onDismiss, duration, classNames }: ToastItemProps) =
     const [paused, setPaused] = useState(false);
     const remaining = useRef(timeout);
     const startedAt = useRef(0);
+    const armedFor = useRef(timeout);
+    const titleId = useId();
 
     useEffect(() => {
+        // A toast that stayed while its job ran gets a countdown once `update`
+        // gives it one -- the full one: what was left of `0` would dismiss it
+        // on the spot.
+        if (armedFor.current !== timeout) {
+            armedFor.current = timeout;
+            remaining.current = timeout;
+        }
         if (timeout <= 0 || paused) return;
 
         startedAt.current = Date.now();
@@ -101,7 +154,7 @@ const ToastItem = ({ toast, onDismiss, duration, classNames }: ToastItemProps) =
 
             <div className="min-w-0 flex-1">
                 {toast.title && (
-                    <p className={cn("text-sm font-semibold text-text-primary", classNames?.title)}>
+                    <p id={titleId} className={cn("text-sm font-semibold text-text-primary", classNames?.title)}>
                         {toast.title}
                     </p>
                 )}
@@ -109,6 +162,14 @@ const ToastItem = ({ toast, onDismiss, duration, classNames }: ToastItemProps) =
                     <p className={cn("text-sm text-text-secondary", toast.title && "mt-0.5", classNames?.description)}>
                         {toast.description}
                     </p>
+                )}
+                {toast.progress && (
+                    <ToastProgress
+                        {...toast.progress}
+                        accent={accent}
+                        labelledBy={toast.title ? titleId : undefined}
+                        className={classNames?.progress}
+                    />
                 )}
                 {toast.action && (
                     <button

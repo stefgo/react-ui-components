@@ -723,7 +723,7 @@ Switches between table, list and tree view.
 - `search`: `Controllable<string>` + `searchable` / `searchFilter`
 - `viewMode`: `Controllable<'table' | 'list' | 'tree'>` + `storageKey`
 - `treeExpanded`, `sort`, `pagination`
-- `extraActions`: the header's actions; `selection` + `selectionActions`: the bar of the picked rows
+- `extraActions`: the header's actions, handed what `selection` picked
 
 `columns` takes a `DataColumnDef<T>[]` and replaces `tableDef` and
 `listColumns`, which ask for the same column twice. The heading is also the list
@@ -757,29 +757,33 @@ const columns: DataColumnDef<Client>[] = [
 `tableDef` and `listColumns` keep working. Passed next to `columns` they are
 ignored, with a warning.
 
-**Two places for actions.** A button acts either on what the list shows or on
-what is picked, and where it stands says which:
+**One place for actions.** A list's buttons sit in the header, next to the view
+toggle. Given as a function, `extraActions` is handed the picked keys, so a
+button acts on all rows while nothing is picked and on the picked ones once
+something is:
 
 ```tsx
 <DataMultiView
-    extraActions={<Button size="sm" icon={RefreshCw} onClick={checkShown}>Check all</Button>}
     selection={{ value: picked, onChange: setPicked, rowLabel: (c) => `Select ${c.hostname}` }}
-    selectionActions={(selected) => (
-        <Button size="sm" disabled={selected.size === 0} onClick={() => restart(selected)}>Restart</Button>
+    extraActions={(selected) => (
+        <>
+            <Button size="sm" icon={RefreshCw} onClick={() => (selected.size > 0 ? check(selected) : checkShown())}>
+                {selected.size > 0 ? 'Check selected' : 'Check all'}
+            </Button>
+            <Button size="sm" disabled={selected.size === 0} onClick={() => restart(selected)}>Restart</Button>
+        </>
     )}
     …
 />
 ```
 
-- `extraActions` sit in the header, next to the view toggle: creating
-  something, or acting on the rows the search and the filters leave.
-- `selectionActions` sit in a bar between the search and the rows. The bar is
-  there before the first pick, so the pick does not push the rows down; while
-  nothing is picked it shows `selection.hint`, if given, and the caller disables
-  its buttons. Once something is, it counts the picks (`selection.label`, or
-  "3 selected"). Its actions end at the same right edge as the header's.
-- No button should change its reach with a pick. A check of everything and a
-  check of the picked rows are two buttons, one in each place.
+- What "all" is -- the rows the search and the filters leave, or more than
+  that -- is the button's to know. Its label says which reach it has.
+- A button that only makes sense for picked rows stays in place and is
+  disabled while nothing is picked, so the first pick does not move the others.
+- The pick is counted in brackets behind the title (`selection.label`, or
+  "3 selected").
+- `extraActions` given as a node works as before and does not see the pick.
 
 #### The layout every list shares
 
