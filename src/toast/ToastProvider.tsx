@@ -34,22 +34,37 @@ export const ToastProvider = ({
 }: ToastProviderProps) => {
     const [toasts, setToasts] = useState<Toast[]>([]);
     const nextId = useRef(0);
+    // The ids on screen, kept beside the state rather than read from it: `update`
+    // has to answer at once, and a toast raised in the same handler is not in
+    // the state until the next render.
+    const live = useRef<string[]>([]);
 
     const dismiss = useCallback((id: string) => {
+        live.current = live.current.filter((liveId) => liveId !== id);
         setToasts((prev) => prev.filter((toast) => toast.id !== id));
     }, []);
 
-    const dismissAll = useCallback(() => setToasts([]), []);
+    const dismissAll = useCallback(() => {
+        live.current = [];
+        setToasts([]);
+    }, []);
 
     const show = useCallback((options: ToastOptions) => {
         const id = `toast-${nextId.current++}`;
+        live.current = [...live.current, id].slice(-limit);
         setToasts((prev) => [...prev, { ...options, id }].slice(-limit));
         return id;
     }, [limit]);
 
+    const update = useCallback((id: string, options: ToastOptions) => {
+        if (!live.current.includes(id)) return false;
+        setToasts((prev) => prev.map((toast) => (toast.id === id ? { ...toast, ...options } : toast)));
+        return true;
+    }, []);
+
     const value = useMemo<ToastContextValue>(
-        () => ({ toasts, show, dismiss, dismissAll }),
-        [toasts, show, dismiss, dismissAll]
+        () => ({ toasts, show, update, dismiss, dismissAll }),
+        [toasts, show, update, dismiss, dismissAll]
     );
 
     return (

@@ -10,6 +10,19 @@ dev keeps the text; the stable release from main empties this file again.
 Nothing inside an HTML comment is published.
 -->
 
+### A toast can report on a job while it runs
+
+`useToast` has an `update(id, options)` that changes a toast in place, and a
+toast can carry `progress: { value, max }`, drawn as a bar under its text. A
+job that reaches many items can now report through one toast: raise it with
+`duration: 0`, move it on as items finish, and turn it into the outcome at the
+end. Giving it a duration then starts a full countdown. `update` answers
+`false` once the toast is gone -- dismissed, or pushed out by `limit` -- so the
+outcome can still be raised as a new toast.
+
+A screen reader hears the job start and end; the count is not read out at
+every step, but the bar can be asked for it.
+
 ### A data view's actions follow the selection
 
 `DataMultiView` has one place for actions again: the card's header. The bar

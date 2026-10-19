@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { useRef, useState } from 'react';
 import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ToastProvider, useToast } from './ToastProvider';
@@ -7,6 +8,44 @@ import type { ToastOptions } from './types';
 const Trigger = ({ options }: { options: ToastOptions }) => {
     const { show } = useToast();
     return <button type="button" onClick={() => show(options)}>Raise</button>;
+};
+
+/** A job that raises one toast and moves it on, as a long-running caller would. */
+const Job = () => {
+    const { show, update } = useToast();
+    const id = useRef('');
+    const [answer, setAnswer] = useState('');
+    const step = (options: ToastOptions) => setAnswer(String(update(id.current, options)));
+
+    return (
+        <>
+            <button
+                type="button"
+                onClick={() => {
+                    id.current = show({ title: 'Pulling 4 images', duration: 0, progress: { value: 0, max: 4 } });
+                }}
+            >
+                Start
+            </button>
+            <button type="button" onClick={() => step({ progress: { value: 3, max: 4 } })}>Advance</button>
+            <button
+                type="button"
+                onClick={() => step({ title: 'Pulled 4 images', variant: 'success', progress: undefined, duration: 1000 })}
+            >
+                Finish
+            </button>
+            <output>{answer}</output>
+        </>
+    );
+};
+
+const setupJob = () => {
+    render(
+        <ToastProvider>
+            <Job />
+        </ToastProvider>
+    );
+    return (name: string) => screen.getByRole('button', { name });
 };
 
 const setup = (options: ToastOptions, providerProps = {}) => {
@@ -72,6 +111,43 @@ describe('ToastProvider', () => {
         expect(screen.getAllByRole('status')).toHaveLength(2);
     });
 
+    it('changes a toast in place', async () => {
+        const button = setupJob();
+
+        await userEvent.click(button('Start'));
+        await userEvent.click(button('Finish'));
+
+        expect(screen.getAllByRole('status').filter((el) => el.tagName === 'LI')).toHaveLength(1);
+        expect(screen.getByText('Pulled 4 images')).toBeInTheDocument();
+        expect(screen.queryByText('Pulling 4 images')).not.toBeInTheDocument();
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+        expect(screen.getByText('true')).toBeInTheDocument();
+    });
+
+    it('shows how far the job has come, named by its title', async () => {
+        const button = setupJob();
+
+        await userEvent.click(button('Start'));
+        await userEvent.click(button('Advance'));
+
+        const bar = screen.getByRole('progressbar', { name: 'Pulling 4 images' });
+        expect(bar).toHaveAttribute('aria-valuenow', '3');
+        expect(bar).toHaveAttribute('aria-valuemax', '4');
+        expect(bar).toHaveAttribute('aria-valuetext', '3 of 4');
+    });
+
+    it('says so when the toast to update is gone', async () => {
+        const button = setupJob();
+
+        await userEvent.click(button('Start'));
+        await userEvent.click(screen.getByRole('button', { name: /dismiss notification/i }));
+        await userEvent.click(button('Advance'));
+
+        // The caller decides whether the news is worth a new toast.
+        expect(screen.getByText('false')).toBeInTheDocument();
+        expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+    });
+
     it('throws when used without a provider', () => {
         // The alternative is a notification that silently never appears.
         const quiet = vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -106,6 +182,20 @@ describe('ToastProvider timing', () => {
         act(() => { vi.advanceTimersByTime(60_000); });
         // An error the user has to act on must not vanish unread.
         expect(screen.getByText('Job failed')).toBeInTheDocument();
+    });
+
+    it('counts down in full once a lasting toast is given a duration', () => {
+        setupJob();
+        act(() => { screen.getByRole('button', { name: 'Start' }).click(); });
+        act(() => { vi.advanceTimersByTime(60_000); });
+        act(() => { screen.getByRole('button', { name: 'Finish' }).click(); });
+
+        // What was left of `0` is nothing; the new duration starts from the top.
+        act(() => { vi.advanceTimersByTime(999); });
+        expect(screen.getByText('Pulled 4 images')).toBeInTheDocument();
+
+        act(() => { vi.advanceTimersByTime(2); });
+        expect(screen.queryByText('Pulled 4 images')).not.toBeInTheDocument();
     });
 
     it('pauses the countdown while hovered', () => {
