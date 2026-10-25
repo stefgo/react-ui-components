@@ -1,3 +1,21 @@
+## [4.12.0](https://github.com/stefgo/react-ui-components/compare/v4.11.0...v4.12.0) (2026-10-25)
+
+### StatCardGrid: a row of stat cards that fits its space
+
+`StatCardGrid` lays out a row of `StatCard`s in as many columns as the row has room for,
+measured on its own width rather than the window's -- so an open sidebar is taken into
+account. Five cards beside an open sidebar in a 1280px window used to be too narrow for a
+value like "Degraded", which pushed the icon out of the card; they now go 3 + 2, and
+five across once there is room. A card never stands alone on the last row.
+
+To use it, replace the `<div className="grid grid-cols-… gap-4">` around a row of cards
+with `<StatCardGrid>`. The widths come from the Tailwind preset, so the preset has to be
+in use, as it is for every other component.
+
+### Features
+
+* **StatCardGrid:** Lay out a row of stat cards by the room it has ([1bde2c1](https://github.com/stefgo/react-ui-components/commit/1bde2c1f607ee5af8c20332702bc8a75304dda03))
+
 ## [4.11.0](https://github.com/stefgo/react-ui-components/compare/v4.10.0...v4.11.0) (2026-10-19)
 
 ### A toast can report on a job while it runs
