@@ -1,6 +1,34 @@
 const path = require("path");
 const { themeValue: t, baseDeclarations, RADIUS, DURATION } = require("./tokens");
 
+/*
+ * The column steps of `StatCardGrid`. A row of cards gets n columns once the
+ * grid has room for n cards of STAT_CARD_MIN_REM plus the gaps between them;
+ * the minimum is what a `StatCard` needs to show a word like "Degraded" in
+ * `text-3xl` beside its icon. The grid's `gap-4` is GAP_REM.
+ *
+ * These rules are written here, not as arbitrary variants in the component:
+ * a wider step has to win over a narrower one, and only here is the order of
+ * the rules in the stylesheet ours to decide. Tailwind places arbitrary
+ * variants in the order it happens to meet them.
+ */
+const STAT_CARD_MIN_REM = 15;
+const GAP_REM = 1;
+const STAT_CARD_GRID_MAX_COLUMNS = 6;
+
+function statCardGridComponents() {
+  const rules = {};
+  for (let columns = 2; columns <= STAT_CARD_GRID_MAX_COLUMNS; columns++) {
+    const minWidth = columns * STAT_CARD_MIN_REM + (columns - 1) * GAP_REM;
+    rules[`@container ruic-stat-card-grid (min-width: ${minWidth}rem)`] = {
+      [`.ruic-stat-card-grid[data-columns~="${columns}"]`]: {
+        "grid-template-columns": `repeat(${columns}, minmax(0, 1fr))`,
+      },
+    };
+  }
+  return rules;
+}
+
 /**
  * Tailwind CSS preset for @stefgo/react-ui-components.
  *
@@ -235,11 +263,13 @@ module.exports = {
     },
   },
   plugins: [
-    function ({ addBase, addUtilities }) {
+    function ({ addBase, addComponents, addUtilities }) {
       // The token declarations themselves. Emitting them here rather than
       // shipping a stylesheet keeps the package CSS-free: the consumer's own
       // Tailwind build produces them, so there is no import step to forget.
       addBase(baseDeclarations());
+
+      addComponents(statCardGridComponents());
 
       addUtilities({
         ".scrollbar-none": {

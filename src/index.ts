@@ -25,6 +25,7 @@ export * from "./SectionHeader";
 export * from "./PaginationControls";
 export * from "./Select";
 export * from "./StatCard";
+export * from "./StatCardGrid";
 export * from "./Tabs";
 export * from "./SideTab";
 export * from "./Badge";

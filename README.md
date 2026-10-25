@@ -318,7 +318,27 @@ Every component takes `classNames` for its named inner elements.
   has no `sub`. That needs the cards to be **direct children of a grid**
   (`grid grid-cols-…`); each card takes three of its rows (CSS subgrid). Anything else in
   the same grid fills one of the three unless it is given `row-span-3` too. Outside a grid
-  a card lays itself out alone.
+  a card lays itself out alone. For a row of cards, use `StatCardGrid`.
+
+#### `StatCardGrid`
+
+A row of `StatCard`s that takes as many columns as there is room for -- measured on the
+grid's own width (a container query), not the window's, so an open sidebar counts.
+
+```tsx
+<StatCardGrid>
+    <StatCard label="Backups" value="Degraded" icon={ShieldCheck} />
+    <StatCard label="Hosts online" value="3 / 4" icon={Monitor} />
+    …
+</StatCardGrid>
+```
+
+- A card gets at least 15rem; below the room for two the cards stack. With n cards the
+  grid offers every column count that does not leave one card alone on the last row:
+  five cards go 3 + 2 and then 5 across, four go 2 + 2 and then 4.
+- The cards are its **direct children**; a card rendered as `false` is not counted.
+- The widths come from the Tailwind preset, which has to be in use. Up to six columns.
+- `className` and every other attribute go on the outer element (the container).
 
 #### `ActionButton`
 
