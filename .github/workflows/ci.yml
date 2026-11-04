@@ -69,7 +69,7 @@ jobs:
       # anything going red -- hence this check.
       #
       # It is still not the actual safeguard: it is bound to pull_request, and
-      # pull requests only come from Dependabot here. For everything else
+      # pull requests only come from Renovate here. For everything else
       # .githooks/commit-msg checks before the commit is made.
       - name: Commit messages
         if: github.event_name == 'pull_request'

@@ -1,0 +1,20 @@
+// Dependency updates come from Renovate, run centrally from
+// https://github.com/stefgo/renovate-config -- the react preset sets the schedule, the
+// commit types, the dev branch and the merge once every check is green. Only what is
+// particular to this repository goes here.
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["github>stefgo/renovate-config:react"],
+  packageRules: [
+    {
+      // The peer ranges are this library's promise to the projects that use it.
+      // Left to Renovate, a major update of a peer would widen its range
+      // (tailwindcss "^3.4.0" to "^3.4.0 || ^4.0.0") in a chore commit that
+      // releases nothing and announces nothing. The devDependency the tests run
+      // against is still updated; the peer range follows by hand, with a release
+      // that says so.
+      matchDepTypes: ["peerDependencies"],
+      enabled: false,
+    },
+  ],
+}

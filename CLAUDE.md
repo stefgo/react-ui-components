@@ -403,13 +403,17 @@ Three details worth keeping:
 The release job has no build step of its own — `prepublishOnly` builds the tarball,
 and the `checks` job already built once as a check.
 
-**Dependabot keeps the actions current** (`.github/dependabot.yml`): one grouped pull
-request a month against `dev`, prefixed `ci` so it stays out of the release notes. In a
-repository without pull requests that request would simply wait — six actions in the
-sibling project drifted up to two majors behind that way — so `dependabot-auto-merge.yml`
-(**Merge Dependency Updates**) puts it into auto-merge, gated by its own `ci.yml` run. It
-needs *Allow auto-merge* enabled in the repository settings. npm is deliberately not
-covered; security updates arrive without configuration.
+**Renovate keeps the dependencies current** — the actions, the npm packages and the Node
+version in `.nvmrc`. It runs centrally from `stefgo/renovate-config`, whose preset `:react`
+holds the rules; `.github/renovate.json5` only connects this repository. On Mondays it
+opens one pull request for every minor and patch update and one per major, against `dev`;
+it merges a pull request itself once every check is green and leaves a red one open. A
+security update comes at once (that needs *Dependabot alerts* on and *Dependabot security
+updates* off). Its commits are `ci(deps):` / `chore(deps):` and release nothing, so an
+update reaches the projects using the library with its next release. A new Node major is
+never merged on its own. **`peerDependencies` are left alone**: the peer ranges are the
+library's promise to its users and move by hand, with a release that says so — Renovate
+only updates the devDependency the tests run against.
 
 #### The release notes are part of the commit
 
