@@ -407,13 +407,15 @@ and the `checks` job already built once as a check.
 version in `.nvmrc`. It runs centrally from `stefgo/renovate-config`, whose preset `:react`
 holds the rules; `.github/renovate.json5` only connects this repository. On Mondays it
 opens one pull request for every minor and patch update and one per major, against `dev`;
-it merges a pull request itself once every check is green and leaves a red one open. A
-security update comes at once (that needs *Dependabot alerts* on and *Dependabot security
-updates* off). Its commits are `ci(deps):` / `chore(deps):` and release nothing, so an
-update reaches the projects using the library with its next release. A new Node major is
-never merged on its own. **`peerDependencies` are left alone**: the peer ranges are the
-library's promise to its users and move by hand, with a release that says so — Renovate
-only updates the devDependency the tests run against.
+it merges a pull request itself once every check is green and leaves a red one open. The
+lock file is refreshed every Monday too, which is what fixes a vulnerability in a package
+that only comes in through another one. A security update comes at once (that needs
+*Dependabot alerts* on and *Dependabot security updates* off). Its commits are
+`ci(deps):` / `chore(deps):` and release nothing, so an update reaches the projects using
+the library with its next release. A new Node major is never merged on its own.
+**`peerDependencies` are left alone**: the peer ranges are the library's promise to its
+users and move by hand, with a release that says so — Renovate only updates the
+devDependency the tests run against.
 
 #### The release notes are part of the commit
 
