@@ -20,7 +20,7 @@
       "onFail": "error"
     }
   },
-  "packageManager": "npm@11.12.1",
+  "packageManager": "npm@11.21.2",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
